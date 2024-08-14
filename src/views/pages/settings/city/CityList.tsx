@@ -34,7 +34,7 @@ import toast from 'react-hot-toast'
 import { usePermission } from 'src/hooks/usePermission'
 
 // ** Config
-import { OBJECT_TYPE_ERROR_ROLE } from 'src/configs/role'
+import { OBJECT_TYPE_ERROR_CITY } from 'src/configs/error'
 import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
 // ** Utils
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
@@ -233,7 +233,7 @@ const CityListPage: NextPage<TProps> = () => {
       handleCloseCreateEdit()
       dispatch(resetInitialState())
     } else if (isErrorCreateEdit && messageErrorCreateEdit && typeError) {
-      const errorConfig = OBJECT_TYPE_ERROR_ROLE[typeError]
+      const errorConfig = OBJECT_TYPE_ERROR_CITY[typeError]
       if (errorConfig) {
         toast.error(t(errorConfig))
       } else {
