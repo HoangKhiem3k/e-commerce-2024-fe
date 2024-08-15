@@ -79,3 +79,21 @@ export const deleteMultipleProduct = async (data: TParamsDeleteMultipleProduct) 
     return error?.response?.data
   }
 }
+export const getAllProductsPublic = async (data: { params: TParamsGetProducts }) => {
+  try {
+    const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/public`, data)
+
+    return res.data
+  } catch (error) {
+    return error
+  }
+}
+export const getDetailsProductPublic = async (id: string) => {
+  try {
+    const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/public/${id}`)
+
+    return res.data
+  } catch (error: any) {
+    return error?.response?.data
+  }
+}
