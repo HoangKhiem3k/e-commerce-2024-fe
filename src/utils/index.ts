@@ -1,3 +1,6 @@
+import htmlToDraft from 'html-to-draftjs'
+import { ContentState, EditorState } from 'draft-js'
+
 export const toFullName = (lastName: string, middleName: string, firstName: string, language: string) => {
   if (language === 'vi') {
     return `${lastName ? lastName : ''} ${middleName ? middleName : ''} ${firstName ? firstName : ''}`.trim()
@@ -103,4 +106,12 @@ export const stringToSlug = (str: string) => {
     .replace(/-+/g, '-')
 
   return str
+}
+export const convertHTMLToDraft = (html: string) => {
+  const blocksFromHtml = htmlToDraft(html)
+  const { contentBlocks, entityMap } = blocksFromHtml
+  const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap)
+  const editorState = EditorState.createWithContent(contentState)
+
+  return editorState
 }
