@@ -11,10 +11,21 @@ import { API_ENDPOINT } from 'src/configs/api'
 
 // Axios
 import instanceAxios from 'src/helpers/axios'
+import axios from 'axios'
 
 export const getAllProducts = async (data: { params: TParamsGetProducts }) => {
   try {
     const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}`, data)
+
+    return res.data
+  } catch (error) {
+    return error
+  }
+}
+
+export const getAllProductsPublic = async (data: { params: TParamsGetProducts }) => {
+  try {
+    const res = await axios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/public`, data)
 
     return res.data
   } catch (error) {
@@ -63,6 +74,26 @@ export const getDetailsProduct = async (id: string) => {
   }
 }
 
+export const getDetailsProductPublic = async (id: string) => {
+  try {
+    const res = await axios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/public/${id}`)
+
+    return res.data
+  } catch (error: any) {
+    return error?.response?.data
+  }
+}
+
+export const getDetailsProductPublicBySlug = async (slug: string) => {
+  try {
+    const res = await axios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/public/slug/${slug}`)
+
+    return res.data
+  } catch (error: any) {
+    return error?.response?.data
+  }
+}
+
 export const deleteMultipleProduct = async (data: TParamsDeleteMultipleProduct) => {
   try {
     const res = await instanceAxios.delete(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/delete-many`, { data })
@@ -75,24 +106,6 @@ export const deleteMultipleProduct = async (data: TParamsDeleteMultipleProduct) 
     return {
       data: null
     }
-  } catch (error: any) {
-    return error?.response?.data
-  }
-}
-export const getAllProductsPublic = async (data: { params: TParamsGetProducts }) => {
-  try {
-    const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/public`, data)
-
-    return res.data
-  } catch (error) {
-    return error
-  }
-}
-export const getDetailsProductPublic = async (id: string) => {
-  try {
-    const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/public/${id}`)
-
-    return res.data
   } catch (error: any) {
     return error?.response?.data
   }
