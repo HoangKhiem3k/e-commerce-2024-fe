@@ -351,5 +351,6 @@
   "Payment_vn_pay_failed": "Thanh toán VNPay thất bại",
   "ratings": "đánh giá",
   "comments": "bình luận",
-  "Product_details": "Chi tiết sản phẩm"
+  "Product_details": "Chi tiết sản phẩm",
+  "Count_in_stock_product": "Còn {{count}} sản phẩm trong kho"
 }
