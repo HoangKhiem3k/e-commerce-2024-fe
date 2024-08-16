@@ -1,3 +1,6 @@
+// ** Types
+import { TItemOrderProduct } from 'src/types/order-product'
+// ** Libraries
 import htmlToDraft from 'html-to-draftjs'
 import { ContentState, EditorState } from 'draft-js'
 
@@ -122,5 +125,28 @@ export const formatNumberToLocal = (value: string | number) => {
     })
   } catch (error) {
     return value
+  }
+}
+export const cloneDeep = (data: any) => {
+  try {
+    return JSON.parse(JSON.stringify(data))
+  } catch (error) {
+    return data
+  }
+}
+
+export const convertAddProductToCart = (orderItems: TItemOrderProduct[], addItem: TItemOrderProduct) => {
+  try {
+    const cloneOrderItems = cloneDeep(orderItems)
+    const findItems = cloneOrderItems.find((item: TItemOrderProduct) => item.product === addItem.product)
+    if (findItems) {
+      findItems.amount += addItem.amount
+    } else {
+      cloneOrderItems.push(addItem)
+    }
+
+    return cloneOrderItems
+  } catch (error) {
+    return orderItems
   }
 }

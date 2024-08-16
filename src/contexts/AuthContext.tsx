@@ -8,7 +8,7 @@ import authConfig from 'src/configs/auth'
 import { AuthValuesType, LoginParams, ErrCallbackType, UserDataType } from './types'
 // ** Services
 import { loginAuth, logoutAuth } from 'src/services/auth'
-// ** Config
+// ** Configs
 import { API_ENDPOINT } from 'src/configs/api'
 // ** Helper
 import { clearLocalUserData, setLocalUserData, setTemporaryToken } from 'src/helpers/storage'
@@ -18,6 +18,10 @@ import instanceAxios from 'src/helpers/axios'
 import { useTranslation } from 'react-i18next'
 // ** Others
 import toast from 'react-hot-toast'
+// ** Redux
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from 'src/stores'
+import { addProductToCart } from 'src/stores/order-product'
 
 // ** Defaults
 const defaultProvider: AuthValuesType = {
@@ -43,6 +47,8 @@ const AuthProvider = ({ children }: Props) => {
   const { t } = useTranslation()
   // ** Hooks
   const router = useRouter()
+  // ** Redux
+  const dispatch: AppDispatch = useDispatch()
 
   useEffect(() => {
     const initAuth = async (): Promise<void> => {
@@ -92,7 +98,11 @@ const AuthProvider = ({ children }: Props) => {
     logoutAuth().then(res => {
       setUser(null)
       clearLocalUserData()
-      router.push('/login')
+      dispatch(
+        addProductToCart({
+          orderItems: []
+        })
+      )
     })
   }
   const values = {
