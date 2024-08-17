@@ -21,7 +21,7 @@ import toast from 'react-hot-toast'
 // ** Redux
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from 'src/stores'
-import { addProductToCart } from 'src/stores/order-product'
+import { updateProductToCart } from 'src/stores/order-product'
 
 // ** Defaults
 const defaultProvider: AuthValuesType = {
@@ -99,7 +99,7 @@ const AuthProvider = ({ children }: Props) => {
       setUser(null)
       clearLocalUserData()
       dispatch(
-        addProductToCart({
+        updateProductToCart({
           orderItems: []
         })
       )
