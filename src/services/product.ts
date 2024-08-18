@@ -1,112 +1,74 @@
-// ** Products
-import {
-  TParamsGetProducts,
-  TParamsCreateProduct,
-  TParamsEditProduct,
-  TParamsDeleteMultipleProduct
-} from 'src/types/product'
+export type TParamsGetProducts = {
+  limit?: number
+  page?: number
+  search?: string
+  order?: string
+}
 
-// api endPoint
-import { API_ENDPOINT } from 'src/configs/api'
+export type TParamsCreateProduct = {
+  name: string
+  type: string
+  location: string
+  discount: number
+  price: number
+  description?: string
+  slug: string
+  countInStock: number
+  status: number
+  discountEndDate: Date | null
+  discountStartDate: Date | null
+  image: string
+}
 
-// Axios
-import instanceAxios from 'src/helpers/axios'
-import axios from 'axios'
+export type TParamsEditProduct = {
+  id: string
+  name: string
+  type: string
+  discount: number
+  location: string
+  price: number
+  description: string
+  slug: string
+  countInStock: number
+  status: number
+  discountEndDate: Date | null
+  discountStartDate: Date | null
+  image: string
+}
 
-export const getAllProducts = async (data: { params: TParamsGetProducts }) => {
-  try {
-    const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}`, data)
+export type TParamsDeleteProduct = {
+  id: string
+}
 
-    return res.data
-  } catch (error) {
-    return error
+export type TParamsDeleteMultipleProduct = {
+  productIds: string[]
+}
+
+export type TProduct = {
+  _id: string
+  averageRating: number
+  createdAt: Date | null
+  image: string
+  price: number
+  name: string
+  slug: string
+  totalLike: number
+  countInStock: number
+  discountEndDate: Date | null
+  discountStartDate: Date | null
+  totalReviews: number
+  discount: number
+  sold: number
+  location: {
+    name: string
+    _id: string
   }
 }
 
-export const getAllProductsPublic = async (data: { params: TParamsGetProducts }) => {
-  try {
-    const res = await axios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/public`, data)
-
-    return res.data
-  } catch (error) {
-    return error
-  }
-}
-
-export const createProduct = async (data: TParamsCreateProduct) => {
-  try {
-    const res = await instanceAxios.post(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}`, data)
-
-    return res.data
-  } catch (error: any) {
-    return error?.response?.data
-  }
-}
-
-export const updateProduct = async (data: TParamsEditProduct) => {
-  const { id, ...rests } = data
-  try {
-    const res = await instanceAxios.put(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/${id}`, rests)
-
-    return res.data
-  } catch (error: any) {
-    return error?.response?.data
-  }
-}
-
-export const deleteProduct = async (id: string) => {
-  try {
-    const res = await instanceAxios.delete(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/${id}`)
-
-    return res.data
-  } catch (error: any) {
-    return error?.response?.data
-  }
-}
-
-export const getDetailsProduct = async (id: string) => {
-  try {
-    const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/${id}`)
-
-    return res.data
-  } catch (error: any) {
-    return error?.response?.data
-  }
-}
-
-export const getDetailsProductPublic = async (id: string) => {
-  try {
-    const res = await axios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/public/${id}`)
-
-    return res.data
-  } catch (error: any) {
-    return error?.response?.data
-  }
-}
-
-export const getDetailsProductPublicBySlug = async (slug: string) => {
-  try {
-    const res = await axios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/public/slug/${slug}`)
-
-    return res.data
-  } catch (error: any) {
-    return error?.response?.data
-  }
-}
-
-export const deleteMultipleProduct = async (data: TParamsDeleteMultipleProduct) => {
-  try {
-    const res = await instanceAxios.delete(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/delete-many`, { data })
-    if (res?.data?.status === 'Success') {
-      return {
-        data: []
-      }
-    }
-
-    return {
-      data: null
-    }
-  } catch (error: any) {
-    return error?.response?.data
-  }
+export type TParamsGetRelatedProduct = {
+  limit?: number
+  page?: number
+  search?: string
+  slug: string
+  order?: string
 }

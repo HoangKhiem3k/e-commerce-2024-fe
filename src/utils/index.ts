@@ -11,7 +11,6 @@ export const toFullName = (lastName: string, middleName: string, firstName: stri
 
   return `${firstName ? firstName : ''} ${middleName ? middleName : ''} ${lastName ? lastName : ''}`.trim()
 }
-
 export const convertBase64 = (file: File) =>
   new Promise((resolve, reject) => {
     const reader = new FileReader()
@@ -19,7 +18,6 @@ export const convertBase64 = (file: File) =>
     reader.onload = () => resolve(reader.result)
     reader.onerror = reject
   })
-
 export const separationFullName = (fullName: string, language: string) => {
   const result = {
     firstName: '',
@@ -55,7 +53,6 @@ export const separationFullName = (fullName: string, language: string) => {
 
   return result
 }
-
 export const getAllValueOfObject = (obj: any, arrExlude?: string[]) => {
   try {
     const values: any[] = []
@@ -134,7 +131,6 @@ export const cloneDeep = (data: any) => {
     return data
   }
 }
-
 export const convertUpdateProductToCart = (orderItems: TItemOrderProduct[], addItem: TItemOrderProduct) => {
   try {
     let result = []
@@ -151,4 +147,15 @@ export const convertUpdateProductToCart = (orderItems: TItemOrderProduct[], addI
   } catch (error) {
     return orderItems
   }
+}
+export const isExpiry = (startDate: Date | null, endDate: Date | null) => {
+  if (startDate && endDate) {
+    const currentTime = new Date().getTime()
+    const startDateTime = new Date(startDate).getTime()
+    const endDateTime = new Date(endDate).getTime()
+
+    return startDateTime <= currentTime && endDateTime > currentTime
+  }
+
+  return false
 }
