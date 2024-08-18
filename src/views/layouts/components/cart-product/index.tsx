@@ -18,7 +18,6 @@ import { Badge, Button, Typography, styled, useTheme } from '@mui/material'
 
 // ** Components
 import Icon from 'src/components/Icon'
-import NoData from 'src/components/no-data'
 
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
@@ -42,6 +41,7 @@ import { TItemOrderProduct } from 'src/types/order-product'
 
 // ** Utils
 import { formatNumberToLocal, isExpiry } from 'src/utils'
+import NoData from 'src/components/no-data'
 
 type TProps = {}
 
@@ -68,12 +68,15 @@ const CartProduct = (props: TProps) => {
   const handleNavigateDetailsProduct = (slug: string) => {
     router.push(`${ROUTE_CONFIG.PRODUCT}/${slug}`)
   }
+
   const handleNavigateMyCart = () => {
     router.push(`${ROUTE_CONFIG.MY_CART}`)
   }
+
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
   }
+
   const handleClose = () => {
     setAnchorEl(null)
   }
@@ -151,46 +154,48 @@ const CartProduct = (props: TProps) => {
       >
         {orderItems.length > 0 ? (
           <>
-            {orderItems?.map((item: TItemOrderProduct) => {
-              return (
-                <StyleMenuItem key={item.product} onClick={() => handleNavigateDetailsProduct(item.slug)}>
-                  <Avatar src={item.image} />
-                  <Box>
-                    <Typography>{item.name}</Typography>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                      {item.discount > 0 && (
+            <Box sx={{ maxHeight: '400px', overflow: 'auto' }}>
+              {orderItems?.map((item: TItemOrderProduct) => {
+                return (
+                  <StyleMenuItem key={item.product} onClick={() => handleNavigateDetailsProduct(item.slug)}>
+                    <Avatar src={item.image} sx={{ height: '60px !important', width: '60px !important' }} />
+                    <Box>
+                      <Typography>{item.name}</Typography>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        {item.discount > 0 && (
+                          <Typography
+                            variant='h6'
+                            sx={{
+                              color: theme.palette.error.main,
+                              fontWeight: 'bold',
+                              textDecoration: 'line-through',
+                              fontSize: '10px'
+                            }}
+                          >
+                            {formatNumberToLocal(item.price)} VND
+                          </Typography>
+                        )}
                         <Typography
-                          variant='h6'
+                          variant='h4'
                           sx={{
-                            color: theme.palette.error.main,
+                            color: theme.palette.primary.main,
                             fontWeight: 'bold',
-                            textDecoration: 'line-through',
-                            fontSize: '10px'
+                            fontSize: '12px'
                           }}
                         >
-                          {formatNumberToLocal(item.price)} VND
+                          {item.discount > 0 ? (
+                            <>{formatNumberToLocal((item.price * (100 - item.discount)) / 100)}</>
+                          ) : (
+                            <>{formatNumberToLocal(item.price)}</>
+                          )}{' '}
+                          VND
                         </Typography>
-                      )}
-                      <Typography
-                        variant='h4'
-                        sx={{
-                          color: theme.palette.primary.main,
-                          fontWeight: 'bold',
-                          fontSize: '12px'
-                        }}
-                      >
-                        {item.discount > 0 ? (
-                          <>{formatNumberToLocal((item.price * (100 - item.discount)) / 100)}</>
-                        ) : (
-                          <>{formatNumberToLocal(item.price)}</>
-                        )}{' '}
-                        VND
-                      </Typography>
+                      </Box>
                     </Box>
-                  </Box>
-                </StyleMenuItem>
-              )
-            })}
+                  </StyleMenuItem>
+                )
+              })}
+            </Box>
             <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
               <Button type='submit' variant='contained' sx={{ mt: 3, mb: 2, mr: 2 }} onClick={handleNavigateMyCart}>
                 {t('View_cart')}
