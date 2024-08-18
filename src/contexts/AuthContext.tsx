@@ -1,23 +1,29 @@
-// ** React
+// ** React Imports
 import { createContext, useEffect, useState, ReactNode } from 'react'
-// ** Next
+
+// ** Next Import
 import { useRouter } from 'next/router'
+
 // ** Config
-import authConfig from 'src/configs/auth'
+import authConfig, { LIST_PAGE_PUBLIC } from 'src/configs/auth'
+
 // ** Types
 import { AuthValuesType, LoginParams, ErrCallbackType, UserDataType } from './types'
-// ** Services
+
+// ** services
 import { loginAuth, logoutAuth } from 'src/services/auth'
-// ** Configs
+
+// ** Config
 import { API_ENDPOINT } from 'src/configs/api'
-// ** Helper
+
+// ** helper
 import { clearLocalUserData, setLocalUserData, setTemporaryToken } from 'src/helpers/storage'
-// ** Axios
+
+// instance axios
 import instanceAxios from 'src/helpers/axios'
-// ** Translate
-import { useTranslation } from 'react-i18next'
-// ** Others
 import toast from 'react-hot-toast'
+import { useTranslation } from 'react-i18next'
+
 // ** Redux
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from 'src/stores'
@@ -43,16 +49,19 @@ const AuthProvider = ({ children }: Props) => {
   // ** States
   const [user, setUser] = useState<UserDataType | null>(defaultProvider.user)
   const [loading, setLoading] = useState<boolean>(defaultProvider.loading)
-  // Translate
+
   const { t } = useTranslation()
-  // ** Hooks
-  const router = useRouter()
+
   // ** Redux
   const dispatch: AppDispatch = useDispatch()
+
+  // ** Hooks
+  const router = useRouter()
 
   useEffect(() => {
     const initAuth = async (): Promise<void> => {
       const storedToken = window.localStorage.getItem(authConfig.storageTokenKeyName)
+
       if (storedToken) {
         setLoading(true)
         await instanceAxios
@@ -73,6 +82,7 @@ const AuthProvider = ({ children }: Props) => {
         setLoading(false)
       }
     }
+
     initAuth()
   }, [])
 
@@ -81,23 +91,40 @@ const AuthProvider = ({ children }: Props) => {
       .then(async response => {
         if (params.rememberMe) {
           setLocalUserData(JSON.stringify(response.data.user), response.data.access_token, response.data.refresh_token)
+          console.log(234234)
         } else {
           setTemporaryToken(response.data.access_token)
         }
+
         toast.success(t('Login_success'))
+
         const returnUrl = router.query.returnUrl
         setUser({ ...response.data.user })
         const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
+
         router.replace(redirectURL as string)
       })
+
       .catch(err => {
         if (errorCallback) errorCallback(err)
       })
   }
+
   const handleLogout = () => {
     logoutAuth().then(res => {
       setUser(null)
       clearLocalUserData()
+
+      if (!LIST_PAGE_PUBLIC?.some(item => router.asPath?.startsWith(item))) {
+        if (router.asPath !== '/') {
+          router.replace({
+            pathname: '/login',
+            query: { returnUrl: router.asPath }
+          })
+        } else {
+          router.replace('/login')
+        }
+      }
       dispatch(
         updateProductToCart({
           orderItems: []
@@ -105,6 +132,7 @@ const AuthProvider = ({ children }: Props) => {
       )
     })
   }
+
   const values = {
     user,
     loading,

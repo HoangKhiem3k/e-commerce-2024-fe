@@ -58,6 +58,16 @@ const AppBar = styled(MuiAppBar, {
 const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer, isHideMenu }) => {
   const { user } = useAuth()
   const router = useRouter()
+  const handleNavigateLogin = () => {
+    if (router.asPath !== '/') {
+      router.replace({
+        pathname: '/login',
+        query: { returnUrl: router.asPath }
+      })
+    } else {
+      router.replace('/login')
+    }
+  }
 
   return (
     <AppBar position='absolute' open={open}>
@@ -98,7 +108,7 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer, isHideMenu }) 
         {user ? (
           <UserDropdown />
         ) : (
-          <Button variant='contained' sx={{ ml: 2, width: 'auto' }} onClick={() => router.push(ROUTE_CONFIG.LOGIN)}>
+          <Button variant='contained' sx={{ ml: 2, width: 'auto' }} onClick={handleNavigateLogin}>
             Sign In
           </Button>
         )}
