@@ -91,7 +91,6 @@ const AuthProvider = ({ children }: Props) => {
       .then(async response => {
         if (params.rememberMe) {
           setLocalUserData(JSON.stringify(response.data.user), response.data.access_token, response.data.refresh_token)
-          console.log(234234)
         } else {
           setTemporaryToken(response.data.access_token)
         }
