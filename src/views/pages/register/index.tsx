@@ -167,7 +167,6 @@ const RegisterPage: NextPage<TProps> = () => {
                   render={({ field: { onChange, onBlur, value } }) => (
                     <CustomTextField
                       required
-                      autoFocus
                       fullWidth
                       label={t('Email')}
                       onChange={onChange}
@@ -192,7 +191,6 @@ const RegisterPage: NextPage<TProps> = () => {
                     <CustomTextField
                       required
                       fullWidth
-                      autoFocus
                       label={t('Password')}
                       onChange={onChange}
                       onBlur={onBlur}
@@ -230,7 +228,6 @@ const RegisterPage: NextPage<TProps> = () => {
                     <CustomTextField
                       required
                       fullWidth
-                      autoFocus
                       label={t('Confirm_password')}
                       onChange={onChange}
                       onBlur={onBlur}
