@@ -1,8 +1,9 @@
 // ** Next
 import { NextPage } from 'next'
+import { useRouter } from 'next/router'
 
 // ** React
-import { Fragment, useMemo, useState, useEffect } from 'react'
+import { Fragment, useEffect, useMemo, useState } from 'react'
 
 // ** Mui
 import { Avatar, Box, Button, Checkbox, Divider, IconButton, Tooltip, Typography, useTheme } from '@mui/material'
@@ -10,7 +11,7 @@ import { Avatar, Box, Button, Checkbox, Divider, IconButton, Tooltip, Typography
 // ** Components
 import CustomTextField from 'src/components/text-field'
 import Icon from 'src/components/Icon'
-import CustomSelect from 'src/components/custom-select'
+import NoData from 'src/components/no-data'
 
 // ** Translate
 import { t } from 'i18next'
@@ -32,20 +33,9 @@ import { useAuth } from 'src/hooks/useAuth'
 // ** Other
 import { TItemOrderProduct } from 'src/types/order-product'
 import { getLocalProductCart, setLocalProductToCart } from 'src/helpers/storage'
-import NoData from 'src/components/no-data'
-import { useRouter } from 'next/router'
 import { ROUTE_CONFIG } from 'src/configs/route'
 
 type TProps = {}
-
-type TDefaultValue = {
-  email: string
-  address: string
-  city: string
-  phoneNumber: string
-  role: string
-  fullName: string
-}
 
 const MyCartPage: NextPage<TProps> = () => {
   // State
@@ -87,6 +77,7 @@ const MyCartPage: NextPage<TProps> = () => {
 
     return total
   }, [memoItemsSelectedProduct])
+
   useEffect(() => {
     const productSelected = router.query.selected as string
     if (productSelected) {

@@ -125,7 +125,6 @@ const CheckoutProductPage: NextPage<TProps> = () => {
 
   const memoNameCity = useMemo(() => {
     const findCity = optionCities.find(item => item.value === memoAddressDefault?.city)
-    console.log(findCity)
 
     return findCity?.label
   }, [memoAddressDefault, optionCities])
@@ -274,7 +273,6 @@ const CheckoutProductPage: NextPage<TProps> = () => {
         color: `rgba(${theme.palette.customColors.main}, 0.78)`
       }).then(result => {
         if (result.isConfirmed) {
-          console.log('')
         }
       })
       handleChangeAmountCart(memoQueryProduct.productsSelected)
