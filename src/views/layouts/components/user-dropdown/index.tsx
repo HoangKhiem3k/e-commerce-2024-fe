@@ -108,6 +108,10 @@ const UserDropdown = (props: TProps) => {
     router.push(ROUTE_CONFIG.MY_PRODUCT)
     handleClose()
   }
+  const handleNavigateMyOrder = () => {
+    router.push(ROUTE_CONFIG.MY_ORDER)
+    handleClose()
+  }
 
   useEffect(() => {
     if (userData) {
@@ -231,6 +235,12 @@ const UserDropdown = (props: TProps) => {
             <Icon icon='tabler:brand-producthunt' />
           </Avatar>{' '}
           {t('My_product')}
+        </MenuItem>
+        <MenuItem onClick={handleNavigateMyOrder}>
+          <Avatar>
+            <Icon icon='material-symbols-light:order-approve-outline-rounded' />
+          </Avatar>{' '}
+          {t('My_order')}
         </MenuItem>
         <MenuItem onClick={handleNavigateChangePassword}>
           <Avatar sx={{ backgroundColor: 'transparent' }}>
