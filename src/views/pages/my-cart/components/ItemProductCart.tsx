@@ -77,7 +77,6 @@ const ItemProductCart = ({ item, index, selectedRows, handleChangeCheckbox }: TP
 
   const handleChangeAmountCart = (item: TItemOrderProduct, amount: number) => {
     const productCart = getLocalProductCart()
-    console.log('item', { item })
     const parseData = productCart ? JSON.parse(productCart) : {}
     const listOrderItems = convertUpdateProductToCart(orderItems, {
       name: item.name,
@@ -118,6 +117,7 @@ const ItemProductCart = ({ item, index, selectedRows, handleChangeCheckbox }: TP
       <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
         <Box sx={{ width: 'calc(10% - 100px)' }}>
           <Checkbox
+            disabled={!itemState?.countInStock}
             checked={selectedRows.includes(itemState.product)}
             value={itemState.product}
             onChange={e => {
@@ -195,6 +195,7 @@ const ItemProductCart = ({ item, index, selectedRows, handleChangeCheckbox }: TP
 
         <Box sx={{ flexBasis: '10%', mt: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
           <IconButton
+            disabled={!itemState?.countInStock}
             onClick={() => handleChangeAmountCart(item, -1)}
             sx={{
               backgroundColor: `${theme.palette.primary.main} !important`,
@@ -204,6 +205,7 @@ const ItemProductCart = ({ item, index, selectedRows, handleChangeCheckbox }: TP
             <Icon icon='ic:sharp-minus' />
           </IconButton>
           <CustomTextField
+            disabled={!itemState?.countInStock}
             type='number'
             value={itemState.amount}
             inputProps={{
@@ -236,6 +238,7 @@ const ItemProductCart = ({ item, index, selectedRows, handleChangeCheckbox }: TP
             }}
           />
           <IconButton
+            disabled={!itemState?.countInStock}
             onClick={() => handleChangeAmountCart(item, 1)}
             sx={{
               backgroundColor: `${theme.palette.primary.main} !important`,
