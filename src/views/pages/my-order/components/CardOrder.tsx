@@ -1,5 +1,6 @@
 // ** Next
 import { NextPage } from 'next'
+import { useRouter } from 'next/router'
 
 // ** React
 import { useEffect, useState, useMemo } from 'react'
@@ -9,6 +10,7 @@ import { Avatar, Box, Button, Divider, Typography, useTheme } from '@mui/materia
 
 // ** Components
 import ConfirmationDialog from 'src/components/confirmation-dialog'
+import Icon from 'src/components/Icon'
 
 // ** Translate
 import { t } from 'i18next'
@@ -21,16 +23,18 @@ import { hexToRGBA } from 'src/utils/hex-to-rgba'
 import { cancelOrderProductOfMeAsync } from 'src/stores/order-product/actions'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
+import { updateProductToCart } from 'src/stores/order-product'
 
 // ** Other
 import { TItemOrderProduct, TItemOrderProductMe, TItemProductMe } from 'src/types/order-product'
-import { STATUS_ORDER_PRODUCT } from 'src/configs/orderProduct'
-import Icon from 'src/components/Icon'
 import { getLocalProductCart, setLocalProductToCart } from 'src/helpers/storage'
-import { updateProductToCart } from 'src/stores/order-product'
+
+// ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
-import { useRouter } from 'next/router'
+
+// ** Config
 import { ROUTE_CONFIG } from 'src/configs/route'
+import { STATUS_ORDER_PRODUCT } from 'src/configs/orderProduct'
 
 type TProps = {
   dataOrder: TItemOrderProductMe
@@ -61,9 +65,6 @@ const CardOrder: NextPage<TProps> = props => {
   // ** handle
   const handleCloseDialog = () => {
     setOpenCancel(false)
-  }
-  const handleNavigateDetailsOrder = () => {
-    router.push(`${ROUTE_CONFIG.MY_ORDER}/${dataOrder._id}`)
   }
 
   useEffect(() => {
@@ -109,6 +110,10 @@ const CardOrder: NextPage<TProps> = props => {
       },
       ROUTE_CONFIG.MY_CART
     )
+  }
+
+  const handleNavigateDetailsOrder = () => {
+    router.push(`${ROUTE_CONFIG.MY_ORDER}/${dataOrder._id}`)
   }
 
   const memeDisabledBuyAgain = useMemo(() => {
