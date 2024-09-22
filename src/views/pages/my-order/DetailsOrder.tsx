@@ -1,83 +1,75 @@
 // ** Next
 import { NextPage } from 'next'
-
+import { useRouter } from 'next/router'
 // ** React
-import { useEffect, useState, useMemo } from 'react'
-
+import { useEffect, useMemo, useState } from 'react'
 // ** Mui
 import { Avatar, Box, Button, Divider, Typography, useTheme } from '@mui/material'
-
 // ** Components
-import ConfirmationDialog from 'src/components/confirmation-dialog'
-
+import Spinner from 'src/components/spinner'
 // ** Translate
-import { t } from 'i18next'
-
-// ** Utils
-import { convertUpdateMultipleProductsCart, formatNumberToLocal } from 'src/utils'
-import { hexToRGBA } from 'src/utils/hex-to-rgba'
-
+import { useTranslation } from 'react-i18next'
 // ** Redux
 import { cancelOrderProductOfMeAsync } from 'src/stores/order-product/actions'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
-
+import { resetInitialState, updateProductToCart } from 'src/stores/order-product'
 // ** Other
+import toast from 'react-hot-toast'
+// ** Types
 import { TItemOrderProduct, TItemOrderProductMe, TItemProductMe } from 'src/types/order-product'
 import { STATUS_ORDER_PRODUCT } from 'src/configs/orderProduct'
+import { convertUpdateMultipleProductsCart, formatNumberToLocal } from 'src/utils'
+import { hexToRGBA } from 'src/utils/hex-to-rgba'
+import { getDetailsOrderProductByMe } from 'src/services/order-product'
 import Icon from 'src/components/Icon'
+import ConfirmationDialog from 'src/components/confirmation-dialog'
 import { getLocalProductCart, setLocalProductToCart } from 'src/helpers/storage'
-import { updateProductToCart } from 'src/stores/order-product'
 import { useAuth } from 'src/hooks/useAuth'
-import { useRouter } from 'next/router'
 import { ROUTE_CONFIG } from 'src/configs/route'
 
-type TProps = {
-  dataOrder: TItemOrderProductMe
-}
-
-const CardOrder: NextPage<TProps> = props => {
-  // ** Props
-  const { dataOrder } = props
-
+type TProps = {}
+const MyOrderPage: NextPage<TProps> = () => {
   // State
+  const [isLoading, setIsLoading] = useState(false)
+  const [dataOrder, setDataOrder] = useState<TItemOrderProductMe>({} as any)
   const [openCancel, setOpenCancel] = useState(false)
-
   // ** Hooks
+  const { t } = useTranslation()
   const router = useRouter()
+  const orderId = router.query.orderId as string
   const { user } = useAuth()
-
   // ** theme
   const theme = useTheme()
-
   // ** redux
   const dispatch: AppDispatch = useDispatch()
-  const { isSuccessCancelMe, orderItems } = useSelector((state: RootState) => state.orderProduct)
-
+  const { isSuccessCancelMe, orderItems, isErrorCancelMe, messageErrorCancelMe } = useSelector(
+    (state: RootState) => state.orderProduct
+  )
+  // ** fetch API
   const handleConfirmCancel = () => {
     dispatch(cancelOrderProductOfMeAsync(dataOrder._id))
   }
-
   // ** handle
   const handleCloseDialog = () => {
     setOpenCancel(false)
   }
-  const handleNavigateDetailsOrder = () => {
-    router.push(`${ROUTE_CONFIG.MY_ORDER}/${dataOrder._id}`)
+  const handleGetDetailsOrdersOfMe = async () => {
+    setIsLoading(true)
+    await getDetailsOrderProductByMe(orderId).then(res => {
+      setDataOrder(res?.data)
+      setIsLoading(false)
+    })
   }
-
   useEffect(() => {
     if (isSuccessCancelMe) {
       handleCloseDialog()
     }
   }, [isSuccessCancelMe])
-
   const handleUpdateProductToCart = (items: TItemOrderProduct[]) => {
     const productCart = getLocalProductCart()
     const parseData = productCart ? JSON.parse(productCart) : {}
-
     const listOrderItems = convertUpdateMultipleProductsCart(orderItems, items)
-
     if (user) {
       dispatch(
         updateProductToCart({
@@ -87,7 +79,6 @@ const CardOrder: NextPage<TProps> = props => {
       setLocalProductToCart({ ...parseData, [user?._id]: listOrderItems })
     }
   }
-
   const handleBuyAgain = () => {
     handleUpdateProductToCart(
       dataOrder.orderItems.map(item => ({
@@ -110,14 +101,28 @@ const CardOrder: NextPage<TProps> = props => {
       ROUTE_CONFIG.MY_CART
     )
   }
-
   const memeDisabledBuyAgain = useMemo(() => {
     return dataOrder?.orderItems?.some(item => !item.product.countInStock)
-  }, [dataOrder.orderItems])
+  }, [dataOrder?.orderItems])
+  useEffect(() => {
+    if (orderId) {
+      handleGetDetailsOrdersOfMe()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orderId])
+  useEffect(() => {
+    if (isSuccessCancelMe) {
+      handleGetDetailsOrdersOfMe()
+      dispatch(resetInitialState())
+    } else if (isErrorCancelMe && messageErrorCancelMe) {
+      toast.error(t('Cancel_order_error'))
+      dispatch(resetInitialState())
+    }
+  }, [isSuccessCancelMe, isErrorCancelMe, messageErrorCancelMe])
 
   return (
     <>
-      {/* {loading || (isLoading && <Spinner />)} */}
+      {isLoading && <Spinner />}
       <ConfirmationDialog
         open={openCancel}
         handleClose={handleCloseDialog}
@@ -134,8 +139,11 @@ const CardOrder: NextPage<TProps> = props => {
           borderRadius: '15px'
         }}
       >
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2, gap: 2 }}>
-          {dataOrder.status === 2 && (
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2, gap: 2, alignItems: 'center' }}>
+          <Button startIcon={<Icon icon='fluent-mdl2:chrome-back'></Icon>} onClick={() => router.back()}>
+            {t('Back')}
+          </Button>
+          {dataOrder?.status === 2 && (
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <Icon icon='carbon:delivery'></Icon>
               <Typography>
@@ -145,16 +153,11 @@ const CardOrder: NextPage<TProps> = props => {
             </Box>
           )}
           <Typography sx={{ textTransform: 'uppercase', color: theme.palette.primary.main, fontWeight: 600 }}>
-            {t(`${(STATUS_ORDER_PRODUCT as any)[dataOrder.status].label}`)}
+            {t(`${(STATUS_ORDER_PRODUCT as any)[dataOrder?.status]?.label}`)}
           </Typography>
         </Box>
         <Divider />
-        <Box
-          mt={2}
-          mb={2}
-          sx={{ display: 'flex', flexDirection: 'column', gap: 4, cursor: 'pointer' }}
-          onClick={handleNavigateDetailsOrder}
-        >
+        <Box mt={2} mb={2} sx={{ display: 'flex', flexDirection: 'column', gap: 4, cursor: 'pointer' }}>
           {dataOrder?.orderItems?.map((item: TItemProductMe) => {
             return (
               <Box key={item?.product?._id} sx={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
@@ -244,14 +247,50 @@ const CardOrder: NextPage<TProps> = props => {
           })}
         </Box>
         <Divider />
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: '2px', mt: 4 }}>
-          <Typography sx={{ fontSize: '18px', fontWeight: 600 }}>{t('Sum_money')}:</Typography>
-          <Typography sx={{ fontSize: '18px', fontWeight: 600, color: theme.palette.primary.main }}>
-            {formatNumberToLocal(dataOrder.totalPrice)} VND
-          </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: '2px', mt: 4 }}>
+              <Typography sx={{ fontSize: '18px', fontWeight: 600 }}>{t('Address_shipping')}:</Typography>
+              <Typography sx={{ fontSize: '18px', fontWeight: 600, color: theme.palette.primary.main }}>
+                {dataOrder?.shippingAddress?.address} {dataOrder?.shippingAddress?.city?.name}
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: '2px', mt: 4 }}>
+              <Typography sx={{ fontSize: '18px', fontWeight: 600 }}>{t('Phone_number')}:</Typography>
+              <Typography sx={{ fontSize: '18px', fontWeight: 600, color: theme.palette.primary.main }}>
+                {dataOrder?.shippingAddress?.phone}
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: '2px', mt: 4 }}>
+              <Typography sx={{ fontSize: '18px', fontWeight: 600 }}>{t('Order_name_user')}:</Typography>
+              <Typography sx={{ fontSize: '18px', fontWeight: 600, color: theme.palette.primary.main }}>
+                {dataOrder?.shippingAddress?.fullName}
+              </Typography>
+            </Box>
+          </Box>
+          <Box>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: '2px', mt: 4 }}>
+              <Typography sx={{ fontSize: '18px', fontWeight: 600 }}>{t('Item_price')}:</Typography>
+              <Typography sx={{ fontSize: '18px', fontWeight: 600, color: theme.palette.primary.main }}>
+                {formatNumberToLocal(dataOrder?.itemsPrice)} VND
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: '2px', mt: 4 }}>
+              <Typography sx={{ fontSize: '18px', fontWeight: 600 }}>{t('Shipping_price')}:</Typography>
+              <Typography sx={{ fontSize: '18px', fontWeight: 600, color: theme.palette.primary.main }}>
+                {formatNumberToLocal(dataOrder?.shippingPrice)} VND
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: '2px', mt: 4 }}>
+              <Typography sx={{ fontSize: '18px', fontWeight: 600 }}>{t('Sum_money')}:</Typography>
+              <Typography sx={{ fontSize: '18px', fontWeight: 600, color: theme.palette.primary.main }}>
+                {formatNumberToLocal(dataOrder?.totalPrice)} VND
+              </Typography>
+            </Box>
+          </Box>
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 4, mt: 6, justifyContent: 'flex-end' }}>
-          {[0, 1].includes(dataOrder.status) && (
+          {[0, 1].includes(dataOrder?.status) && (
             <Button
               variant='outlined'
               onClick={() => setOpenCancel(true)}
@@ -282,22 +321,9 @@ const CardOrder: NextPage<TProps> = props => {
           >
             {t('Buy_again')}
           </Button>
-          <Button
-            variant='outlined'
-            sx={{
-              height: 40,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '2px',
-              fontWeight: 'bold'
-            }}
-          >
-            {t('View_details')}
-          </Button>
         </Box>
       </Box>
     </>
   )
 }
-
-export default CardOrder
+export default MyOrderPage
