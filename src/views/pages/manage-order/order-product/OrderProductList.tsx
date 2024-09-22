@@ -1,48 +1,56 @@
 // ** Next
 import { NextPage } from 'next'
+
 // ** React
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
 // ** Mui
 import { Avatar, AvatarGroup, Box, Chip, ChipProps, Grid, Typography, styled, useTheme } from '@mui/material'
-import { GridColDef, GridRowSelectionModel, GridSortModel } from '@mui/x-data-grid'
+import { GridColDef, GridSortModel } from '@mui/x-data-grid'
+
 // ** Redux
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
 import { resetInitialState } from 'src/stores/user'
+import { deleteOrderProductAsync, getAllOrderProductsAsync } from 'src/stores/order-product/actions'
+
 // ** Components
 import GridDelete from 'src/components/grid-delete'
 import GridEdit from 'src/components/grid-edit'
-import GridCreate from 'src/components/grid-create'
 import InputSearch from 'src/components/input-search'
 import CustomDataGrid from 'src/components/custom-data-grid'
 import Spinner from 'src/components/spinner'
 import ConfirmationDialog from 'src/components/confirmation-dialog'
 import CustomPagination from 'src/components/custom-pagination'
-import CreateEditUser from 'src/views/pages/system/user/component/CreateEditUser'
-import TableHeader from 'src/components/table-header'
 import CustomSelect from 'src/components/custom-select'
+import EditOrderProduct from 'src/views/pages/manage-order/order-product/components/EditOrderProduct'
+
 // ** Others
 import toast from 'react-hot-toast'
 import { OBJECT_TYPE_ERROR_ROLE } from 'src/configs/error'
-import { toFullName, formatFilter } from 'src/utils'
+import { formatFilter } from 'src/utils'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
+
 // ** Hooks
 import { usePermission } from 'src/hooks/usePermission'
+
 // ** Config
 import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
-import { PERMISSIONS } from 'src/configs/permission'
-import { getAllRoles } from 'src/services/role'
-import { getAllCities } from 'src/services/city'
-import { deleteOrderProductAsync, getAllOrderProductsAsync } from 'src/stores/order-product/actions'
 import { STATUS_ORDER_PRODUCT } from 'src/configs/orderProduct'
-import { ThemeContext } from '@emotion/react'
-import { TItemOrderProducts, TItemProductMe } from 'src/types/order-product'
+
+// ** Services
+import { getAllCities } from 'src/services/city'
+
+// ** Types
+import { TItemProductMe } from 'src/types/order-product'
+
 type TProps = {}
-type TSelectedRow = { id: string; role: { name: string; permissions: string[] } }
+
 interface StatusOrderChipT extends ChipProps {
   background: string
 }
+
 const OrderStatusStyled = styled(Chip)<StatusOrderChipT>(({ theme, background }) => ({
   backgroundColor: background,
   color: theme.palette.common.white,
@@ -50,10 +58,13 @@ const OrderStatusStyled = styled(Chip)<StatusOrderChipT>(({ theme, background })
   padding: '8px 4px',
   fontWeight: 400
 }))
+
 const OrderProductListPage: NextPage<TProps> = () => {
   // ** Translate
   const { t } = useTranslation()
+
   // State
+
   const [openEdit, setOpenEdit] = useState({
     open: false,
     id: ''
@@ -67,13 +78,16 @@ const OrderProductListPage: NextPage<TProps> = () => {
   const [optionCities, setOptionCities] = useState<{ label: string; value: string }[]>([])
   const [citySelected, setCitySelected] = useState<string[]>([])
   const [statusSelected, setStatusSelected] = useState<string[]>([])
+
   const [loading, setLoading] = useState(false)
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTION[0])
   const [page, setPage] = useState(1)
   const [filterBy, setFilterBy] = useState<Record<string, string | string[]>>({})
+
   // ** Hooks
   const { VIEW, UPDATE, DELETE } = usePermission('SYSTEM.MANAGE_ORDER.ORDER', ['CREATE', 'VIEW', 'UPDATE', 'DELETE'])
   const { i18n } = useTranslation()
+
   /// ** redux
   const dispatch: AppDispatch = useDispatch()
   const {
@@ -90,6 +104,7 @@ const OrderProductListPage: NextPage<TProps> = () => {
   console.log('orderProducts', { orderProducts })
   // ** theme
   const theme = useTheme()
+
   const STATUS_ORDER_PRODUCT_STYLE = {
     0: {
       label: 'Wait_payment',
@@ -108,6 +123,7 @@ const OrderProductListPage: NextPage<TProps> = () => {
       background: theme.palette.error.main
     }
   }
+
   // fetch api
   const handleGetListOrderProducts = () => {
     const query = {
@@ -115,6 +131,7 @@ const OrderProductListPage: NextPage<TProps> = () => {
     }
     dispatch(getAllOrderProductsAsync(query))
   }
+
   // handle
   const handleCloseConfirmDeleteOrder = () => {
     setOpenDeleteOrder({
@@ -122,6 +139,7 @@ const OrderProductListPage: NextPage<TProps> = () => {
       id: ''
     })
   }
+
   const handleSort = (sort: GridSortModel) => {
     const sortOption = sort[0]
     if (sortOption) {
@@ -130,30 +148,35 @@ const OrderProductListPage: NextPage<TProps> = () => {
       setSortBy('createdAt desc')
     }
   }
-  const handleCloseCreateEdit = () => {
+
+  const handleCloseEdit = () => {
     setOpenEdit({
       open: false,
       id: ''
     })
   }
+
   const handleDeleteOrderProduct = () => {
     dispatch(deleteOrderProductAsync(openDeleteOrder.id))
   }
+
   const handleOnchangePagination = (page: number, pageSize: number) => {
     setPage(page)
     setPageSize(pageSize)
   }
+
   const columns: GridColDef[] = [
     {
       field: 'items',
       headerName: t('Product_items'),
+      hideSortIcons: true,
       flex: 1,
       minWidth: 200,
       renderCell: params => {
         const { row } = params
 
         return (
-          <AvatarGroup max={1} total={row?.orderItems?.length}>
+          <AvatarGroup max={1}>
             {row.orderItems?.map((item: TItemProductMe) => {
               return <Avatar key={item?.product?._id} alt={item?.product?.slug} src={item?.image} />
             })}
@@ -197,6 +220,7 @@ const OrderProductListPage: NextPage<TProps> = () => {
     {
       field: 'city',
       headerName: t('City'),
+      hideSortIcons: true,
       minWidth: 200,
       maxWidth: 200,
       renderCell: params => {
@@ -233,6 +257,7 @@ const OrderProductListPage: NextPage<TProps> = () => {
       align: 'left',
       renderCell: params => {
         const { row } = params
+        console.log('params', { params })
 
         return (
           <>
@@ -270,6 +295,7 @@ const OrderProductListPage: NextPage<TProps> = () => {
       />
     )
   }
+
   // fetch api
   const fetchAllCities = async () => {
     setLoading(true)
@@ -285,52 +311,56 @@ const OrderProductListPage: NextPage<TProps> = () => {
         setLoading(false)
       })
   }
+
   useEffect(() => {
     handleGetListOrderProducts()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortBy, searchBy, i18n.language, page, pageSize, filterBy])
+
   useEffect(() => {
     setFilterBy({ status: statusSelected, cityId: citySelected })
   }, [statusSelected, citySelected])
+
   useEffect(() => {
     fetchAllCities()
   }, [])
+
   useEffect(() => {
     if (isSuccessEdit) {
-      if (!openEdit.id) {
-        toast.success(t('Create_order-product_success'))
-      } else {
-        toast.success(t('Update_order-product_success'))
-      }
+      toast.success(t('Update_order_product_success'))
       handleGetListOrderProducts()
-      handleCloseCreateEdit()
+      handleCloseEdit()
       dispatch(resetInitialState())
     } else if (isErrorEdit && messageErrorEdit && typeError) {
       const errorConfig = OBJECT_TYPE_ERROR_ROLE[typeError]
       if (errorConfig) {
         toast.error(t(errorConfig))
       } else {
-        if (openEdit.id) {
-          toast.error(t('Update_order-product_error'))
-        } else {
-          toast.error(t('Create_order-product_error'))
-        }
+        toast.error(t('Update_order_product_error'))
       }
       dispatch(resetInitialState())
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuccessEdit, isErrorEdit, messageErrorEdit, typeError])
+
   useEffect(() => {
     if (isSuccessDelete) {
-      toast.success(t('Delete_order-product_success'))
+      toast.success(t('Delete_order_product_success'))
       handleGetListOrderProducts()
       dispatch(resetInitialState())
       handleCloseConfirmDeleteOrder()
     } else if (isErrorDelete && messageErrorDelete) {
-      toast.error(t('Delete_order-product_error'))
+      toast.error(t('Delete_order_product_error'))
       dispatch(resetInitialState())
     }
   }, [isSuccessDelete, isErrorDelete, messageErrorDelete])
+
+  const memoOptionStatus = useMemo(() => {
+    return Object.values(STATUS_ORDER_PRODUCT).map(item => ({
+      label: t(item.label),
+      value: item.value
+    }))
+  }, [])
 
   return (
     <>
@@ -343,7 +373,8 @@ const OrderProductListPage: NextPage<TProps> = () => {
         title={t('Title_delete_order_product')}
         description={t('Confirm_delete_order_product')}
       />
-      {/* <EditOrderProduct open={openEdit.open} onClose={handleCloseCreateEdit} idUser={openEdit.id} /> */}
+
+      <EditOrderProduct open={openEdit.open} onClose={handleCloseEdit} idOrder={openEdit.id} />
       {isLoading && <Spinner />}
       <Box
         sx={{
@@ -376,7 +407,7 @@ const OrderProductListPage: NextPage<TProps> = () => {
                   setStatusSelected(e.target.value as string[])
                 }}
                 multiple
-                options={Object.values(STATUS_ORDER_PRODUCT)}
+                options={memoOptionStatus}
                 value={statusSelected}
                 placeholder={t('Status')}
               />
@@ -411,4 +442,5 @@ const OrderProductListPage: NextPage<TProps> = () => {
     </>
   )
 }
+
 export default OrderProductListPage

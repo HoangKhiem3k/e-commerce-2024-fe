@@ -1,59 +1,80 @@
 // ** Next
 import { NextPage } from 'next'
 import { useRouter } from 'next/router'
+
 // ** React
 import { useEffect, useMemo, useState } from 'react'
+
 // ** Mui
 import { Avatar, Box, Button, Divider, Typography, useTheme } from '@mui/material'
+
 // ** Components
+import ConfirmationDialog from 'src/components/confirmation-dialog'
 import Spinner from 'src/components/spinner'
+import Icon from 'src/components/Icon'
+
 // ** Translate
 import { useTranslation } from 'react-i18next'
+
 // ** Redux
 import { cancelOrderProductOfMeAsync } from 'src/stores/order-product/actions'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
 import { resetInitialState, updateProductToCart } from 'src/stores/order-product'
+
 // ** Other
 import toast from 'react-hot-toast'
+import { hexToRGBA } from 'src/utils/hex-to-rgba'
+import { convertUpdateMultipleProductsCart, formatNumberToLocal } from 'src/utils'
+import { getLocalProductCart, setLocalProductToCart } from 'src/helpers/storage'
+
+// ** Services
+import { getDetailsOrderProductByMe } from 'src/services/order-product'
+
 // ** Types
 import { TItemOrderProduct, TItemOrderProductMe, TItemProductMe } from 'src/types/order-product'
-import { STATUS_ORDER_PRODUCT } from 'src/configs/orderProduct'
-import { convertUpdateMultipleProductsCart, formatNumberToLocal } from 'src/utils'
-import { hexToRGBA } from 'src/utils/hex-to-rgba'
-import { getDetailsOrderProductByMe } from 'src/services/order-product'
-import Icon from 'src/components/Icon'
-import ConfirmationDialog from 'src/components/confirmation-dialog'
-import { getLocalProductCart, setLocalProductToCart } from 'src/helpers/storage'
+
+// ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
+
+// ** Config
 import { ROUTE_CONFIG } from 'src/configs/route'
+import { STATUS_ORDER_PRODUCT } from 'src/configs/orderProduct'
 
 type TProps = {}
+
 const MyOrderPage: NextPage<TProps> = () => {
   // State
   const [isLoading, setIsLoading] = useState(false)
   const [dataOrder, setDataOrder] = useState<TItemOrderProductMe>({} as any)
   const [openCancel, setOpenCancel] = useState(false)
+
   // ** Hooks
   const { t } = useTranslation()
   const router = useRouter()
   const orderId = router.query.orderId as string
   const { user } = useAuth()
+
   // ** theme
   const theme = useTheme()
+
   // ** redux
   const dispatch: AppDispatch = useDispatch()
   const { isSuccessCancelMe, orderItems, isErrorCancelMe, messageErrorCancelMe } = useSelector(
     (state: RootState) => state.orderProduct
   )
+
   // ** fetch API
+
   const handleConfirmCancel = () => {
     dispatch(cancelOrderProductOfMeAsync(dataOrder._id))
   }
+
   // ** handle
   const handleCloseDialog = () => {
     setOpenCancel(false)
   }
+
   const handleGetDetailsOrdersOfMe = async () => {
     setIsLoading(true)
     await getDetailsOrderProductByMe(orderId).then(res => {
@@ -61,15 +82,19 @@ const MyOrderPage: NextPage<TProps> = () => {
       setIsLoading(false)
     })
   }
+
   useEffect(() => {
     if (isSuccessCancelMe) {
       handleCloseDialog()
     }
   }, [isSuccessCancelMe])
+
   const handleUpdateProductToCart = (items: TItemOrderProduct[]) => {
     const productCart = getLocalProductCart()
     const parseData = productCart ? JSON.parse(productCart) : {}
+
     const listOrderItems = convertUpdateMultipleProductsCart(orderItems, items)
+
     if (user) {
       dispatch(
         updateProductToCart({
@@ -79,6 +104,7 @@ const MyOrderPage: NextPage<TProps> = () => {
       setLocalProductToCart({ ...parseData, [user?._id]: listOrderItems })
     }
   }
+
   const handleBuyAgain = () => {
     handleUpdateProductToCart(
       dataOrder.orderItems.map(item => ({
@@ -101,15 +127,18 @@ const MyOrderPage: NextPage<TProps> = () => {
       ROUTE_CONFIG.MY_CART
     )
   }
+
   const memeDisabledBuyAgain = useMemo(() => {
     return dataOrder?.orderItems?.some(item => !item.product.countInStock)
   }, [dataOrder?.orderItems])
+
   useEffect(() => {
     if (orderId) {
       handleGetDetailsOrdersOfMe()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orderId])
+
   useEffect(() => {
     if (isSuccessCancelMe) {
       handleGetDetailsOrdersOfMe()
@@ -289,6 +318,7 @@ const MyOrderPage: NextPage<TProps> = () => {
             </Box>
           </Box>
         </Box>
+
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 4, mt: 6, justifyContent: 'flex-end' }}>
           {[0, 1].includes(dataOrder?.status) && (
             <Button
@@ -326,4 +356,5 @@ const MyOrderPage: NextPage<TProps> = () => {
     </>
   )
 }
+
 export default MyOrderPage

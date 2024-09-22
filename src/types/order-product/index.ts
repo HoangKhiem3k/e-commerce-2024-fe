@@ -74,7 +74,15 @@ export type TItemOrderProductMe = {
   isDelivered: number
   status: number
 }
-export interface TParamsEditOrderProduct extends TParamsCreateOrderProduct {
+export type TParamsEditOrderProduct = {
+  shippingAddress: {
+    address: string
+    fullName: string
+    phone: string
+    city: string
+  }
   id: string
+  isPaid: boolean
+  isDelivery: boolean
 }
 export interface TItemOrderProducts extends TItemOrderProductMe {}
