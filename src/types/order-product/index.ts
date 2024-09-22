@@ -77,3 +77,4 @@ export type TItemOrderProductMe = {
 export interface TParamsEditOrderProduct extends TParamsCreateOrderProduct {
   id: string
 }
+export interface TItemOrderProducts extends TItemOrderProductMe {}
