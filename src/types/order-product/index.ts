@@ -74,3 +74,6 @@ export type TItemOrderProductMe = {
   isDelivered: number
   status: number
 }
+export interface TParamsEditOrderProduct extends TParamsCreateOrderProduct {
+  id: string
+}
