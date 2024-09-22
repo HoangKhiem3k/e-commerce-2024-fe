@@ -80,7 +80,7 @@ const CartProduct = (props: TProps) => {
   }, [user])
 
   const totalItemsCart = useMemo(() => {
-    const total = orderItems.reduce((result, current: TItemOrderProduct) => {
+    const total = orderItems?.reduce((result, current: TItemOrderProduct) => {
       return result + current.amount
     }, 0)
 
@@ -138,7 +138,7 @@ const CartProduct = (props: TProps) => {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        {orderItems.length > 0 ? (
+        {orderItems?.length > 0 ? (
           <>
             <Box sx={{ maxHeight: '400px', overflow: 'auto' }}>
               {orderItems?.map((item: TItemOrderProduct) => {
