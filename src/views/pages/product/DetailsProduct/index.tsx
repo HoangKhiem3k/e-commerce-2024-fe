@@ -532,7 +532,7 @@ const DetailsProductPage: NextPage<TProps> = () => {
         </Grid>
         <Grid container md={12} xs={12} mt={6}>
           <Grid container>
-            <Grid container item md={9} xs={12}>
+            <Grid item md={9} xs={12}>
               <Box>
                 <Box sx={{ backgroundColor: theme.palette.background.paper, borderRadius: '15px', py: 5, px: 4 }}>
                   <Box
