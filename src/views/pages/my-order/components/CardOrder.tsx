@@ -11,13 +11,12 @@ import { Avatar, Box, Button, Divider, Typography, useTheme } from '@mui/materia
 // ** Components
 import ConfirmationDialog from 'src/components/confirmation-dialog'
 import Icon from 'src/components/Icon'
-import Spinner from 'src/components/spinner'
 
 // ** Translate
-import { useTranslation } from 'react-i18next'
+import { t } from 'i18next'
 
 // ** Utils
-import { convertUpdateMultipleProductsCart, formatNumberToLocal } from 'src/utils'
+import { convertUpdateMultipleProductsCart, convertUpdateProductToCart, formatNumberToLocal, isExpiry } from 'src/utils'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
 
 // ** Redux
@@ -25,9 +24,6 @@ import { cancelOrderProductOfMeAsync } from 'src/stores/order-product/actions'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
 import { updateProductToCart } from 'src/stores/order-product'
-
-// ** Service
-import { createURLpaymentVNPay } from 'src/services/payment'
 
 // ** Other
 import { TItemOrderProduct, TItemOrderProductMe, TItemProductMe } from 'src/types/order-product'
@@ -39,7 +35,10 @@ import { useAuth } from 'src/hooks/useAuth'
 // ** Config
 import { ROUTE_CONFIG } from 'src/configs/route'
 import { STATUS_ORDER_PRODUCT } from 'src/configs/orderProduct'
+import { useTranslation } from 'react-i18next'
 import { PAYMENT_TYPES } from 'src/configs/payment'
+import { createURLpaymentVNPay } from 'src/services/payment'
+import Spinner from 'src/components/spinner'
 
 type TProps = {
   dataOrder: TItemOrderProductMe
@@ -119,7 +118,23 @@ const CardOrder: NextPage<TProps> = props => {
       ROUTE_CONFIG.MY_CART
     )
   }
-  const handlePaymentOrder = async () => {
+
+  const handleNavigateDetailsOrder = () => {
+    router.push(`${ROUTE_CONFIG.MY_ORDER}/${dataOrder._id}`)
+  }
+
+  const handlePaymentTypeOrder = (type: string) => {
+    switch (type) {
+      case PAYMENT_DATA.VN_PAYMENT.value: {
+        handlePaymentVNPay()
+        break
+      }
+      default:
+        break
+    }
+  }
+
+  const handlePaymentVNPay = async () => {
     setLoading(true)
     await createURLpaymentVNPay({
       totalPrice: 10000,
@@ -133,9 +148,6 @@ const CardOrder: NextPage<TProps> = props => {
       setLoading(false)
       console.log('resss', { res })
     })
-  }
-  const handleNavigateDetailsOrder = () => {
-    router.push(`${ROUTE_CONFIG.MY_ORDER}/${dataOrder._id}`)
   }
 
   const memeDisabledBuyAgain = useMemo(() => {
@@ -162,11 +174,20 @@ const CardOrder: NextPage<TProps> = props => {
         }}
       >
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2, gap: 2 }}>
-          {dataOrder.status === 2 && (
+          {!!dataOrder.isDelivered && (
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <Icon icon='carbon:delivery'></Icon>
               <Typography>
                 <span style={{ color: theme.palette.success.main }}>{t('Order_has_been_delivery')}</span>
+                <span>{' | '}</span>
+              </Typography>
+            </Box>
+          )}
+          {!!dataOrder.isPaid && (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Icon icon='streamline:payment-10'></Icon>
+              <Typography>
+                <span style={{ color: theme.palette.success.main }}>{t('Order_has_been_paid')}</span>
                 <span>{' | '}</span>
               </Typography>
             </Box>
@@ -278,21 +299,21 @@ const CardOrder: NextPage<TProps> = props => {
           </Typography>
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 4, mt: 6, justifyContent: 'flex-end' }}>
-          {/* {[0].includes(dataOrder.status) && dataOrder.paymentMethod.type !== PAYMENT_DATA.PAYMENT_LATER.value && ( */}
-          <Button
-            variant='outlined'
-            onClick={handlePaymentOrder}
-            sx={{
-              height: 40,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '2px',
-              backgroundColor: 'transparent !important'
-            }}
-          >
-            {t('Payment')}
-          </Button>
-          {/* )} */}
+          {[0].includes(dataOrder.status) && dataOrder.paymentMethod.type !== PAYMENT_DATA.PAYMENT_LATER.value && (
+            <Button
+              variant='outlined'
+              onClick={() => handlePaymentTypeOrder(dataOrder.paymentMethod.type)}
+              sx={{
+                height: 40,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '2px',
+                backgroundColor: 'transparent !important'
+              }}
+            >
+              {t('Payment')}
+            </Button>
+          )}
           {[0, 1].includes(dataOrder.status) && (
             <Button
               variant='outlined'

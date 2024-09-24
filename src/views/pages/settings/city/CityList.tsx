@@ -38,7 +38,7 @@ import { OBJECT_TYPE_ERROR_CITY } from 'src/configs/error'
 import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
 // ** Utils
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
-import { formatDate } from 'src/utils'
+import { formatDate } from 'src/utils/date'
 
 type TProps = {}
 
