@@ -1,6 +1,5 @@
-// ** React Imports
-import { ReactNode } from 'react'
-
+// ** React
+import { ReactNode, useEffect } from 'react'
 // ** Types
 import { buildAbilityFor, type ACLObj, AppAbility } from 'src/configs/acl'
 import BlankLayout from 'src/views/layouts/BlankLayout'
@@ -9,6 +8,7 @@ import { useAuth } from 'src/hooks/useAuth'
 import { useRouter } from 'next/router'
 import { AbilityContext } from 'src/components/acl/Can'
 import { PERMISSIONS } from 'src/configs/permission'
+import { ROUTE_CONFIG } from 'src/configs/route'
 
 interface AclGuardProps {
   children: ReactNode
@@ -19,7 +19,6 @@ interface AclGuardProps {
 }
 
 const AclGuard = (props: AclGuardProps) => {
-  // ** Props
   const { aclAbilities, children, guestGuard = false, authGuard = true, permission } = props
 
   const auth = useAuth()
@@ -29,6 +28,12 @@ const AclGuard = (props: AclGuardProps) => {
       : auth.user?.role?.permissions
     : []
   const router = useRouter()
+
+  useEffect(() => {
+    if (router.route === '/') {
+      router.push(ROUTE_CONFIG.HOME)
+    }
+  }, [router])
 
   let ability: AppAbility
 
