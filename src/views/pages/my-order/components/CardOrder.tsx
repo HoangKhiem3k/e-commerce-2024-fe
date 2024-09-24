@@ -13,7 +13,7 @@ import ConfirmationDialog from 'src/components/confirmation-dialog'
 import Icon from 'src/components/Icon'
 
 // ** Translate
-import { t } from 'i18next'
+import { useTranslation } from 'react-i18next'
 
 // ** Utils
 import { convertUpdateMultipleProductsCart, formatNumberToLocal } from 'src/utils'
@@ -35,6 +35,7 @@ import { useAuth } from 'src/hooks/useAuth'
 // ** Config
 import { ROUTE_CONFIG } from 'src/configs/route'
 import { STATUS_ORDER_PRODUCT } from 'src/configs/orderProduct'
+import { PAYMENT_TYPES } from 'src/configs/payment'
 
 type TProps = {
   dataOrder: TItemOrderProductMe
@@ -50,6 +51,8 @@ const CardOrder: NextPage<TProps> = props => {
   // ** Hooks
   const router = useRouter()
   const { user } = useAuth()
+  const { t } = useTranslation()
+  const PAYMENT_DATA = PAYMENT_TYPES()
 
   // ** theme
   const theme = useTheme()
@@ -111,7 +114,7 @@ const CardOrder: NextPage<TProps> = props => {
       ROUTE_CONFIG.MY_CART
     )
   }
-
+  const handlePaymentOrder = () => {}
   const handleNavigateDetailsOrder = () => {
     router.push(`${ROUTE_CONFIG.MY_ORDER}/${dataOrder._id}`)
   }
@@ -256,6 +259,21 @@ const CardOrder: NextPage<TProps> = props => {
           </Typography>
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 4, mt: 6, justifyContent: 'flex-end' }}>
+          {/* {[0].includes(dataOrder.status) && dataOrder.paymentMethod.type !== PAYMENT_DATA.PAYMENT_LATER.value && ( */}
+          <Button
+            variant='outlined'
+            onClick={handlePaymentOrder}
+            sx={{
+              height: 40,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '2px',
+              backgroundColor: 'transparent !important'
+            }}
+          >
+            {t('Payment')}
+          </Button>
+          {/* )} */}
           {[0, 1].includes(dataOrder.status) && (
             <Button
               variant='outlined'
