@@ -11,6 +11,7 @@ import { Avatar, Box, Button, Divider, Typography, useTheme } from '@mui/materia
 // ** Components
 import ConfirmationDialog from 'src/components/confirmation-dialog'
 import Icon from 'src/components/Icon'
+import Spinner from 'src/components/spinner'
 
 // ** Translate
 import { useTranslation } from 'react-i18next'
@@ -24,6 +25,9 @@ import { cancelOrderProductOfMeAsync } from 'src/stores/order-product/actions'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
 import { updateProductToCart } from 'src/stores/order-product'
+
+// ** Service
+import { createURLpaymentVNPay } from 'src/services/payment'
 
 // ** Other
 import { TItemOrderProduct, TItemOrderProductMe, TItemProductMe } from 'src/types/order-product'
@@ -47,11 +51,12 @@ const CardOrder: NextPage<TProps> = props => {
 
   // State
   const [openCancel, setOpenCancel] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   // ** Hooks
   const router = useRouter()
   const { user } = useAuth()
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const PAYMENT_DATA = PAYMENT_TYPES()
 
   // ** theme
@@ -114,7 +119,21 @@ const CardOrder: NextPage<TProps> = props => {
       ROUTE_CONFIG.MY_CART
     )
   }
-  const handlePaymentOrder = () => {}
+  const handlePaymentOrder = async () => {
+    setLoading(true)
+    await createURLpaymentVNPay({
+      totalPrice: 10000,
+      // dataOrder.totalPrice,
+      orderId: dataOrder?._id,
+      language: i18n.language === 'vi' ? 'vn' : i18n.language
+    }).then(res => {
+      if (res?.data) {
+        window.open(res?.data, '_blank')
+      }
+      setLoading(false)
+      console.log('resss', { res })
+    })
+  }
   const handleNavigateDetailsOrder = () => {
     router.push(`${ROUTE_CONFIG.MY_ORDER}/${dataOrder._id}`)
   }
@@ -125,7 +144,7 @@ const CardOrder: NextPage<TProps> = props => {
 
   return (
     <>
-      {/* {loading || (isLoading && <Spinner />)} */}
+      {loading && <Spinner />}
       <ConfirmationDialog
         open={openCancel}
         handleClose={handleCloseDialog}
