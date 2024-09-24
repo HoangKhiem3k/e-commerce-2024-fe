@@ -73,6 +73,8 @@ export type TItemOrderProductMe = {
   isPaid: number
   isDelivered: number
   status: number
+  deliveryAt: Date
+  paidAt: Date
 }
 export type TParamsEditOrderProduct = {
   shippingAddress: {

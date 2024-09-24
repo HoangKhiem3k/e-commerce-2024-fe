@@ -71,14 +71,7 @@ export const getAllValueOfObject = (obj: any, arrExlude?: string[]) => {
     return []
   }
 }
-export const formatDate = (
-  value: Date | string,
-  formatting: Intl.DateTimeFormatOptions = { month: 'numeric', day: 'numeric', year: 'numeric' }
-) => {
-  if (!value) return value
 
-  return Intl.DateTimeFormat('vi-VN', formatting).format(new Date(value))
-}
 export const formatFilter = (filter: any) => {
   const result: Record<string, string> = {}
   Object.keys(filter)?.forEach((key: string) => {
