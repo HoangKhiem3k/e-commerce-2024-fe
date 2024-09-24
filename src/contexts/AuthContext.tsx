@@ -1,7 +1,7 @@
-// ** React Imports
+// ** React
 import { createContext, useEffect, useState, ReactNode } from 'react'
 
-// ** Next Import
+// ** Next
 import { useRouter } from 'next/router'
 
 // ** Config
@@ -10,16 +10,17 @@ import authConfig, { LIST_PAGE_PUBLIC } from 'src/configs/auth'
 // ** Types
 import { AuthValuesType, LoginParams, ErrCallbackType, UserDataType } from './types'
 
-// ** services
+// ** Services
 import { loginAuth, logoutAuth } from 'src/services/auth'
 
 // ** Config
 import { API_ENDPOINT } from 'src/configs/api'
+import { ROUTE_CONFIG } from 'src/configs/route'
 
-// ** helper
+// ** Helper
 import { clearLocalUserData, setLocalUserData, setTemporaryToken } from 'src/helpers/storage'
 
-// instance axios
+// Instance axios
 import instanceAxios from 'src/helpers/axios'
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
@@ -117,11 +118,11 @@ const AuthProvider = ({ children }: Props) => {
       if (!LIST_PAGE_PUBLIC?.some(item => router.asPath?.startsWith(item))) {
         if (router.asPath !== '/') {
           router.replace({
-            pathname: '/login',
+            pathname: ROUTE_CONFIG.LOGIN,
             query: { returnUrl: router.asPath }
           })
         } else {
-          router.replace('/login')
+          router.replace(ROUTE_CONFIG.LOGIN)
         }
       }
       dispatch(

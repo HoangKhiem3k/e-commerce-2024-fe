@@ -6,20 +6,19 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { Controller, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 // ** Mui
-import { Box, Button, Grid, IconButton, Typography, useTheme, Rating } from '@mui/material'
+import { Box, Button, Grid, IconButton, Rating, Typography, useTheme } from '@mui/material'
 // ** Component
 import Icon from 'src/components/Icon'
 import CustomModal from 'src/components/custom-modal'
 import Spinner from 'src/components/spinner'
-import CustomTextField from 'src/components/text-field'
 import CustomTextArea from 'src/components/text-area'
 // ** Services
 import { getDetailsReview } from 'src/services/reviewProduct'
 // ** Redux
 import { AppDispatch } from 'src/stores'
 import { useDispatch } from 'react-redux'
-import { updateReviewAsync } from 'src/stores/reviews/actions'
-
+import { updateMyReviewAsync } from 'src/stores/reviews/actions'
+// ** Others
 interface TCreateReview {
   open: boolean
   onClose: () => void
@@ -67,7 +66,7 @@ const EditReview = (props: TCreateReview) => {
       // update
       if (idReview) {
         dispatch(
-          updateReviewAsync({
+          updateMyReviewAsync({
             id: idReview,
             content: data.content,
             star: +data.star
