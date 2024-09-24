@@ -24,7 +24,7 @@ export const store = configureStore({
     productType,
     product,
     orderProduct,
-    review
+    reviews
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

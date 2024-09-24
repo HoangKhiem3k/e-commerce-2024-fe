@@ -4,12 +4,17 @@ export type TParamsAddReview = {
   content: string
   star: number
 }
-export interface TParamsUpdateReview extends TParamsAddReview {
+
+export interface TParamsUpdateReview {
   id: string
+  content: string
+  star: number
 }
+
 export type TParamsDeleteMultipleReview = {
   reviewIds: string[]
 }
+
 export type TParamsGetReviews = {
   limit?: number
   page?: number
