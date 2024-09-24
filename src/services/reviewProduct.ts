@@ -74,3 +74,12 @@ export const deleteMultipleReview = async (data: TParamsDeleteMultipleReview) =>
     return error?.response?.data
   }
 }
+export const getDetailsReview = async (id: string) => {
+  try {
+    const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_ORDER.REVIEW.INDEX}/${id}`)
+
+    return res.data
+  } catch (error) {
+    return error
+  }
+}
