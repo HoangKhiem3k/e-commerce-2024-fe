@@ -2,9 +2,10 @@
 import { NextPage } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
+import { signIn, useSession } from 'next-auth/react'
 
 // ** React
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 // ** Mui
 import {
@@ -40,6 +41,12 @@ import { useAuth } from 'src/hooks/useAuth'
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
 
+// ** Services
+import { loginAuth } from 'src/services/auth'
+
+// ** Helpers
+import { clearLocalPreTokenGoogle, getLocalPreTokenGoogle, setLocalPreTokenGoogle } from 'src/helpers/storage'
+
 type TProps = {}
 
 type TDefaultValue = {
@@ -48,6 +55,8 @@ type TDefaultValue = {
 }
 
 const LoginPage: NextPage<TProps> = () => {
+  const prevTokenLocal = getLocalPreTokenGoogle()
+
   // State
   const [showPassword, setShowPassword] = useState(false)
   const [isRemember, setIsRemember] = useState(true)
@@ -56,10 +65,13 @@ const LoginPage: NextPage<TProps> = () => {
   const { t } = useTranslation()
 
   // ** context
-  const { login } = useAuth()
+  const { login, loginGoogle } = useAuth()
 
   // ** theme
   const theme = useTheme()
+
+  // ** Hooks
+  const { data: session } = useSession()
 
   const schema = yup.object().shape({
     email: yup.string().required(t('Required_field')).matches(EMAIL_REG, t('Rules_email')),
@@ -89,6 +101,19 @@ const LoginPage: NextPage<TProps> = () => {
       })
     }
   }
+  const handleLoginGoogle = () => {
+    signIn('google')
+    clearLocalPreTokenGoogle()
+  }
+
+  useEffect(() => {
+    if ((session as any)?.accessToken && (session as any)?.accessToken !== prevTokenLocal) {
+      loginGoogle({ idToken: (session as any)?.accessToken, rememberMe: isRemember }, err => {
+        if (err?.response?.data?.typeError === 'INVALID') toast.error(t('The_email_or_password_wrong'))
+      })
+      setLocalPreTokenGoogle((session as any)?.accessToken)
+    }
+  }, [(session as any)?.accessToken])
 
   return (
     <Box
@@ -244,7 +269,7 @@ const LoginPage: NextPage<TProps> = () => {
                   ></path>
                 </svg>
               </IconButton>
-              <IconButton sx={{ color: theme.palette.error.main }}>
+              <IconButton sx={{ color: theme.palette.error.main }} onClick={handleLoginGoogle}>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
                   role='img'

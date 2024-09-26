@@ -3,15 +3,16 @@ import { createContext, useEffect, useState, ReactNode } from 'react'
 
 // ** Next
 import { useRouter } from 'next/router'
+import { signOut } from 'next-auth/react'
 
 // ** Config
 import authConfig, { LIST_PAGE_PUBLIC } from 'src/configs/auth'
 
 // ** Types
-import { AuthValuesType, LoginParams, ErrCallbackType, UserDataType } from './types'
+import { AuthValuesType, LoginParams, ErrCallbackType, UserDataType, LoginGoogleParams } from './types'
 
 // ** Services
-import { loginAuth, logoutAuth } from 'src/services/auth'
+import { loginAuth, loginAuthGoogle, logoutAuth } from 'src/services/auth'
 
 // ** Config
 import { API_ENDPOINT } from 'src/configs/api'
@@ -37,6 +38,7 @@ const defaultProvider: AuthValuesType = {
   setUser: () => null,
   setLoading: () => Boolean,
   login: () => Promise.resolve(),
+  loginGoogle: () => Promise.resolve(),
   logout: () => Promise.resolve()
 }
 
@@ -110,6 +112,25 @@ const AuthProvider = ({ children }: Props) => {
       })
   }
 
+  const handleLoginGoogle = (params: LoginGoogleParams, errorCallback?: ErrCallbackType) => {
+    loginAuthGoogle(params?.idToken)
+      .then(async response => {
+        if (params.rememberMe) {
+          setLocalUserData(JSON.stringify(response.data.user), response.data.access_token, response.data.refresh_token)
+        } else {
+          setTemporaryToken(response.data.access_token)
+        }
+        toast.success(t('Login_success'))
+        const returnUrl = router.query.returnUrl
+        setUser({ ...response.data.user })
+        const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
+        router.replace(redirectURL as string)
+      })
+      .catch(err => {
+        if (errorCallback) errorCallback(err)
+      })
+  }
+
   const handleLogout = () => {
     logoutAuth().then(res => {
       setUser(null)
@@ -139,6 +160,7 @@ const AuthProvider = ({ children }: Props) => {
     setUser,
     setLoading,
     login: handleLogin,
+    loginGoogle: handleLoginGoogle,
     logout: handleLogout
   }
 

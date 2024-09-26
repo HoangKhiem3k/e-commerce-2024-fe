@@ -3,6 +3,7 @@ import { NextPage } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { useSession, signIn } from 'next-auth/react'
 
 // ** React
 import { useEffect, useState } from 'react'
@@ -30,13 +31,14 @@ import RegisterLight from '/public/images/register-light.png'
 
 // ** Redux
 import { useDispatch, useSelector } from 'react-redux'
-import { registerAuthAsync } from 'src/stores/auth/actions'
+import { registerAuthAsync, registerAuthGoogleAsync } from 'src/stores/auth/actions'
 import { AppDispatch, RootState } from 'src/stores'
 import { resetInitialState } from 'src/stores/auth'
 
 // ** Other
 import { ROUTE_CONFIG } from 'src/configs/route'
 import toast from 'react-hot-toast'
+import { clearLocalPreTokenGoogle, getLocalPreTokenGoogle, setLocalPreTokenGoogle } from 'src/helpers/storage'
 
 type TProps = {}
 
@@ -47,6 +49,8 @@ type TDefaultValue = {
 }
 
 const RegisterPage: NextPage<TProps> = () => {
+  const prevTokenLocal = getLocalPreTokenGoogle()
+
   // State
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
@@ -63,6 +67,9 @@ const RegisterPage: NextPage<TProps> = () => {
 
   // ** Translate
   const { t } = useTranslation()
+
+  // Hooks
+  const { data: session, ...rests } = useSession()
 
   const schema = yup.object().shape({
     email: yup.string().required(t('Required_field')).matches(EMAIL_REG, t('Rules_email')),
@@ -96,15 +103,27 @@ const RegisterPage: NextPage<TProps> = () => {
     }
   }
 
+  const handleRegisterGoogle = async () => {
+    signIn('google')
+    clearLocalPreTokenGoogle()
+  }
+  useEffect(() => {
+    if ((session as any)?.accessToken && (session as any)?.accessToken !== prevTokenLocal) {
+      dispatch(registerAuthGoogleAsync((session as any)?.accessToken))
+      setLocalPreTokenGoogle((session as any)?.accessToken)
+    }
+  }, [(session as any)?.accessToken])
+
   useEffect(() => {
     if (message) {
       if (isError) {
         toast.error(message)
+        dispatch(resetInitialState())
       } else if (isSuccess) {
-        toast.success(message)
+        toast.success(t('Sign_up_success'))
         router.push(ROUTE_CONFIG.LOGIN)
+        dispatch(resetInitialState())
       }
-      dispatch(resetInitialState())
     }
   }, [isError, isSuccess, message])
 
@@ -287,7 +306,7 @@ const RegisterPage: NextPage<TProps> = () => {
                     ></path>
                   </svg>
                 </IconButton>
-                <IconButton sx={{ color: theme.palette.error.main }}>
+                <IconButton sx={{ color: theme.palette.error.main }} onClick={handleRegisterGoogle}>
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
                     role='img'
