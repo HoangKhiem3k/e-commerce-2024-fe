@@ -76,3 +76,17 @@ export const registerAuthGoogle = async (idToken: string) => {
     return error
   }
 }
+export const loginAuthFacebook = async (idToken: string) => {
+  const res = await axios.post(`${API_ENDPOINT.AUTH.INDEX}/login-facebook`, { idToken })
+
+  return res.data
+}
+export const registerAuthFacebook = async (idToken: string) => {
+  try {
+    const res = await axios.post(`${API_ENDPOINT.AUTH.INDEX}/register-facebook`, { idToken })
+
+    return res.data
+  } catch (error) {
+    return error
+  }
+}

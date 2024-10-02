@@ -40,8 +40,13 @@ export type AuthValuesType = {
   setUser: (value: UserDataType | null) => void
   login: (params: LoginParams, errorCallback?: ErrCallbackType) => void
   loginGoogle: (params: LoginGoogleParams, errorCallback?: ErrCallbackType) => void
+  loginFacebook: (params: LoginFacebookParams, errorCallback?: ErrCallbackType) => void
 }
 export type LoginGoogleParams = {
+  idToken: string
+  rememberMe?: boolean
+}
+export type LoginFacebookParams = {
   idToken: string
   rememberMe?: boolean
 }
