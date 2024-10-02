@@ -9,10 +9,17 @@ import { signOut } from 'next-auth/react'
 import authConfig, { LIST_PAGE_PUBLIC } from 'src/configs/auth'
 
 // ** Types
-import { AuthValuesType, LoginParams, ErrCallbackType, UserDataType, LoginGoogleParams } from './types'
+import {
+  AuthValuesType,
+  LoginParams,
+  ErrCallbackType,
+  UserDataType,
+  LoginGoogleParams,
+  LoginFacebookParams
+} from './types'
 
 // ** Services
-import { loginAuth, loginAuthGoogle, logoutAuth } from 'src/services/auth'
+import { loginAuth, loginAuthGoogle, loginAuthFacebook, logoutAuth } from 'src/services/auth'
 
 // ** Config
 import { API_ENDPOINT } from 'src/configs/api'
@@ -39,6 +46,7 @@ const defaultProvider: AuthValuesType = {
   setLoading: () => Boolean,
   login: () => Promise.resolve(),
   loginGoogle: () => Promise.resolve(),
+  loginFacebook: () => Promise.resolve(),
   logout: () => Promise.resolve()
 }
 
@@ -124,6 +132,25 @@ const AuthProvider = ({ children }: Props) => {
         const returnUrl = router.query.returnUrl
         setUser({ ...response.data.user })
         const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
+        console.log('redirectURL', { redirectURL })
+        router.replace(redirectURL as string)
+      })
+      .catch(err => {
+        if (errorCallback) errorCallback(err)
+      })
+  }
+  const handleLoginFacebook = (params: LoginFacebookParams, errorCallback?: ErrCallbackType) => {
+    loginAuthFacebook(params?.idToken)
+      .then(async response => {
+        if (params.rememberMe) {
+          setLocalUserData(JSON.stringify(response.data.user), response.data.access_token, response.data.refresh_token)
+        } else {
+          setTemporaryToken(response.data.access_token)
+        }
+        toast.success(t('Login_success'))
+        const returnUrl = router.query.returnUrl
+        setUser({ ...response.data.user })
+        const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
         router.replace(redirectURL as string)
       })
       .catch(err => {
@@ -161,6 +188,7 @@ const AuthProvider = ({ children }: Props) => {
     setLoading,
     login: handleLogin,
     loginGoogle: handleLoginGoogle,
+    loginFacebook: handleLoginFacebook,
     logout: handleLogout
   }
 

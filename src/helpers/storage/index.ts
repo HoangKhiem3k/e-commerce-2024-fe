@@ -1,5 +1,12 @@
 // ** Configs
-import { ACCESS_TOKEN, REFRESH_TOKEN, TEMPORARY_TOKEN, USER_DATA, PRE_GOOGLE_TOKEN } from 'src/configs/auth'
+import {
+  ACCESS_TOKEN,
+  REFRESH_TOKEN,
+  TEMPORARY_TOKEN,
+  USER_DATA,
+  PRE_AUTH_TOKEN,
+  REMEMBER_AUTH_TOKEN
+} from 'src/configs/auth'
 import { LOCAL_PRODUCT_CART } from 'src/configs/product'
 // ** Types
 import { TItemOrderProduct } from 'src/types/order-product'
@@ -69,19 +76,36 @@ export const getLocalProductCart = () => {
 
   return ''
 }
-export const setLocalPreTokenGoogle = (token: string) => {
+export const setLocalPreTokenAuthSocial = (token: string) => {
   if (typeof window !== 'undefined') {
-    window.localStorage.setItem(PRE_GOOGLE_TOKEN, token)
+    window.localStorage.setItem(PRE_AUTH_TOKEN, token)
   }
 }
-export const clearLocalPreTokenGoogle = () => {
+export const clearLocalPreTokenAuthSocial = () => {
   if (typeof window !== 'undefined') {
-    window.localStorage.removeItem(PRE_GOOGLE_TOKEN)
+    window.localStorage.removeItem(PRE_AUTH_TOKEN)
   }
 }
-export const getLocalPreTokenGoogle = () => {
+export const getLocalPreTokenAuthSocial = () => {
   if (typeof window !== 'undefined') {
-    return window.localStorage.getItem(PRE_GOOGLE_TOKEN)
+    return window.localStorage.getItem(PRE_AUTH_TOKEN)
+  }
+
+  return ''
+}
+export const setLocalRememberLoginAuthSocial = (token: string) => {
+  if (typeof window !== 'undefined') {
+    window.localStorage.setItem(REMEMBER_AUTH_TOKEN, token)
+  }
+}
+export const clearLocalRememberLoginAuthSocial = () => {
+  if (typeof window !== 'undefined') {
+    window.localStorage.removeItem(REMEMBER_AUTH_TOKEN)
+  }
+}
+export const getLocalRememberLoginAuthSocial = () => {
+  if (typeof window !== 'undefined') {
+    return window.localStorage.getItem(REMEMBER_AUTH_TOKEN)
   }
 
   return ''
