@@ -30,6 +30,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 
 // ** Config
 import { EMAIL_REG, PASSWORD_REG } from 'src/configs/regex'
+import { ROUTE_CONFIG } from 'src/configs/route'
 
 // ** Images
 import LoginDark from '/public/images/login-dark.png'
@@ -261,7 +262,9 @@ const LoginPage: NextPage<TProps> = () => {
                   }
                   label={t('Remember_me')}
                 />
-                <Typography variant='body2'>{t('Forgot_password')}?</Typography>
+                <Typography variant='body2' component={Link} href={`${ROUTE_CONFIG.FORGOT_PASSWORD}`}>
+                  {t('Forgot_password')}?
+                </Typography>
               </Box>
               <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
                 Sign In
@@ -272,7 +275,7 @@ const LoginPage: NextPage<TProps> = () => {
                   style={{
                     color: theme.palette.primary.main
                   }}
-                  href='/register'
+                  href={`${ROUTE_CONFIG.REGISTER}`}
                 >
                   {t('Register')}
                 </Link>
