@@ -1,66 +1,82 @@
 // ** Next
 import { NextPage } from 'next'
 import Image from 'next/image'
-import Link from 'next/link'
+
 // ** React
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
+
 // ** Mui
-import {
-  Box,
-  Button,
-  Checkbox,
-  CssBaseline,
-  FormControlLabel,
-  IconButton,
-  InputAdornment,
-  Typography,
-  useTheme
-} from '@mui/material'
+import { Box, Button, CssBaseline, IconButton, InputAdornment, Typography, useTheme } from '@mui/material'
+
 // ** Components
 import CustomTextField from 'src/components/text-field'
 import Icon from 'src/components/Icon'
+
 // ** form
 import { Controller, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
+
 // ** Config
-import { EMAIL_REG, PASSWORD_REG } from 'src/configs/regex'
+import { PASSWORD_REG } from 'src/configs/regex'
+
 // ** Images
 import ResetPasswordDark from '/public/images/reset-password-dark.png'
 import ResetPasswordLight from '/public/images/reset-password-light.png'
+
 // ** Hooks
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
 import { ROUTE_CONFIG } from 'src/configs/route'
 import { useRouter } from 'next/router'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootState } from 'src/stores'
+import Spinner from 'src/components/spinner'
+import { resetPasswordAuthAsync } from 'src/stores/auth/actions'
+import { resetInitialState } from 'src/stores/auth'
 
 type TProps = {}
+
 type TDefaultValue = {
   newPassword: string
   confirmNewPassword: string
 }
+
 const ResetPasswordPage: NextPage<TProps> = () => {
   // ** State
   const [showNewPassword, setShowNewPassword] = useState(false)
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false)
+
   // ** Translate
   const { t } = useTranslation()
+
   // ** Router
   const router = useRouter()
+  const secretKey = router?.query?.secretKey as string
+
   // ** theme
   const theme = useTheme()
+
+  // ** Redux
+  const dispatch: AppDispatch = useDispatch()
+  const { isLoading, isSuccessResetPassword, isErrorResetPassword, messageResetPassword } = useSelector(
+    (state: RootState) => state.auth
+  )
+
   const schema = yup.object().shape({
     newPassword: yup.string().required(t('Required_field')).matches(PASSWORD_REG, t('Rules_password')),
     confirmNewPassword: yup
       .string()
       .required(t('Required_field'))
       .matches(PASSWORD_REG, t('Rules_password'))
-      .oneOf([yup.ref('password'), ''], t('Rules_confirm_password'))
+      .oneOf([yup.ref('newPassword'), ''], t('Rules_confirm_password'))
   })
+
   const defaultValues: TDefaultValue = {
     confirmNewPassword: '',
     newPassword: ''
   }
+
   const {
     handleSubmit,
     control,
@@ -71,14 +87,34 @@ const ResetPasswordPage: NextPage<TProps> = () => {
     mode: 'onBlur',
     resolver: yupResolver(schema)
   })
+
   const onSubmit = (data: { confirmNewPassword: string; newPassword: string }) => {
     if (!Object.keys(errors)?.length) {
+      dispatch(
+        resetPasswordAuthAsync({
+          newPassword: data.newPassword,
+          secretKey
+        })
+      )
     }
   }
 
+  useEffect(() => {
+    if (messageResetPassword) {
+      if (isSuccessResetPassword) {
+        toast.success(t('Reset_password_success'))
+        dispatch(resetInitialState())
+        router.push(ROUTE_CONFIG.LOGIN)
+      } else if (isErrorResetPassword) {
+        toast.error(t('Reset_password_error'))
+        dispatch(resetInitialState())
+      }
+    }
+  }, [isSuccessResetPassword, isErrorResetPassword, messageResetPassword])
+
   return (
     <>
-      {/* {status === "loading" && <FallbackSpinner />} */}
+      {isLoading && <Spinner />}
       <Box
         sx={{
           height: '100vh',
@@ -162,6 +198,7 @@ const ResetPasswordPage: NextPage<TProps> = () => {
                   name='newPassword'
                 />
               </Box>
+
               <Box sx={{ mt: 2, width: '300px' }}>
                 <Controller
                   control={control}
@@ -198,19 +235,19 @@ const ResetPasswordPage: NextPage<TProps> = () => {
                   name='confirmNewPassword'
                 />
               </Box>
-
-              <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
-                {t('Send_request')}
-              </Button>
-              <Button
-                startIcon={<Icon icon='uiw:left'></Icon>}
-                onClick={() => router.push(ROUTE_CONFIG.LOGIN)}
-                fullWidth
-                variant='outlined'
-                sx={{ mt: 3, mb: 2 }}
-              >
-                {t('Back_login')}
-              </Button>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px', mt: '4px' }}>
+                <Button type='submit' variant='contained' sx={{ mt: 3, mb: 2, width: '300px' }}>
+                  {t('Send_request')}
+                </Button>
+                <Button
+                  startIcon={<Icon icon='uiw:left'></Icon>}
+                  onClick={() => router.push(ROUTE_CONFIG.LOGIN)}
+                  variant='outlined'
+                  sx={{ mt: 3, mb: 2, width: '300px' }}
+                >
+                  {t('Back_login')}
+                </Button>
+              </Box>
             </form>
           </Box>
         </Box>
@@ -218,4 +255,5 @@ const ResetPasswordPage: NextPage<TProps> = () => {
     </>
   )
 }
+
 export default ResetPasswordPage

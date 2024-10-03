@@ -1,56 +1,69 @@
 // ** Next
 import { NextPage } from 'next'
 import Image from 'next/image'
-import Link from 'next/link'
+
 // ** React
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useEffect } from 'react'
+
 // ** Mui
-import {
-  Box,
-  Button,
-  Checkbox,
-  CssBaseline,
-  FormControlLabel,
-  IconButton,
-  InputAdornment,
-  Typography,
-  useTheme
-} from '@mui/material'
+import { Box, Button, CssBaseline, InputAdornment, Typography, useTheme } from '@mui/material'
+
 // ** Components
 import CustomTextField from 'src/components/text-field'
 import Icon from 'src/components/Icon'
-// ** form
+
+// ** Form
 import { Controller, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
+
 // ** Config
 import { EMAIL_REG } from 'src/configs/regex'
+
 // ** Images
 import ForgotPasswordDark from '/public/images/forgot-password-dark.png'
 import ForgotPasswordLight from '/public/images/forgot-password-light.png'
+
 // ** Hooks
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
 import { ROUTE_CONFIG } from 'src/configs/route'
 import { useRouter } from 'next/router'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootState } from 'src/stores'
+import { forgotPasswordAuthAsync } from 'src/stores/auth/actions'
+import { resetInitialState } from 'src/stores/auth'
+import Spinner from 'src/components/spinner'
 
 type TProps = {}
+
 type TDefaultValue = {
   email: string
 }
+
 const ForgotPasswordPage: NextPage<TProps> = () => {
   // ** Translate
   const { t } = useTranslation()
+
   // ** Router
   const router = useRouter()
+
   // ** theme
   const theme = useTheme()
+
+  const dispatch: AppDispatch = useDispatch()
+  const { isLoading, isSuccessForgotPassword, isErrorForgotPassword, messageForgotPassword } = useSelector(
+    (state: RootState) => state.auth
+  )
+
   const schema = yup.object().shape({
     email: yup.string().required(t('Required_field')).matches(EMAIL_REG, t('Rules_email'))
   })
+
   const defaultValues: TDefaultValue = {
     email: 'admin@gmail.com'
   }
+
   const {
     handleSubmit,
     control,
@@ -61,14 +74,28 @@ const ForgotPasswordPage: NextPage<TProps> = () => {
     mode: 'onBlur',
     resolver: yupResolver(schema)
   })
+
   const onSubmit = (data: { email: string }) => {
     if (!Object.keys(errors)?.length) {
+      dispatch(forgotPasswordAuthAsync({ email: data.email }))
     }
   }
 
+  useEffect(() => {
+    if (messageForgotPassword) {
+      if (isSuccessForgotPassword) {
+        toast.success(t('Forgot_password_success'))
+        dispatch(resetInitialState())
+      } else if (isErrorForgotPassword) {
+        toast.error(t('Forgot_password_error'))
+        dispatch(resetInitialState())
+      }
+    }
+  }, [isSuccessForgotPassword, isErrorForgotPassword, messageForgotPassword])
+
   return (
     <>
-      {/* {status === "loading" && <FallbackSpinner />} */}
+      {isLoading && <Spinner />}
       <Box
         sx={{
           height: '100vh',
@@ -116,7 +143,7 @@ const ForgotPasswordPage: NextPage<TProps> = () => {
               {t('Forgot_password')}
             </Typography>
             <form onSubmit={handleSubmit(onSubmit)} autoComplete='off' noValidate>
-              <Box sx={{ mt: 2, width: '300px' }}>
+              <Box sx={{ mt: 2 }}>
                 <Controller
                   control={control}
                   rules={{
@@ -165,4 +192,5 @@ const ForgotPasswordPage: NextPage<TProps> = () => {
     </>
   )
 }
+
 export default ForgotPasswordPage

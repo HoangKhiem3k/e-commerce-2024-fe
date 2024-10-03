@@ -3,9 +3,11 @@ import { createSlice } from '@reduxjs/toolkit'
 // ** Axios
 import {
   changePasswordMeAsync,
+  forgotPasswordAuthAsync,
   registerAuthAsync,
-  registerAuthGoogleAsync,
   registerAuthFacebookAsync,
+  registerAuthGoogleAsync,
+  resetPasswordAuthAsync,
   serviceName,
   updateAuthMeAsync
 } from 'src/stores/auth/actions'
@@ -25,6 +27,12 @@ type TInitialData = {
   isErrorChangePassword: boolean
   messageChangePassword: string
   userData: UserDataType | null
+  isSuccessResetPassword: boolean
+  isErrorResetPassword: boolean
+  messageResetPassword: string
+  isSuccessForgotPassword: boolean
+  isErrorForgotPassword: boolean
+  messageForgotPassword: string
 }
 const initialState: TInitialData = {
   isLoading: false,
@@ -38,7 +46,13 @@ const initialState: TInitialData = {
   isSuccessChangePassword: true,
   isErrorChangePassword: false,
   messageChangePassword: '',
-  userData: null
+  userData: null,
+  isSuccessForgotPassword: true,
+  isErrorForgotPassword: false,
+  messageForgotPassword: '',
+  isSuccessResetPassword: true,
+  isErrorResetPassword: false,
+  messageResetPassword: ''
 }
 
 export const authSlice = createSlice({
@@ -57,6 +71,12 @@ export const authSlice = createSlice({
       state.isSuccessChangePassword = false
       state.isErrorChangePassword = true
       state.messageChangePassword = ''
+      state.isSuccessForgotPassword = false
+      state.isErrorForgotPassword = true
+      state.messageForgotPassword = ''
+      state.isSuccessResetPassword = false
+      state.isErrorResetPassword = true
+      state.messageResetPassword = ''
     }
   },
   extraReducers: builder => {
@@ -79,12 +99,11 @@ export const authSlice = createSlice({
       state.typeError = ''
     })
 
-    // ** register google
+    // ** register
     builder.addCase(registerAuthGoogleAsync.pending, (state, action) => {
       state.isLoading = true
     })
     builder.addCase(registerAuthGoogleAsync.fulfilled, (state, action) => {
-      console.log('action', { action })
       state.isLoading = false
       state.isSuccess = !!action.payload?.data?.email
       state.isError = !action.payload?.data?.email
@@ -98,6 +117,7 @@ export const authSlice = createSlice({
       state.message = ''
       state.typeError = ''
     })
+
     // ** register facebook
     builder.addCase(registerAuthFacebookAsync.pending, (state, action) => {
       state.isLoading = true
@@ -155,6 +175,44 @@ export const authSlice = createSlice({
       state.isSuccessChangePassword = false
       state.isErrorChangePassword = false
       state.messageChangePassword = ''
+    })
+
+    // ** reset password
+    builder.addCase(resetPasswordAuthAsync.pending, (state, action) => {
+      state.isLoading = true
+    })
+    builder.addCase(resetPasswordAuthAsync.fulfilled, (state, action) => {
+      state.isLoading = false
+      state.isSuccessResetPassword = !!action.payload?.data?.email
+      state.isErrorResetPassword = !action.payload?.data?.email
+      state.messageResetPassword = action.payload?.message
+      state.typeError = action.payload?.typeError
+    })
+    builder.addCase(resetPasswordAuthAsync.rejected, (state, action) => {
+      state.isLoading = false
+      state.isSuccessResetPassword = false
+      state.isErrorResetPassword = true
+      state.messageResetPassword = ''
+      state.typeError = ''
+    })
+
+    // ** forgot password
+    builder.addCase(forgotPasswordAuthAsync.pending, (state, action) => {
+      state.isLoading = true
+    })
+    builder.addCase(forgotPasswordAuthAsync.fulfilled, (state, action) => {
+      state.isLoading = false
+      state.isSuccessForgotPassword = !!action.payload?.data?.email
+      state.isErrorForgotPassword = !action.payload?.data?.email
+      state.messageForgotPassword = action.payload?.message
+      state.typeError = action.payload?.typeError
+    })
+    builder.addCase(forgotPasswordAuthAsync.rejected, (state, action) => {
+      state.isLoading = false
+      state.isSuccessForgotPassword = false
+      state.isErrorForgotPassword = true
+      state.message = ''
+      state.typeError = ''
     })
   }
 })
