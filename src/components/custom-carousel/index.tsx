@@ -5,6 +5,7 @@ import Carousel, { CarouselProps } from 'react-multi-carousel'
 interface TProps extends CarouselProps {
   children: React.ReactNode
 }
+
 const StyledCarousel = styled(Carousel)(({ theme }) => ({
   '.react-multiple-carousel__arrow': {
     background: `${theme.palette.primary.main} !important`
@@ -20,6 +21,7 @@ const StyledCarousel = styled(Carousel)(({ theme }) => ({
     }
   }
 }))
+
 const CustomCarousel = (props: TProps) => {
   const { responsive: responsiveProps, ...rests } = props
   const responsive = {
@@ -47,4 +49,5 @@ const CustomCarousel = (props: TProps) => {
     </StyledCarousel>
   )
 }
+
 export default CustomCarousel
