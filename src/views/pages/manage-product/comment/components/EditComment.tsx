@@ -8,7 +8,7 @@ import { Controller, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 
 // ** Mui
-import { Box, Button, IconButton, Typography, useTheme } from '@mui/material'
+import { Box, Button, Grid, IconButton, Typography, useTheme } from '@mui/material'
 
 // ** Component
 import Icon from 'src/components/Icon'
@@ -17,75 +17,83 @@ import Spinner from 'src/components/spinner'
 import CustomTextField from 'src/components/text-field'
 
 // ** Services
-import { getDetailsRole } from 'src/services/role'
+import { getDetailsComment } from 'src/services/commentProduct'
 
 // ** Redux
 import { AppDispatch } from 'src/stores'
-import { createRoleAsync, updateRoleAsync } from 'src/stores/role/actions'
 import { useDispatch } from 'react-redux'
-// ** Configs
-import { PERMISSIONS } from 'src/configs/permission'
+import { updateCommentAsync } from 'src/stores/comments/actions'
 
-interface TCreateEditRole {
+interface TEditComment {
   open: boolean
   onClose: () => void
-  idRole?: string
+  idComment?: string
 }
 
-const CreateEditRole = (props: TCreateEditRole) => {
-  const { t } = useTranslation()
+type TDefaultValue = {
+  content: string
+}
 
+const EditComment = (props: TEditComment) => {
   // State
   const [loading, setLoading] = useState(false)
 
   // ** Props
-  const { open, onClose, idRole } = props
+  const { open, onClose, idComment } = props
 
+  // Hooks
   const theme = useTheme()
+  const { t, i18n } = useTranslation()
 
   // ** Redux
   const dispatch: AppDispatch = useDispatch()
 
   const schema = yup.object().shape({
-    name: yup.string().required(t('Required_field'))
+    content: yup.string().required(t('Required_field'))
   })
 
-  const defaultValues = {
-    name: '',
-    confirmNewPassword: ''
+  const defaultValues: TDefaultValue = {
+    content: ''
   }
 
   const {
     handleSubmit,
     control,
     formState: { errors },
-    reset
+    reset,
+    getValues,
+    setError,
+    clearErrors
   } = useForm({
     defaultValues,
     mode: 'onBlur',
     resolver: yupResolver(schema)
   })
 
-  const onSubmit = (data: { name: string }) => {
+  // handle
+  const onSubmit = (data: any) => {
     if (!Object.keys(errors).length) {
-      if (idRole) {
-        dispatch(updateRoleAsync({ name: data?.name, id: idRole }))
-        // update
-      } else {
-        dispatch(createRoleAsync({ name: data?.name, permissions: [PERMISSIONS.DASHBOARD] }))
+      // update
+      if (idComment) {
+        dispatch(
+          updateCommentAsync({
+            id: idComment,
+            content: data.content
+          })
+        )
       }
     }
   }
 
-  // fetch
-  const fetchDetailsRole = async (id: string) => {
+  // fetch api
+  const fetchDetailsComment = async (id: string) => {
     setLoading(true)
-    await getDetailsRole(id)
+    await getDetailsComment(id)
       .then(res => {
         const data = res.data
         if (data) {
           reset({
-            name: data?.name
+            content: data?.content
           })
         }
         setLoading(false)
@@ -98,13 +106,13 @@ const CreateEditRole = (props: TCreateEditRole) => {
   useEffect(() => {
     if (!open) {
       reset({
-        name: ''
+        ...defaultValues
       })
-    } else if (idRole) {
-      fetchDetailsRole(idRole)
+    } else if (idComment && open) {
+      fetchDetailsComment(idComment)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, idRole])
+  }, [open, idComment])
 
   return (
     <>
@@ -117,50 +125,50 @@ const CreateEditRole = (props: TCreateEditRole) => {
             backgroundColor: theme.palette.customColors.bodyBg
           }}
           minWidth={{ md: '400px', xs: '80vw' }}
+          maxWidth={{ md: '40vw', xs: '80vw' }}
         >
           <Box sx={{ display: 'flex', justifyContent: 'center', position: 'relative', paddingBottom: '20px' }}>
             <Typography variant='h4' sx={{ fontWeight: 600 }}>
               {' '}
-              {idRole ? t('Edit_role') : t('Create_role')}
+              {t('Edit_comment')}
             </Typography>
             <IconButton sx={{ position: 'absolute', top: '-4px', right: '-10px' }} onClick={onClose}>
               <Icon icon='material-symbols-light:close' fontSize={'30px'} />
             </IconButton>
           </Box>
           <form onSubmit={handleSubmit(onSubmit)} autoComplete='off' noValidate>
-            <Box
-              sx={{
-                width: '100%',
-                backgroundColor: theme.palette.background.paper,
-                padding: '30px 20px',
-                borderRadius: '15px'
-              }}
-            >
-              <Controller
-                control={control}
-                rules={{
-                  required: true
-                }}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <CustomTextField
-                    required
-                    fullWidth
-                    label={t('Name_role')}
-                    onChange={onChange}
-                    onBlur={onBlur}
-                    value={value}
-                    placeholder={t('Enter_name')}
-                    error={Boolean(errors?.name)}
-                    helperText={errors?.name?.message}
-                  />
-                )}
-                name='name'
-              />
+            <Box sx={{ backgroundColor: theme.palette.background.paper, borderRadius: '15px', py: 5, px: 4 }}>
+              <Grid container spacing={5}>
+                <Grid container item md={12} xs={12}>
+                  <Box sx={{ height: '100%', width: '100%' }}>
+                    <Grid container spacing={4}>
+                      <Grid item md={12} xs={12}>
+                        <Controller
+                          control={control}
+                          render={({ field: { onChange, onBlur, value } }) => (
+                            <CustomTextField
+                              fullWidth
+                              required
+                              label={t('Content')}
+                              onChange={onChange}
+                              onBlur={onBlur}
+                              value={value}
+                              placeholder={t('Enter_content')}
+                              error={Boolean(errors?.content)}
+                              helperText={errors?.content?.message}
+                            />
+                          )}
+                          name='content'
+                        />
+                      </Grid>
+                    </Grid>
+                  </Box>
+                </Grid>
+              </Grid>
             </Box>
-
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
               <Button type='submit' variant='contained' sx={{ mt: 3, mb: 2 }}>
-                {!idRole ? t('Create') : t('Update')}
+                {t('Update')}
               </Button>
             </Box>
           </form>
@@ -170,4 +178,4 @@ const CreateEditRole = (props: TCreateEditRole) => {
   )
 }
 
-export default CreateEditRole
+export default EditComment

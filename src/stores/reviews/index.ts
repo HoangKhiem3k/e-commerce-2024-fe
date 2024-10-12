@@ -35,7 +35,8 @@ const initialState = {
     total: 0
   }
 }
-export const orderProductSlice = createSlice({
+
+export const reviewSlice = createSlice({
   name: serviceName,
   initialState,
   reducers: {
@@ -74,6 +75,7 @@ export const orderProductSlice = createSlice({
       state.reviews.data = []
       state.reviews.total = 0
     })
+
     // ** create review
     builder.addCase(createReviewAsync.pending, (state, action) => {
       state.isLoading = true
@@ -85,6 +87,7 @@ export const orderProductSlice = createSlice({
       state.messageErrorCreate = action.payload?.message
       state.typeError = action.payload?.typeError
     })
+
     // ** update review
     builder.addCase(updateReviewAsync.pending, (state, action) => {
       state.isLoading = true
@@ -96,6 +99,7 @@ export const orderProductSlice = createSlice({
       state.messageErrorEdit = action.payload?.message
       state.typeError = action.payload?.typeError
     })
+
     // ** delete review
     builder.addCase(deleteReviewAsync.pending, (state, action) => {
       state.isLoading = true
@@ -107,6 +111,7 @@ export const orderProductSlice = createSlice({
       state.messageErrorDelete = action.payload?.message
       state.typeError = action.payload?.typeError
     })
+
     // ** delete my review
     builder.addCase(deleteMyReviewAsync.pending, (state, action) => {
       state.isLoading = true
@@ -118,6 +123,7 @@ export const orderProductSlice = createSlice({
       state.messageErrorDelete = action.payload?.message
       state.typeError = action.payload?.typeError
     })
+
     // ** update my review
     builder.addCase(updateMyReviewAsync.pending, (state, action) => {
       state.isLoading = true
@@ -129,18 +135,20 @@ export const orderProductSlice = createSlice({
       state.messageErrorEdit = action.payload?.message
       state.typeError = action.payload?.typeError
     })
+
     // ** delete multiple review
     builder.addCase(deleteMultipleReviewAsync.pending, (state, action) => {
       state.isLoading = true
     })
     builder.addCase(deleteMultipleReviewAsync.fulfilled, (state, action) => {
       state.isLoading = false
-      state.isSuccessMultipleDelete = !!action.payload?.data?._id
-      state.isErrorMultipleDelete = !action.payload?.data?._id
+      state.isSuccessMultipleDelete = !!action.payload?.data
+      state.isErrorMultipleDelete = !action.payload?.data
       state.messageErrorMultipleDelete = action.payload?.message
       state.typeError = action.payload?.typeError
     })
   }
 })
-export const { resetInitialState } = orderProductSlice.actions
-export default orderProductSlice.reducer
+
+export const { resetInitialState } = reviewSlice.actions
+export default reviewSlice.reducer

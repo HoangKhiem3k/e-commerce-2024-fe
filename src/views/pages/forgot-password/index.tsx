@@ -61,7 +61,7 @@ const ForgotPasswordPage: NextPage<TProps> = () => {
   })
 
   const defaultValues: TDefaultValue = {
-    email: 'admin@gmail.com'
+    email: 'khiem.test.service@gmail.com'
   }
 
   const {

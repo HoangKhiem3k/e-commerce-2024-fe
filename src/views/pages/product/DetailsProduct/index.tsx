@@ -695,7 +695,7 @@ const DetailsProductPage: NextPage<TProps> = () => {
             <Box
               display={{ md: 'none', xs: 'block' }}
               sx={{ backgroundColor: theme.palette.background.paper, borderRadius: '15px', py: 5, px: 4 }}
-              marginTop={{ md: 5, xs: 4 }}
+              marginTop={{ md: 5, xs: 4, width: '100%' }}
             >
               <Typography
                 variant='h6'
