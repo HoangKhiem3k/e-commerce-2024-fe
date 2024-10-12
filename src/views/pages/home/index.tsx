@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 // ** Mui
-import { Box, Grid, Typography, useTheme, Tab, Tabs, TabsProps } from '@mui/material'
+import { Box, Grid, useTheme, Tab, Tabs, TabsProps } from '@mui/material'
 
 // ** Redux
 
@@ -17,6 +17,7 @@ import CardProduct from 'src/views/pages/product/components/CardProduct'
 import FilterProduct from 'src/views/pages/product/components/FilterProduct'
 import InputSearch from 'src/components/input-search'
 import NoData from 'src/components/no-data'
+import CardSkeleton from 'src/views/pages/product/components/CardSkeleton'
 
 // ** Config
 import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
@@ -288,29 +289,47 @@ const HomePage: NextPage<TProps> = () => {
               </Box>
             </Grid>
             <Grid item md={9} xs={12}>
-              <Grid
-                container
-                spacing={{
-                  md: 6,
-                  xs: 4
-                }}
-              >
-                {productsPublic?.data?.length > 0 ? (
-                  <>
-                    {productsPublic?.data?.map((item: TProduct) => {
-                      return (
-                        <Grid item key={item._id} md={4} sm={6} xs={12}>
-                          <CardProduct item={item} />
-                        </Grid>
-                      )
-                    })}
-                  </>
-                ) : (
-                  <Box sx={{ width: '100%', mt: 10 }}>
-                    <NoData widthImage='60px' heightImage='60px' textNodata={t('No_product')} />
-                  </Box>
-                )}
-              </Grid>
+              {loading ? (
+                <Grid
+                  container
+                  spacing={{
+                    md: 6,
+                    xs: 4
+                  }}
+                >
+                  {Array.from({ length: 6 }).map((_, index) => {
+                    return (
+                      <Grid item key={index} md={4} sm={6} xs={12}>
+                        <CardSkeleton />
+                      </Grid>
+                    )
+                  })}
+                </Grid>
+              ) : (
+                <Grid
+                  container
+                  spacing={{
+                    md: 6,
+                    xs: 4
+                  }}
+                >
+                  {productsPublic?.data?.length > 0 ? (
+                    <>
+                      {productsPublic?.data?.map((item: TProduct) => {
+                        return (
+                          <Grid item key={item._id} md={4} sm={6} xs={12}>
+                            <CardProduct item={item} />
+                          </Grid>
+                        )
+                      })}
+                    </>
+                  ) : (
+                    <Box sx={{ width: '100%', mt: 10 }}>
+                      <NoData widthImage='60px' heightImage='60px' textNodata={t('No_product')} />
+                    </Box>
+                  )}
+                </Grid>
+              )}
             </Grid>
           </Grid>
         </Box>
