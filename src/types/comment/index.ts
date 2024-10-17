@@ -19,6 +19,7 @@ export type TParamsGetComments = {
   search?: string
   order?: string
   isPublic?: boolean
+  productId?: string
 }
 
 export type TCommentItem = {
@@ -28,8 +29,9 @@ export type TCommentItem = {
     lastName: string
     middleName: string
     avatar: string
-    _id: string
+    id: string
   }
+  parent?: string
   product: {
     id: string
     name: string
@@ -40,4 +42,11 @@ export type TCommentItem = {
 
 export interface TCommentItemProduct extends TCommentItem {
   replies?: TCommentItem[]
+}
+
+export type TParamsReplyComment = {
+  product: string
+  user: string
+  content: string
+  parent: string
 }

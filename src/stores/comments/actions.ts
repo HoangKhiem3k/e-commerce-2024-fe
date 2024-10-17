@@ -1,30 +1,40 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { deleteComment, deleteMultipleComment, getAllComments, updateComment } from 'src/services/comment-product'
+
 // ** Services
 import {
-  addReview,
-  deleteMultipleReview,
-  deleteMyReview,
-  deleteReview,
-  getAllReviews,
-  updateMyReview,
-  updateReview
-} from 'src/services/review-product'
-import { TParamsDeleteMultipleComment, TParamsGetComments, TParamsUpdateComment } from 'src/types/comment'
+  addComment,
+  deleteComment,
+  deleteMultipleComment,
+  deleteMyComment,
+  getAllComments,
+  replyComment,
+  updateComment,
+  updateMyComment
+} from 'src/services/comment-product'
+
 // ** Types
 import {
-  TParamsAddReview,
-  TParamsDeleteMultipleReview,
-  TParamsGetReviews,
-  TParamsUpdateReview
-} from 'src/types/reviews'
+  TParamsAddComment,
+  TParamsDeleteMultipleComment,
+  TParamsGetComments,
+  TParamsReplyComment,
+  TParamsUpdateComment
+} from 'src/types/comment'
 
 export const serviceName = 'comment'
-export const createReviewAsync = createAsyncThunk(`${serviceName}/create`, async (data: TParamsAddReview) => {
-  const response = await addReview(data)
+
+export const createCommentAsync = createAsyncThunk(`${serviceName}/create`, async (data: TParamsAddComment) => {
+  const response = await addComment(data)
 
   return response
 })
+
+export const replyCommentAsync = createAsyncThunk(`${serviceName}/reply`, async (data: TParamsReplyComment) => {
+  const response = await replyComment(data)
+
+  return response
+})
+
 export const getAllCommentCMSAsync = createAsyncThunk(
   `${serviceName}/get-all-cms`,
   async (data: { params: TParamsGetComments }) => {
@@ -33,16 +43,19 @@ export const getAllCommentCMSAsync = createAsyncThunk(
     return response
   }
 )
+
 export const updateCommentAsync = createAsyncThunk(`${serviceName}/update`, async (data: TParamsUpdateComment) => {
   const response = await updateComment(data)
 
   return response
 })
+
 export const deleteCommentAsync = createAsyncThunk(`${serviceName}/delete`, async (id: string) => {
   const response = await deleteComment(id)
 
   return response
 })
+
 export const deleteMultipleCommentAsync = createAsyncThunk(
   `${serviceName}/delete-multiple`,
   async (ids: TParamsDeleteMultipleComment) => {
@@ -51,15 +64,17 @@ export const deleteMultipleCommentAsync = createAsyncThunk(
     return response
   }
 )
-export const deleteMyReviewAsync = createAsyncThunk(`${serviceName}/delete-my-review`, async (id: string) => {
-  const response = await deleteMyReview(id)
+
+export const deleteMyCommentAsync = createAsyncThunk(`${serviceName}/delete-my-comment`, async (id: string) => {
+  const response = await deleteMyComment(id)
 
   return response
 })
-export const updateMyReviewAsync = createAsyncThunk(
-  `${serviceName}/update-my-review`,
-  async (data: TParamsUpdateReview) => {
-    const response = await updateMyReview(data)
+
+export const updateMyCommentAsync = createAsyncThunk(
+  `${serviceName}/update-my-comment`,
+  async (data: TParamsUpdateComment) => {
+    const response = await updateMyComment(data)
 
     return response
   }
