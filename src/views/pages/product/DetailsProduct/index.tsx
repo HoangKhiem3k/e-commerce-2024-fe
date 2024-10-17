@@ -51,6 +51,8 @@ import toast from 'react-hot-toast'
 import { OBJECT_TYPE_ERROR_REVIEW } from 'src/configs/error'
 import CardSkeletonRelated from 'src/views/pages/product/components/CardSkeletonRelated'
 import CustomCarousel from 'src/components/custom-carousel'
+import CommentInput from 'src/views/pages/product/components/CommentInput'
+import CommentItem from 'src/views/pages/product/components/CommentItem'
 
 type TProps = {}
 
@@ -183,6 +185,10 @@ const DetailsProductPage: NextPage<TProps> = () => {
       ROUTE_CONFIG.MY_CART
     )
   }
+
+  const handleCancelComment = () => {}
+
+  const handleComment = (comment: string) => {}
 
   useEffect(() => {
     if (productId) {
@@ -627,6 +633,39 @@ const DetailsProductPage: NextPage<TProps> = () => {
                     </CustomCarousel>
                   </Box>
                 </Box>
+                <Box
+                  sx={{
+                    backgroundColor: theme.palette.background.paper,
+                    borderRadius: '15px',
+                    py: 5,
+                    px: 4,
+                    width: '100%'
+                  }}
+                  marginTop={{ md: 5, xs: 4 }}
+                >
+                  <Typography
+                    variant='h6'
+                    sx={{
+                      color: `rgba(${theme.palette.customColors.main}, 0.68)`,
+                      fontWeight: 'bold',
+                      fontSize: '18px'
+                    }}
+                  >
+                    {t('Comment_product')} <b style={{ color: theme.palette.primary.main }}>{listReviews?.length}</b>{' '}
+                    {t('comments')}
+                  </Typography>
+                  <Box sx={{ width: '100%' }}>
+                    <CommentInput onCancel={handleCancelComment} onApply={handleComment} />
+                    <CommentItem />
+                    {/* {listReviews.map((review: TReviewItem) => {
+                  return (
+                    <Box key={review._id} sx={{ margin: "0 10px" }}>
+                      <CardReview item={review} />
+                    </Box>
+                  )
+                })} */}
+                  </Box>
+                </Box>
               </Box>
             </Grid>
             <Grid container item md={3} xs={12} mt={{ md: 0, xs: 5 }}>
@@ -694,8 +733,14 @@ const DetailsProductPage: NextPage<TProps> = () => {
             </Grid>
             <Box
               display={{ md: 'none', xs: 'block' }}
-              sx={{ backgroundColor: theme.palette.background.paper, borderRadius: '15px', py: 5, px: 4 }}
-              marginTop={{ md: 5, xs: 4, width: '100%' }}
+              sx={{
+                backgroundColor: theme.palette.background.paper,
+                borderRadius: '15px',
+                py: 5,
+                px: 4,
+                width: '100%'
+              }}
+              marginTop={{ md: 5, xs: 4 }}
             >
               <Typography
                 variant='h6'
@@ -708,15 +753,39 @@ const DetailsProductPage: NextPage<TProps> = () => {
                 {t('Review_product')} <b style={{ color: theme.palette.primary.main }}>{listReviews?.length}</b>{' '}
                 {t('ratings')}
               </Typography>
-              <Grid container spacing={8} mt={{ md: 0, xs: 1 }}>
-                {listReviews.map((review: TReviewItem) => {
-                  return (
-                    <Grid key={review._id} item md={4} xs={12}>
-                      <CardReview item={review} />
-                    </Grid>
-                  )
-                })}
-              </Grid>
+              <Box sx={{ width: '100%' }}>
+                <CustomCarousel
+                  arrows
+                  showDots={true}
+                  ssr={true}
+                  responsive={{
+                    superLargeDesktop: {
+                      breakpoint: { max: 4000, min: 3000 },
+                      items: 4
+                    },
+                    desktop: {
+                      breakpoint: { max: 3000, min: 1024 },
+                      items: 3
+                    },
+                    tablet: {
+                      breakpoint: { max: 1024, min: 464 },
+                      items: 2
+                    },
+                    mobile: {
+                      breakpoint: { max: 464, min: 0 },
+                      items: 1
+                    }
+                  }}
+                >
+                  {listReviews.map((review: TReviewItem) => {
+                    return (
+                      <Box key={review._id} sx={{ margin: '0 10px' }}>
+                        <CardReview item={review} />
+                      </Box>
+                    )
+                  })}
+                </CustomCarousel>
+              </Box>
             </Box>
           </Grid>
         </Grid>
