@@ -52,6 +52,8 @@ import { TProduct } from 'src/types/product'
 
 // ** Configs
 import { ROUTE_CONFIG } from 'src/configs/route'
+import connectSocketIO from 'src/helpers/socket'
+import { ACTION_SOCKET_COMMENT } from 'src/configs/socketIo'
 
 // ** Types
 import { TReviewItem } from 'src/types/reviews'
@@ -360,6 +362,28 @@ const DetailsProductPage: NextPage<TProps> = () => {
       dispatch(resetInitialStateComment())
     }
   }, [isSuccessReply, isErrorReply, messageErrorReply])
+
+  useEffect(() => {
+    const socket = connectSocketIO()
+    socket.on(ACTION_SOCKET_COMMENT.CREATE_COMMENT, data => {
+      const cloneListComment = { ...listComment }
+      const newListComment = cloneListComment.data
+      newListComment.unshift({ ...data })
+
+      setListComment({
+        data: newListComment,
+        total: cloneListComment.total + 1
+      })
+    })
+    socket.on(ACTION_SOCKET_COMMENT.REPLY_COMMENT, data => {})
+    socket.on(ACTION_SOCKET_COMMENT.UPDATE_COMMENT, data => {})
+    socket.on(ACTION_SOCKET_COMMENT.DELETE_COMMENT, data => {})
+    socket.on(ACTION_SOCKET_COMMENT.DELETE_MULTIPLE_COMMENT, data => {})
+
+    return () => {
+      socket.disconnect()
+    }
+  }, [])
 
   return (
     <>
