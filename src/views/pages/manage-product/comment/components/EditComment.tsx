@@ -17,7 +17,7 @@ import Spinner from 'src/components/spinner'
 import CustomTextField from 'src/components/text-field'
 
 // ** Services
-import { getDetailsComment } from 'src/services/commentProduct'
+import { getDetailsComment } from 'src/services/comment-product'
 
 // ** Redux
 import { AppDispatch } from 'src/stores'

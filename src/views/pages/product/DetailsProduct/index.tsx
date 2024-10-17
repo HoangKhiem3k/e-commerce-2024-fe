@@ -35,7 +35,7 @@ import { useAuth } from 'src/hooks/useAuth'
 
 // ** Services
 import { getDetailsProductPublicBySlug, getListRelatedProductBySlug } from 'src/services/product'
-import { getAllReviews } from 'src/services/reviewProduct'
+import { getAllReviews } from 'src/services/review-product'
 
 // ** Other
 import { getLocalProductCart, setLocalProductToCart } from 'src/helpers/storage'
@@ -53,6 +53,8 @@ import CardSkeletonRelated from 'src/views/pages/product/components/CardSkeleton
 import CustomCarousel from 'src/components/custom-carousel'
 import CommentInput from 'src/views/pages/product/components/CommentInput'
 import CommentItem from 'src/views/pages/product/components/CommentItem'
+import { getAllCommentsPublic } from 'src/services/comment-product'
+import { TCommentItemProduct } from 'src/types/comment'
 
 type TProps = {}
 
@@ -62,6 +64,7 @@ const DetailsProductPage: NextPage<TProps> = () => {
   const [dataProduct, setDataProduct] = useState<TProduct | any>({})
   const [listRelatedProduct, setRelatedProduct] = useState<TProduct[]>([])
   const [listReviews, setListReview] = useState<TReviewItem[]>([])
+  const [listComment, setListComment] = useState<TCommentItemProduct[]>([])
 
   const [amountProduct, setAmountProduct] = useState(1)
 
@@ -142,6 +145,21 @@ const DetailsProductPage: NextPage<TProps> = () => {
       })
   }
 
+  const fetchListCommentProduct = async () => {
+    setLoading(true)
+    await getAllCommentsPublic({ params: { limit: -1, page: -1, order: 'createdAt desc' } })
+      .then(async response => {
+        setLoading(false)
+        const data = response?.data
+        if (data) {
+          setListComment(data.comments)
+        }
+      })
+      .catch(() => {
+        setLoading(false)
+      })
+  }
+
   // ** Handle
   const handleUpdateProductToCart = (item: TProduct) => {
     const productCart = getLocalProductCart()
@@ -194,6 +212,7 @@ const DetailsProductPage: NextPage<TProps> = () => {
     if (productId) {
       fetchGetDetailsProduct(productId)
       fetchListRelatedProduct(productId)
+      fetchListCommentProduct()
     }
   }, [productId])
 
@@ -656,14 +675,11 @@ const DetailsProductPage: NextPage<TProps> = () => {
                   </Typography>
                   <Box sx={{ width: '100%' }}>
                     <CommentInput onCancel={handleCancelComment} onApply={handleComment} />
-                    <CommentItem />
-                    {/* {listReviews.map((review: TReviewItem) => {
-                  return (
-                    <Box key={review._id} sx={{ margin: "0 10px" }}>
-                      <CardReview item={review} />
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '20px' }}>
+                      {listComment?.map((comment: TCommentItemProduct) => {
+                        return <CommentItem key={comment._id} item={comment} />
+                      })}
                     </Box>
-                  )
-                })} */}
                   </Box>
                 </Box>
               </Box>

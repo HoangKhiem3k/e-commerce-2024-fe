@@ -92,3 +92,13 @@ export const deleteMultipleComment = async (data: TParamsDeleteMultipleComment) 
     return error?.response?.data
   }
 }
+
+export const getAllCommentsPublic = async (data: { params: TParamsGetComments }) => {
+  try {
+    const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_PRODUCT.COMMENT.INDEX}/public`, data)
+
+    return res.data
+  } catch (error) {
+    return error
+  }
+}

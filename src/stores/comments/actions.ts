@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { deleteComment, deleteMultipleComment, getAllComments, updateComment } from 'src/services/commentProduct'
+import { deleteComment, deleteMultipleComment, getAllComments, updateComment } from 'src/services/comment-product'
 // ** Services
 import {
   addReview,
@@ -9,7 +9,7 @@ import {
   getAllReviews,
   updateMyReview,
   updateReview
-} from 'src/services/reviewProduct'
+} from 'src/services/review-product'
 import { TParamsDeleteMultipleComment, TParamsGetComments, TParamsUpdateComment } from 'src/types/comment'
 // ** Types
 import {

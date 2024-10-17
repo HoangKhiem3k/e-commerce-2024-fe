@@ -14,7 +14,7 @@ import Spinner from 'src/components/spinner'
 import CustomTextField from 'src/components/text-field'
 import CustomTextArea from 'src/components/text-area'
 // ** Services
-import { getDetailsReview } from 'src/services/reviewProduct'
+import { getDetailsReview } from 'src/services/review-product'
 // ** Redux
 import { AppDispatch } from 'src/stores'
 import { useDispatch } from 'react-redux'
