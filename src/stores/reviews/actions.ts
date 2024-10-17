@@ -8,7 +8,7 @@ import {
   getAllReviews,
   updateMyReview,
   updateReview
-} from 'src/services/reviewProduct'
+} from 'src/services/review-product'
 // ** Types
 import {
   TParamsAddReview,
