@@ -328,5 +328,6 @@
   "ratings": "ratings",
   "comments": "comments",
   "Product_details": "Details product",
-  "Count_in_stock_product": "Have {{count}} product in storage"
+  "Count_in_stock_product": "Have {{count}} product in storage",
+  "User_system":"System user"
 }
