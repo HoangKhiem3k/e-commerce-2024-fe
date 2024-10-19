@@ -1,20 +1,20 @@
 import { Box, useTheme } from '@mui/material'
-import { TCountProductType } from 'src/views/pages/dashboard'
+import { TCountProductType, TCountRevenue } from 'src/views/pages/dashboard'
 import { Bar } from 'react-chartjs-2'
 import 'chart.js/auto'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
 interface TProps {
-  data: TCountProductType[]
+  data: TCountRevenue[]
 }
-const CardProductType = (props: TProps) => {
+const CardCountRevenue = (props: TProps) => {
   // Props
   const { data } = props
   const theme = useTheme()
   const { t } = useTranslation()
   const labelsMemo = useMemo(() => {
-    return data?.map(item => item?.typeName)
+    return data?.map(item => `${item.month}/${item.year}`)
   }, [data])
   const dataMemo = useMemo(() => {
     return data?.map((item, index) => {
@@ -23,7 +23,7 @@ const CardProductType = (props: TProps) => {
   }, [data])
   const dataSets = [
     {
-      label: `${t('Số lượng')}`,
+      label: `${t('Doanh số')}`,
       backgroundColor: [
         theme.palette.primary.main,
         theme.palette.info.main,
@@ -58,11 +58,11 @@ const CardProductType = (props: TProps) => {
         options={{
           plugins: {
             legend: { display: false },
-            title: { display: true, text: 'Số lượng sản phẩm theo từng loại' }
+            title: { display: true, text: 'Danh số năm nay' }
           }
         }}
       />
     </Box>
   )
 }
-export default CardProductType
+export default CardCountRevenue
