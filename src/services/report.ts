@@ -37,3 +37,21 @@ export const getCountProductTypes = async () => {
     return error
   }
 }
+export const getCountRevenueYear = async () => {
+  try {
+    const res = await instanceAxios.get(`${API_ENDPOINT.REPORT.INDEX}/revenue-total`)
+
+    return res.data
+  } catch (error) {
+    return error
+  }
+}
+export const getCountOrderStatus = async () => {
+  try {
+    const res = await instanceAxios.get(`${API_ENDPOINT.REPORT.INDEX}/order-status/count`)
+
+    return res.data
+  } catch (error) {
+    return error
+  }
+}
