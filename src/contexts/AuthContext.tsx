@@ -98,7 +98,7 @@ const AuthProvider = ({ children }: Props) => {
   }, [])
 
   const handleLogin = (params: LoginParams, errorCallback?: ErrCallbackType) => {
-    loginAuth({ email: params.email, password: params.password })
+    loginAuth({ email: params.email, password: params.password, deviceToken: params?.deviceToken })
       .then(async response => {
         if (params.rememberMe) {
           setLocalUserData(JSON.stringify(response.data.user), response.data.access_token, response.data.refresh_token)
@@ -121,7 +121,7 @@ const AuthProvider = ({ children }: Props) => {
   }
 
   const handleLoginGoogle = (params: LoginGoogleParams, errorCallback?: ErrCallbackType) => {
-    loginAuthGoogle(params?.idToken)
+    loginAuthGoogle({ idToken: params.idToken, deviceToken: params.deviceToken })
       .then(async response => {
         if (params.rememberMe) {
           setLocalUserData(JSON.stringify(response.data.user), response.data.access_token, response.data.refresh_token)
@@ -140,7 +140,7 @@ const AuthProvider = ({ children }: Props) => {
       })
   }
   const handleLoginFacebook = (params: LoginFacebookParams, errorCallback?: ErrCallbackType) => {
-    loginAuthFacebook(params?.idToken)
+    loginAuthFacebook({ idToken: params.idToken, deviceToken: params.deviceToken })
       .then(async response => {
         if (params.rememberMe) {
           setLocalUserData(JSON.stringify(response.data.user), response.data.access_token, response.data.refresh_token)

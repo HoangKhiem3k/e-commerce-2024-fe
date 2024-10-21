@@ -315,6 +315,7 @@ const MyProfilePage: NextPage<TProps> = () => {
                           </label>
                           <CustomSelect
                             fullWidth
+                            disabled
                             onChange={onChange}
                             options={optionRoles}
                             error={Boolean(errors?.role)}

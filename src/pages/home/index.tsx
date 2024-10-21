@@ -1,8 +1,9 @@
-'use client'
 import Head from 'next/head'
 import { ReactNode } from 'react'
-// layouts
+
+// Layouts
 import LayoutNotApp from 'src/views/layouts/LayoutNotApp'
+
 // ** Pages
 import HomePage from 'src/views/pages/home'
 
@@ -19,6 +20,7 @@ export default function Home() {
     </>
   )
 }
+
 Home.getLayout = (page: ReactNode) => <LayoutNotApp>{page}</LayoutNotApp>
 Home.guestGuard = false
 Home.authGuard = false
