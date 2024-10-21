@@ -1,12 +1,12 @@
-// ** Redux Imports
+// ** Redux
 import { createSlice } from '@reduxjs/toolkit'
 // ** Actions
 import {
+  deleteNotificationAsync,
   getAllNotificationsAsync,
   markReadAllNotificationAsync,
   markReadNotificationAsync,
-  serviceName,
-  deleteNotificationAsync
+  serviceName
 } from 'src/stores/notification/actions'
 
 const initialState = {
@@ -27,6 +27,7 @@ const initialState = {
     totalNew: 0
   }
 }
+
 export const deliveryTypeSlice = createSlice({
   name: serviceName,
   initialState,
@@ -61,28 +62,19 @@ export const deliveryTypeSlice = createSlice({
       state.notifications.total = 0
       state.notifications.totalNew = 0
     })
+
     // ** read notification
     builder.addCase(markReadNotificationAsync.pending, (state, action) => {
       state.isLoading = true
     })
     builder.addCase(markReadNotificationAsync.fulfilled, (state, action) => {
       state.isLoading = false
-      state.isSuccessRead = !!action.payload?.data?.length
-      state.isErrorRead = !action.payload?.data?.length
+      state.isSuccessRead = !!action.payload?.data?._id
+      state.isErrorRead = !action.payload?.data?._id
       state.messageErrorRead = action.payload?.message
       state.typeError = action.payload?.typeError
     })
-    // ** read all notification
-    builder.addCase(markReadAllNotificationAsync.pending, (state, action) => {
-      state.isLoading = true
-    })
-    builder.addCase(markReadAllNotificationAsync.fulfilled, (state, action) => {
-      state.isLoading = false
-      state.isSuccessReadAll = !!action.payload?.data?._id
-      state.isErrorReadAll = !action.payload?.data?._id
-      state.messageErrorReadAll = action.payload?.message
-      state.typeError = action.payload?.typeError
-    })
+
     // ** delete notification
     builder.addCase(deleteNotificationAsync.pending, (state, action) => {
       state.isLoading = true
@@ -94,7 +86,20 @@ export const deliveryTypeSlice = createSlice({
       state.messageErrorDelete = action.payload?.message
       state.typeError = action.payload?.typeError
     })
+
+    // ** read all notification
+    builder.addCase(markReadAllNotificationAsync.pending, (state, action) => {
+      state.isLoading = true
+    })
+    builder.addCase(markReadAllNotificationAsync.fulfilled, (state, action) => {
+      state.isLoading = false
+      state.isSuccessReadAll = !!action.payload?.data?.length
+      state.isErrorReadAll = !action.payload?.data?.length
+      state.messageErrorReadAll = action.payload?.message
+      state.typeError = action.payload?.typeError
+    })
   }
 })
+
 export const { resetInitialState } = deliveryTypeSlice.actions
 export default deliveryTypeSlice.reducer
