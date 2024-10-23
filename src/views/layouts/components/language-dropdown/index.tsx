@@ -8,6 +8,9 @@ import { useTranslation } from 'react-i18next'
 
 import IconButton from '@mui/material/IconButton'
 
+// ** Components
+import Icon from 'src/components/Icon'
+
 // ** Hooks
 import { Box, Menu, MenuItem } from '@mui/material'
 
