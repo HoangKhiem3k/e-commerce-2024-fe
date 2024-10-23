@@ -231,7 +231,11 @@ const ProductListPage: NextPage<TProps> = () => {
       renderCell: params => {
         const { row } = params
 
-        return <Typography>{row?.name}</Typography>
+        return (
+          <Typography sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', width: '100%' }}>
+            {row?.name}
+          </Typography>
+        )
       }
     },
     {
