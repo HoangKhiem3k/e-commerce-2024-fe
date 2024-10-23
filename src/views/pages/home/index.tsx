@@ -18,7 +18,8 @@ import FilterProduct from 'src/views/pages/product/components/FilterProduct'
 import InputSearch from 'src/components/input-search'
 import NoData from 'src/components/no-data'
 import CardSkeleton from 'src/views/pages/product/components/CardSkeleton'
-
+import CustomSelect from 'src/components/custom-select'
+import ChatBotAI from 'src/components/chat-bot-ai'
 // ** Config
 import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
 
@@ -36,7 +37,6 @@ import { AppDispatch, RootState } from 'src/stores'
 import toast from 'react-hot-toast'
 import { resetInitialState } from 'src/stores/product'
 import { OBJECT_TYPE_ERROR_PRODUCT } from 'src/configs/error'
-import CustomSelect from 'src/components/custom-select'
 
 type TProps = {}
 
@@ -219,6 +219,7 @@ const HomePage: NextPage<TProps> = () => {
   return (
     <>
       {loading && <Spinner />}
+      <ChatBotAI />
       <Box
         sx={{
           height: '100%',
