@@ -108,3 +108,8 @@ export const resetPasswordAuth = async (data: TResetPasswordAuth) => {
     return error
   }
 }
+export const updateDeviceToken = async (data: { deviceToken: string }) => {
+  const res = await instanceAxios.post(`${API_ENDPOINT.AUTH.INDEX}/update-device`, data)
+
+  return res.data
+}
