@@ -63,7 +63,7 @@ const CardCountStatusOrder = (props: any) => {
           </Typography>
           <Box sx={{ mb: 1, columnGap: 1.5, display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
             <Typography variant='h4' sx={{ color: theme.palette.customColors.lightPaperBg, fontWeight: 'bold' }}>
-              {(mapOrderStatus as any)[status]?.count}
+              {(mapOrderStatus as any)[status]?.count || 0}
             </Typography>
           </Box>
         </Box>

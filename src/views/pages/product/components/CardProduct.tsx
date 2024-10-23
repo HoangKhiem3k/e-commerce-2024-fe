@@ -241,19 +241,65 @@ const CardProduct = (props: TCardProduct) => {
             {t('No_sell_product')}
           </Typography>
         )}
-        {item?.location?.name && (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: '2px', mt: 2 }}>
-            <Icon icon='carbon:location' />
+        {(item?.location?.name || item.views) && (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px', mt: 2 }}>
+            {item?.location?.name && (
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+                <Icon icon='carbon:location' />
 
-            <Typography
-              variant='h6'
-              sx={{
-                fontWeight: 'bold',
-                fontSize: '14px'
-              }}
-            >
-              {item?.location?.name}
-            </Typography>
+                <Typography
+                  variant='h6'
+                  sx={{
+                    fontWeight: 'bold',
+                    fontSize: '14px'
+                  }}
+                >
+                  {item?.location?.name}
+                </Typography>
+              </Box>
+            )}
+            {item?.views && (
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+                <Icon icon='lets-icons:view-light' />
+                <Typography
+                  variant='h6'
+                  sx={{
+                    fontWeight: 'bold',
+                    fontSize: '14px'
+                  }}
+                >
+                  {item?.views}
+                </Typography>
+              </Box>
+            )}
+            {!!item?.uniqueViews?.length && (
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+                <Icon icon='mdi:account-view-outline' />
+                <Typography
+                  variant='h6'
+                  sx={{
+                    fontWeight: 'bold',
+                    fontSize: '14px'
+                  }}
+                >
+                  {item?.uniqueViews?.length}
+                </Typography>
+              </Box>
+            )}
+            {!!item?.likedBy?.length && (
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+                <Icon icon='icon-park-outline:like' />
+                <Typography
+                  variant='h6'
+                  sx={{
+                    fontWeight: 'bold',
+                    fontSize: '14px'
+                  }}
+                >
+                  {item?.likedBy?.length}
+                </Typography>
+              </Box>
+            )}
           </Box>
         )}
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

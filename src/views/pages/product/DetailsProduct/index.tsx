@@ -120,9 +120,9 @@ const DetailsProductPage: NextPage<TProps> = () => {
   const dispatch: AppDispatch = useDispatch()
 
   // fetch api
-  const fetchGetDetailsProduct = async (slug: string) => {
+  const fetchGetDetailsProduct = async (slug: string, isViewed?: boolean) => {
     setLoading(true)
-    await getDetailsProductPublicBySlug(slug)
+    await getDetailsProductPublicBySlug(slug, isViewed)
       .then(async response => {
         setLoading(false)
         const data = response?.data
@@ -385,7 +385,7 @@ const DetailsProductPage: NextPage<TProps> = () => {
 
   useEffect(() => {
     if (slug) {
-      fetchGetDetailsProduct(slug)
+      fetchGetDetailsProduct(slug, true)
       fetchListRelatedProduct(slug)
     }
   }, [slug])
