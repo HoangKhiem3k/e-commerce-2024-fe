@@ -137,7 +137,9 @@ const ItemProductCart = ({ item, index, selectedRows, handleChangeCheckbox }: TP
             mt: 2
           }}
         >
-          <Link href={`/product/${itemState.slug}`}>{itemState.name}</Link>
+          <Link style={{ color: 'inherit' }} href={`/product/${itemState.slug}`}>
+            {itemState.name}
+          </Link>
         </Typography>
         <Box sx={{ flexBasis: '20%' }}>
           <Typography
