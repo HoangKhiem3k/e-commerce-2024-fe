@@ -6,7 +6,7 @@ import Box from '@mui/material/Box'
 import Badge from '@mui/material/Badge'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
-import { styled, useTheme } from '@mui/material/styles'
+import { styled, Theme, useTheme } from '@mui/material/styles'
 import MuiMenu, { MenuProps } from '@mui/material/Menu'
 import MuiMenuItem, { MenuItemProps } from '@mui/material/MenuItem'
 import Typography from '@mui/material/Typography'
@@ -18,14 +18,26 @@ import NotificationItem from 'src/views/layouts/components/notification-dropdown
 
 // ** Third party
 import { useTranslation } from 'react-i18next'
+import { getMessaging, onMessage } from 'firebase/messaging'
+
+// ** Store
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
 import { getAllNotificationsAsync, markReadAllNotificationAsync } from 'src/stores/notification/actions'
 import toast from 'react-hot-toast'
 import { resetInitialState } from 'src/stores/notification'
-// ** Firebase
+
+// ** Configs
 import firebaseApp from 'src/configs/firebase'
-import { getMessaging, onMessage } from 'firebase/messaging'
+
+// ** Hooks
+import useFcmToken from 'src/hooks/useFcmToken'
+
+// ** Services
+import { updateDeviceToken } from 'src/services/auth'
+
+// ** Helpers
+import { clearLocalDeviceToken, getLocalDeviceToken, setLocalDeviceToken } from 'src/helpers/storage'
 
 export type NotificationsType = {
   createdAt: string
@@ -75,6 +87,8 @@ const NotificationDropdown = (props: Props) => {
   // ** Hooks
   const theme = useTheme()
   const { t } = useTranslation()
+  const { fcmToken } = useFcmToken()
+  console.log('fcmToken', { fcmToken })
 
   // ** Ref
   const wrapperListRef = useRef<HTMLDivElement>(null)
@@ -97,6 +111,7 @@ const NotificationDropdown = (props: Props) => {
   // ** States
   const [anchorEl, setAnchorEl] = useState<(EventTarget & Element) | null>(null)
   const [limit, setLimit] = useState(10)
+  const localDeviceToken = getLocalDeviceToken()
 
   // ** handle
   const handleDropdownOpen = (event: SyntheticEvent) => {
@@ -115,6 +130,12 @@ const NotificationDropdown = (props: Props) => {
     dispatch(getAllNotificationsAsync({ params: { limit: limit, page: 1, order: 'createdAt desc' } }))
   }
 
+  const handleUpdateDeviceToken = async (token: string) => {
+    clearLocalDeviceToken()
+    setLocalDeviceToken(token)
+    await updateDeviceToken({ deviceToken: token })
+  }
+
   const handleScrollListNotification = () => {
     const wrapperContent = wrapperListRef.current
     if (!wrapperContent) {
@@ -130,6 +151,25 @@ const NotificationDropdown = (props: Props) => {
       }
     }
   }
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+      const messaging = getMessaging(firebaseApp)
+      const unsubscribe = onMessage(messaging, payload => {
+        handleGetListNotification()
+      })
+
+      return () => {
+        unsubscribe() // Unsubscribe from the onMessage event
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    if (fcmToken !== localDeviceToken) {
+      handleUpdateDeviceToken(fcmToken)
+    }
+  }, [fcmToken])
 
   useEffect(() => {
     handleGetListNotification()
@@ -167,20 +207,6 @@ const NotificationDropdown = (props: Props) => {
       dispatch(resetInitialState())
     }
   }, [isSuccessReadAll, isSuccessReadAll, messageErrorReadAll])
-
-  // Firebase config
-  useEffect(() => {
-    if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
-      const messaging = getMessaging(firebaseApp)
-      const unsubscribe = onMessage(messaging, payload => {
-        handleGetListNotification()
-      })
-
-      return () => {
-        unsubscribe() // Unsubscribe from the onMessage event
-      }
-    }
-  }, [])
 
   return (
     <Fragment>
