@@ -8,7 +8,8 @@ import {
   cancelOrderProductOfMeAsync,
   deleteOrderProductAsync,
   updateOrderProductAsync,
-  getAllOrderProductsAsync
+  getAllOrderProductsAsync,
+  updateStatusOrderProductAsync
 } from 'src/stores/order-product/actions'
 
 const initialState = {
@@ -134,6 +135,17 @@ export const orderProductSlice = createSlice({
       state.isSuccessDelete = !!action.payload?.data?._id
       state.isErrorDelete = !action.payload?.data?._id
       state.messageErrorDelete = action.payload?.message
+      state.typeError = action.payload?.typeError
+    })
+    // ** update status order product
+    builder.addCase(updateStatusOrderProductAsync.pending, (state, action) => {
+      state.isLoading = true
+    })
+    builder.addCase(updateStatusOrderProductAsync.fulfilled, (state, action) => {
+      state.isLoading = false
+      state.isSuccessEdit = !!action.payload?.data?._id
+      state.isErrorEdit = !action.payload?.data?._id
+      state.messageErrorEdit = action.payload?.message
       state.typeError = action.payload?.typeError
     })
   }
