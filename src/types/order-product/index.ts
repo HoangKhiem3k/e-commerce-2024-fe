@@ -7,6 +7,12 @@ export type TItemOrderProduct = {
   product: string
   slug: string
 }
+export type TParamsStatusOrderUpdate = {
+  id: string
+  isDelivered?: number
+  isPaid?: number
+  status?: number
+}
 export type TItemProductMe = {
   name: string
   amount: number
@@ -84,7 +90,5 @@ export type TParamsEditOrderProduct = {
     city: string
   }
   id: string
-  isPaid: boolean
-  isDelivery: boolean
 }
 export interface TItemOrderProducts extends TItemOrderProductMe {}
