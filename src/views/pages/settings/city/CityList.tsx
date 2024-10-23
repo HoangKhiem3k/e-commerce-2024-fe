@@ -356,7 +356,6 @@ const CityListPage: NextPage<TProps> = () => {
               setSelectedRow(row as string[])
             }}
             disableColumnFilter
-            disableColumnMenu
           />
         </Grid>
       </Box>
