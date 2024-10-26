@@ -40,7 +40,6 @@ import { resetInitialState as resetInitialStateComment } from 'src/stores/commen
 import { useAuth } from 'src/hooks/useAuth'
 
 // ** Services
-import { getDetailsProductPublicBySlug, getListRelatedProductBySlug } from 'src/services/product'
 import { getAllReviews } from 'src/services/review-product'
 import { getAllCommentsPublic } from 'src/services/comment-product'
 
@@ -63,9 +62,12 @@ import { OBJECT_TYPE_ERROR_REVIEW } from 'src/configs/error'
 import { TCommentItemProduct } from 'src/types/comment'
 import { createCommentAsync } from 'src/stores/comments/actions'
 
-type TProps = {}
+type TProps = {
+  productData: TProduct
+  productsRelated: TProduct[]
+}
 
-const DetailsProductPage: NextPage<TProps> = () => {
+const DetailsProductPage: NextPage<TProps> = ({ productData, productsRelated }) => {
   // State
   const [loading, setLoading] = useState(false)
   const [dataProduct, setDataProduct] = useState<TProduct | any>({})
@@ -120,20 +122,6 @@ const DetailsProductPage: NextPage<TProps> = () => {
   const dispatch: AppDispatch = useDispatch()
 
   // fetch api
-  const fetchGetDetailsProduct = async (slug: string, isViewed?: boolean) => {
-    setLoading(true)
-    await getDetailsProductPublicBySlug(slug, isViewed)
-      .then(async response => {
-        setLoading(false)
-        const data = response?.data
-        if (data) {
-          setDataProduct(data)
-        }
-      })
-      .catch(() => {
-        setLoading(false)
-      })
-  }
 
   const fetchGetAllListReviewByProduct = async (id: string) => {
     setLoading(true)
@@ -151,21 +139,6 @@ const DetailsProductPage: NextPage<TProps> = () => {
         const data = response?.data?.reviews
         if (data) {
           setListReview(data)
-        }
-      })
-      .catch(() => {
-        setLoading(false)
-      })
-  }
-
-  const fetchListRelatedProduct = async (slug: string) => {
-    setLoading(true)
-    await getListRelatedProductBySlug({ params: { slug: slug } })
-      .then(async response => {
-        setLoading(false)
-        const data = response?.data
-        if (data) {
-          setRelatedProduct(data.products)
         }
       })
       .catch(() => {
@@ -384,11 +357,15 @@ const DetailsProductPage: NextPage<TProps> = () => {
   }, [listComment])
 
   useEffect(() => {
-    if (slug) {
-      fetchGetDetailsProduct(slug, true)
-      fetchListRelatedProduct(slug)
+    if (productData?._id) {
+      setDataProduct(productData)
     }
-  }, [slug])
+  }, [productData])
+  useEffect(() => {
+    if (productsRelated.length > 0) {
+      setRelatedProduct(productsRelated)
+    }
+  }, [productsRelated])
 
   useEffect(() => {
     if (dataProduct._id) {
