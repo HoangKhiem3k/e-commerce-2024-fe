@@ -3,6 +3,7 @@ export type TParamsGetProducts = {
   page?: number
   search?: string
   order?: string
+  productType?: string | string[]
 }
 
 export type TParamsCreateProduct = {
@@ -59,6 +60,7 @@ export type TProduct = {
   totalReviews: number
   discount: number
   sold: number
+  description: string
   location: {
     name: string
     _id: string
