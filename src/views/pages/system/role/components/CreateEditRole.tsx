@@ -1,31 +1,24 @@
 // ** React
-import React, { useEffect, useRef, useState } from 'react'
+import React, { memo, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-
 // ** Form
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Controller, useForm } from 'react-hook-form'
 import * as yup from 'yup'
-
 // ** Mui
 import { Box, Button, IconButton, Typography, useTheme } from '@mui/material'
-
 // ** Component
 import Icon from 'src/components/Icon'
 import CustomModal from 'src/components/custom-modal'
 import Spinner from 'src/components/spinner'
 import CustomTextField from 'src/components/text-field'
-
 // ** Services
-import { createRole, getDetailsRole, updateRole } from 'src/services/role'
+import { createRole, getDetailsRole } from 'src/services/role'
 
-// ** Redux
-import { AppDispatch } from 'src/stores'
-import { useDispatch } from 'react-redux'
 import { PERMISSIONS } from 'src/configs/permission'
 import { queryKeys } from 'src/configs/queryKey'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { TParamsCreateRole, TParamsEditRole } from 'src/types/role'
+import { TParamsCreateRole } from 'src/types/role'
 import toast from 'react-hot-toast'
 import { useMutationEditRole } from 'src/queries/role'
 
@@ -47,7 +40,6 @@ const CreateEditRole = (props: TCreateEditRole) => {
 
   // ** React Query
   const queryClient = useQueryClient()
-  const data = queryClient.getQueryData([queryKeys.role_list, sortBy, searchBy])
 
   const fetchCreateRole = async (data: TParamsCreateRole) => {
     const res = await createRole(data)
@@ -220,4 +212,4 @@ const CreateEditRole = (props: TCreateEditRole) => {
   )
 }
 
-export default CreateEditRole
+export default memo(CreateEditRole)

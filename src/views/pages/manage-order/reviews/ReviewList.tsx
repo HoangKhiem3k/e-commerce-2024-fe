@@ -2,7 +2,7 @@
 import { NextPage } from 'next'
 
 // ** React
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 // ** Mui
@@ -44,6 +44,8 @@ import { FILTER_REVIEW_CMS } from 'src/configs/reviews'
 type TProps = {}
 
 const ReviewListPage: NextPage<TProps> = () => {
+  // ** Ref
+  const isRendered = useRef<boolean>(false)
   // ** Translate
   const { t } = useTranslation()
 
@@ -257,13 +259,18 @@ const ReviewListPage: NextPage<TProps> = () => {
   }
 
   useEffect(() => {
-    handleGetListReviews()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sortBy, searchBy, page, pageSize, filterBy])
+    if (isRendered.current) {
+      setFilterBy({ minStar: starSelected })
+    }
+    isRendered.current = true
+  }, [starSelected])
 
   useEffect(() => {
-    setFilterBy({ minStar: starSelected })
-  }, [starSelected])
+    if (isRendered.current) {
+      handleGetListReviews()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sortBy, searchBy, page, pageSize, filterBy])
 
   useEffect(() => {
     if (isSuccessEdit) {

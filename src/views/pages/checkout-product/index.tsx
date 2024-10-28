@@ -129,7 +129,6 @@ const CheckoutProductPage: NextPage<TProps> = () => {
 
   const memoNameCity = useMemo(() => {
     const findCity = optionCities.find(item => item.value === memoAddressDefault?.city)
-    console.log(findCity)
 
     return findCity?.label
   }, [memoAddressDefault, optionCities])
@@ -212,7 +211,6 @@ const CheckoutProductPage: NextPage<TProps> = () => {
       }
     })
   }
-  console.log('ơpeew', { optionPayments })
   // ** Fetch API
   const handleGetListPaymentMethod = async () => {
     setLoading(true)

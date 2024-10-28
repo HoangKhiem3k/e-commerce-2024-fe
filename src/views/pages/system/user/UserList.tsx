@@ -2,7 +2,7 @@
 import { NextPage } from 'next'
 
 // ** React
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 // ** Mui
@@ -120,6 +120,9 @@ const UserListPage: NextPage<TProps> = () => {
   const CONSTANT_STATUS_USER = OBJECT_STATUS_USER()
   const CONSTANT_USER_TYPE = OBJECT_TYPE_USER()
 
+  // ** Ref
+  const isFirstRender = useRef<boolean>(false)
+
   // ** Hooks
   const { VIEW, UPDATE, DELETE, CREATE } = usePermission('SYSTEM.USER', ['CREATE', 'VIEW', 'UPDATE', 'DELETE'])
   const { i18n } = useTranslation()
@@ -160,9 +163,9 @@ const UserListPage: NextPage<TProps> = () => {
     })
   }
 
-  const handleCloseConfirmDeleteMultipleUser = () => {
+  const handleCloseConfirmDeleteMultipleUser = useCallback(() => {
     setOpenDeleteMultipleUser(false)
-  }
+  }, [])
 
   const handleSort = (sort: GridSortModel) => {
     const sortOption = sort[0]
@@ -173,33 +176,33 @@ const UserListPage: NextPage<TProps> = () => {
     }
   }
 
-  const handleCloseCreateEdit = () => {
+  const handleCloseCreateEdit = useCallback(() => {
     setOpenCreateEdit({
       open: false,
       id: ''
     })
-  }
+  }, [])
 
   const handleDeleteUser = () => {
     dispatch(deleteUserAsync(openDeleteUser.id))
   }
 
-  const handleDeleteMultipleUser = () => {
+  const handleDeleteMultipleUser = useCallback(() => {
     dispatch(
       deleteMultipleUserAsync({
         userIds: selectedRow?.map((item: TSelectedRow) => item.id)
       })
     )
-  }
+  }, [selectedRow])
 
-  const handleAction = (action: string) => {
+  const handleAction = useCallback((action: string) => {
     switch (action) {
       case 'delete': {
         setOpenDeleteMultipleUser(true)
         break
       }
     }
-  }
+  }, [])
 
   const handleOnchangePagination = (page: number, pageSize: number) => {
     setPage(page)
@@ -377,8 +380,6 @@ const UserListPage: NextPage<TProps> = () => {
       })
   }
 
-  console.log('checl', { countUserType })
-
   const fetchAllCities = async () => {
     setLoading(true)
     await getAllCities({ params: { limit: -1, page: -1 } })
@@ -399,19 +400,24 @@ const UserListPage: NextPage<TProps> = () => {
   }, [selectedRow])
 
   useEffect(() => {
-    handleGetListUsers()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sortBy, searchBy, i18n.language, page, pageSize, filterBy])
-
-  useEffect(() => {
-    setFilterBy({ roleId: roleSelected, status: statusSelected, cityId: citySelected, userType: typeSelected })
+    if (isFirstRender.current) {
+      setFilterBy({ roleId: roleSelected, status: statusSelected, cityId: citySelected, userType: typeSelected })
+    }
   }, [roleSelected, statusSelected, citySelected, typeSelected])
 
   useEffect(() => {
     fetchAllRoles()
     fetchAllCities()
     fetchAllCountUserType()
+    isFirstRender.current = true
   }, [])
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      handleGetListUsers()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sortBy, searchBy, i18n.language, page, pageSize, filterBy])
 
   useEffect(() => {
     if (isSuccessCreateEdit) {
