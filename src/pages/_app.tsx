@@ -1,5 +1,5 @@
 // ** React
-import { ReactNode } from 'react'
+import { ReactNode, useState } from 'react'
 // ** Next
 import Head from 'next/head'
 import { Router, useRouter } from 'next/router'
@@ -39,6 +39,9 @@ import { useSettings } from 'src/hooks/useSettings'
 import { AxiosInterceptor } from 'src/helpers/axios'
 // ** MUI
 import { useTheme } from '@mui/material'
+// ** TanStack React Query
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 type ExtendedAppProps = AppProps & {
   Component: NextPage
@@ -83,6 +86,8 @@ export default function App(props: ExtendedAppProps) {
   const theme = useTheme()
   const router = useRouter()
   const slugProduct = (router?.query?.productId as string)?.replaceAll('-', ' ')
+  // React- query
+  const [queryClient] = useState(() => new QueryClient())
 
   // Variables
   const getLayout = Component.getLayout ?? (page => <UserLayout>{page}</UserLayout>)
@@ -138,35 +143,38 @@ export default function App(props: ExtendedAppProps) {
         <link rel='icon' href='/vercel.svg' />
       </Head>
 
-      <AuthProvider>
-        <AxiosInterceptor>
-          <SessionProvider session={session}>
-            <SettingsProvider {...(setConfig ? { pageSettings: setConfig() } : {})}>
-              <SettingsConsumer>
-                {({ settings }) => {
-                  return (
-                    <ThemeComponent settings={settings}>
-                      <Guard authGuard={authGuard} guestGuard={guestGuard}>
-                        <AclGuard
-                          permission={permission}
-                          aclAbilities={aclAbilities}
-                          guestGuard={guestGuard}
-                          authGuard={authGuard}
-                        >
-                          {getLayout(<Component {...pageProps} />)}
-                        </AclGuard>
-                      </Guard>
-                      <ReactHotToast>
-                        <Toaster position={settings.toastPosition} toastOptions={toastOptions} />
-                      </ReactHotToast>
-                    </ThemeComponent>
-                  )
-                }}
-              </SettingsConsumer>
-            </SettingsProvider>
-          </SessionProvider>
-        </AxiosInterceptor>
-      </AuthProvider>
+      <QueryClientProvider client={queryClient}>
+        <ReactQueryDevtools initialIsOpen={false} buttonPosition='bottom-left' />
+        <AuthProvider>
+          <AxiosInterceptor>
+            <SessionProvider session={session}>
+              <SettingsProvider {...(setConfig ? { pageSettings: setConfig() } : {})}>
+                <SettingsConsumer>
+                  {({ settings }) => {
+                    return (
+                      <ThemeComponent settings={settings}>
+                        <Guard authGuard={authGuard} guestGuard={guestGuard}>
+                          <AclGuard
+                            permission={permission}
+                            aclAbilities={aclAbilities}
+                            guestGuard={guestGuard}
+                            authGuard={authGuard}
+                          >
+                            {getLayout(<Component {...pageProps} />)}
+                          </AclGuard>
+                        </Guard>
+                        <ReactHotToast>
+                          <Toaster position={settings.toastPosition} toastOptions={toastOptions} />
+                        </ReactHotToast>
+                      </ThemeComponent>
+                    )
+                  }}
+                </SettingsConsumer>
+              </SettingsProvider>
+            </SessionProvider>
+          </AxiosInterceptor>
+        </AuthProvider>
+      </QueryClientProvider>
     </Provider>
   )
 }
