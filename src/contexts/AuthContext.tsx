@@ -132,7 +132,6 @@ const AuthProvider = ({ children }: Props) => {
         const returnUrl = router.query.returnUrl
         setUser({ ...response.data.user })
         const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
-        console.log('redirectURL', { redirectURL })
         router.replace(redirectURL as string)
       })
       .catch(err => {

@@ -25,7 +25,6 @@ const CardCountStatusOrder = (props: any) => {
   const { t } = useTranslation()
   // ** Props
   const { sx, icon, countStatusOrder, iconSize = 24, avatarSize = 38, status } = props
-  console.log('countStatusOrder', { countStatusOrder })
   const mapOrderStatus = {
     0: {
       title: t('Wait_payment'),

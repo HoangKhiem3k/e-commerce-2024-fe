@@ -164,8 +164,10 @@ const EditOrderProduct = (props: TCreateEditProduct) => {
   }, [open, idOrder])
 
   useEffect(() => {
-    fetchAllCities()
-  }, [])
+    if (open) {
+      fetchAllCities()
+    }
+  }, [open])
 
   return (
     <>

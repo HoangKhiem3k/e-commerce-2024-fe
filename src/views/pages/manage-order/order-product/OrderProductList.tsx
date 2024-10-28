@@ -2,7 +2,7 @@
 import { NextPage } from 'next'
 
 // ** React
-import { MouseEvent, useEffect, useMemo, useState } from 'react'
+import { MouseEvent, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 // ** Mui
@@ -109,6 +109,8 @@ const OrderProductListPage: NextPage<TProps> = () => {
     total: number
   }>({} as any)
 
+  const isRendered = useRef<boolean>(false)
+
   // ** Hooks
   const { VIEW, UPDATE, DELETE } = usePermission('SYSTEM.MANAGE_ORDER.ORDER', ['CREATE', 'VIEW', 'UPDATE', 'DELETE'])
   const { i18n } = useTranslation()
@@ -126,7 +128,6 @@ const OrderProductListPage: NextPage<TProps> = () => {
     messageErrorDelete,
     typeError
   } = useSelector((state: RootState) => state.orderProduct)
-  console.log('orderProducts', { orderProducts })
   // ** theme
   const theme = useTheme()
 
@@ -400,18 +401,23 @@ const OrderProductListPage: NextPage<TProps> = () => {
   }
 
   useEffect(() => {
-    handleGetListOrderProducts()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sortBy, searchBy, i18n.language, page, pageSize, filterBy])
-
-  useEffect(() => {
-    setFilterBy({ status: statusSelected, cityId: citySelected })
+    if (isRendered.current) {
+      setFilterBy({ status: statusSelected, cityId: citySelected })
+    }
   }, [statusSelected, citySelected])
 
   useEffect(() => {
     fetchAllCities()
     fetchAllCountStatusOrder()
+    isRendered.current = true
   }, [])
+
+  useEffect(() => {
+    if (isRendered.current) {
+      handleGetListOrderProducts()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sortBy, searchBy, i18n.language, page, pageSize, filterBy])
 
   useEffect(() => {
     if (isSuccessEdit) {
