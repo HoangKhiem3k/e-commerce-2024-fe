@@ -1,3 +1,5 @@
+
+"use client"
 // ** Next
 import { NextPage } from 'next'
 
@@ -43,9 +45,8 @@ import { FILTER_REVIEW_CMS } from 'src/configs/reviews'
 
 type TProps = {}
 
+
 const ReviewListPage: NextPage<TProps> = () => {
-  // ** Ref
-  const isRendered = useRef<boolean>(false)
   // ** Translate
   const { t } = useTranslation()
 
@@ -68,6 +69,9 @@ const ReviewListPage: NextPage<TProps> = () => {
   const [filterBy, setFilterBy] = useState<Record<string, string | string[]>>({})
   const [openDeleteMultipleMultiple, setOpenDeleteMultipleMultiple] = useState(false)
   const [selectedRow, setSelectedRow] = useState<string[]>([])
+
+  // ** Ref
+  const isRendered = useRef<boolean>(false)
 
   // ** Hooks
   const { VIEW, UPDATE, DELETE } = usePermission('SYSTEM.MANAGE_ORDER.REVIEW', ['CREATE', 'VIEW', 'UPDATE', 'DELETE'])
@@ -158,20 +162,25 @@ const ReviewListPage: NextPage<TProps> = () => {
 
   const columns: GridColDef[] = [
     {
-      field: 'firstName',
+      field: "firstName",
       headerName: t('User'),
       hideSortIcons: true,
       flex: 1,
       renderCell: params => {
         const { row } = params
-        const fullName = toFullName(
-          row?.user?.lastName || '',
-          row?.user?.middleName || '',
-          row?.user?.firstName || '',
-          i18n.language
-        )
+        const fullName =
+          toFullName(
+            row?.user?.lastName || '',
+            row?.user?.middleName || '',
+            row?.user?.firstName || '',
+            i18n.language
+          )
 
-        return <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '100%' }}>{fullName}</Typography>
+        return (
+          <Typography sx={{ overflow: "hidden", textOverflow: "ellipsis", width: "100%" }}>
+            {fullName}
+          </Typography>
+        )
       }
     },
     {
@@ -182,13 +191,11 @@ const ReviewListPage: NextPage<TProps> = () => {
       renderCell: params => {
         const { row } = params
 
-        return (
-          <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '100%' }}>
-            <Tooltip title={row.product.name}>
-              <span>{row?.product?.name}</span>
-            </Tooltip>
-          </Typography>
-        )
+        return <Typography sx={{ overflow: "hidden", textOverflow: "ellipsis", width: "100%" }}>
+          <Tooltip title={row.product.name}>
+            <span>{row?.product?.name}</span>
+          </Tooltip>
+        </Typography>
       }
     },
     {
@@ -221,6 +228,7 @@ const ReviewListPage: NextPage<TProps> = () => {
       sortable: false,
       align: 'left',
       renderCell: params => {
+
         return (
           <>
             <GridEdit
@@ -284,6 +292,7 @@ const ReviewListPage: NextPage<TProps> = () => {
         toast.error(t(errorConfig))
       } else {
         toast.error(t('Update_review_error'))
+
       }
       dispatch(resetInitialState())
     }

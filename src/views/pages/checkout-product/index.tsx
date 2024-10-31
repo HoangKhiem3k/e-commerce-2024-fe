@@ -1,3 +1,5 @@
+"use client"
+
 // ** Next
 import { NextPage } from 'next'
 
@@ -45,7 +47,7 @@ import { useAuth } from 'src/hooks/useAuth'
 
 // ** Other
 import { TItemOrderProduct } from 'src/types/order-product'
-import { useRouter } from 'next/router'
+import { useRouter, useSearchParams } from 'next/navigation'
 import toast from 'react-hot-toast'
 import Swal from 'sweetalert2'
 import { getLocalProductCart, setLocalProductToCart } from 'src/helpers/storage'
@@ -62,7 +64,7 @@ type TProps = {}
 
 const CheckoutProductPage: NextPage<TProps> = () => {
   // State
-  const [optionPayments, setOptionPayments] = useState<{ label: string; value: string; type: string }[]>([])
+  const [optionPayments, setOptionPayments] = useState<{ label: string; value: string, type: string }[]>([])
   const [optionDeliveries, setOptionDeliveries] = useState<{ label: string; value: string; price: string }[]>([])
   const [paymentSelected, setPaymentSelected] = useState('')
   const [deliverySelected, setDeliverySelected] = useState('')
@@ -75,6 +77,7 @@ const CheckoutProductPage: NextPage<TProps> = () => {
   const { i18n } = useTranslation()
   const { user } = useAuth()
   const router = useRouter()
+  const searchParams = useSearchParams()
   const PAYMENT_DATA = PAYMENT_TYPES()
 
   // ** theme
@@ -105,21 +108,24 @@ const CheckoutProductPage: NextPage<TProps> = () => {
       totalPrice: 0,
       productsSelected: []
     }
-    const data: any = router.query
-    if (data) {
-      result.totalPrice = data.totalPrice || 0
-      result.productsSelected = data.productsSelected ? handleFormatDataProduct(JSON.parse(data.productsSelected)) : []
+    const productsSelected = searchParams.get('productsSelected')
+    const totalPrice = searchParams.get('totalPrice')
+
+    if (totalPrice && productsSelected) {
+      result.totalPrice = totalPrice ? +totalPrice : 0
+      result.productsSelected =productsSelected ? handleFormatDataProduct(JSON.parse(productsSelected)) : []
     }
 
     return result
-  }, [router.query, orderItems])
+  }, [searchParams, orderItems])
 
   useEffect(() => {
-    const data: any = router.query
-    if (!data?.productsSelected) {
+    const productsSelected = searchParams.get('productsSelected')
+
+    if (!productsSelected) {
       setOpenWarning(true)
     }
-  }, [router.query])
+  }, [searchParams])
 
   const memoAddressDefault = useMemo(() => {
     const findAddress = user?.addresses?.find(item => item.isDefault)
@@ -148,21 +154,22 @@ const CheckoutProductPage: NextPage<TProps> = () => {
     setPaymentSelected(value)
   }
 
-  const handlePaymentVNPay = async (data: { orderId: string; totalPrice: number }) => {
+  const handlePaymentVNPay = async (data: { orderId: string, totalPrice: number }) => {
     setLoading(true)
     await createURLpaymentVNPay({
-      totalPrice: 10000,
+      totalPrice: data.totalPrice,
       orderId: data?.orderId,
-      language: i18n.language === 'vi' ? 'vn' : i18n.language
-    }).then(res => {
+      language: i18n.language === "vi" ? "vn" : i18n.language
+    }).then((res) => {
       if (res?.data) {
         window.open(res?.data, '_blank')
       }
       setLoading(false)
     })
+
   }
 
-  const handlePaymentTypeOrder = (type: string, data: { orderId: string; totalPrice: number }) => {
+  const handlePaymentTypeOrder = (type: string, data: { orderId: string, totalPrice: number }) => {
     switch (type) {
       case PAYMENT_DATA.VN_PAYMENT.value: {
         handlePaymentVNPay(data)
@@ -175,9 +182,9 @@ const CheckoutProductPage: NextPage<TProps> = () => {
 
   const handleOrderProduct = () => {
     const totalPrice = memoPriceShipping + Number(memoQueryProduct.totalPrice)
-    if (!memoAddressDefault) {
+    if(!memoAddressDefault) {
       setOpenAddress(true)
-
+      
       return
     }
     dispatch(
@@ -189,11 +196,11 @@ const CheckoutProductPage: NextPage<TProps> = () => {
         user: user ? user?._id : '',
         fullName: memoAddressDefault
           ? toFullName(
-              memoAddressDefault?.lastName,
-              memoAddressDefault?.middleName,
-              memoAddressDefault?.firstName,
-              i18n.language
-            )
+            memoAddressDefault?.lastName,
+            memoAddressDefault?.middleName,
+            memoAddressDefault?.firstName,
+            i18n.language
+          )
           : '',
         address: memoAddressDefault ? memoAddressDefault.address : '',
         city: memoAddressDefault ? memoAddressDefault.city : '',
@@ -201,16 +208,17 @@ const CheckoutProductPage: NextPage<TProps> = () => {
         shippingPrice: memoPriceShipping,
         totalPrice: totalPrice
       })
-    ).then(res => {
+    ).then((res) => {
       const idPaymentMethod = res?.payload?.data?.paymentMethod
       const orderId = res?.payload?.data?._id
       const totalPrice = res?.payload?.data?.totalPrice
-      const findPayment = optionPayments.find(item => item.value === idPaymentMethod)
+      const findPayment = optionPayments.find((item) => item.value === idPaymentMethod)
       if (findPayment) {
-        handlePaymentTypeOrder(findPayment.type, { totalPrice, orderId })
+        handlePaymentTypeOrder(findPayment.type, { totalPrice, orderId, })
       }
     })
   }
+
   // ** Fetch API
   const handleGetListPaymentMethod = async () => {
     setLoading(true)
@@ -218,7 +226,7 @@ const CheckoutProductPage: NextPage<TProps> = () => {
       .then(res => {
         if (res.data) {
           setOptionPayments(
-            res?.data?.paymentTypes?.map((item: { name: string; _id: string; type: string }) => ({
+            res?.data?.paymentTypes?.map((item: { name: string; _id: string, type: string }) => ({
               label: item.name,
               value: item._id,
               type: item.type

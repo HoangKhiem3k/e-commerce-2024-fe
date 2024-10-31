@@ -1,6 +1,8 @@
+"use client"
+
 // ** Next
 import { NextPage } from 'next'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 
 // ** React
 import { useEffect, useState } from 'react'
@@ -23,12 +25,14 @@ import { getAllOrderProductsByMeAsync } from 'src/stores/order-product/actions'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
 import { resetInitialState } from 'src/stores/order-product'
+
 // ** Other
 import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
 import toast from 'react-hot-toast'
 
 // ** Types
 import { TItemOrderProductMe } from 'src/types/order-product'
+
 
 type TProps = {}
 

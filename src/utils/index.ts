@@ -1,8 +1,9 @@
 // ** Types
 import { TItemOrderProduct } from 'src/types/order-product'
+
 // ** Libraries
-import htmlToDraft from 'html-to-draftjs'
 import { ContentState, EditorState } from 'draft-js'
+import htmlToDraft from 'html-to-draftjs'
 
 export const toFullName = (lastName: string, middleName: string, firstName: string, language: string) => {
   if (language === 'vi') {
@@ -11,6 +12,7 @@ export const toFullName = (lastName: string, middleName: string, firstName: stri
 
   return `${firstName ? firstName : ''} ${middleName ? middleName : ''} ${lastName ? lastName : ''}`.trim()
 }
+
 export const convertBase64 = (file: File) =>
   new Promise((resolve, reject) => {
     const reader = new FileReader()
@@ -18,6 +20,7 @@ export const convertBase64 = (file: File) =>
     reader.onload = () => resolve(reader.result)
     reader.onerror = reject
   })
+
 export const separationFullName = (fullName: string, language: string) => {
   const result = {
     firstName: '',
@@ -53,6 +56,7 @@ export const separationFullName = (fullName: string, language: string) => {
 
   return result
 }
+
 export const getAllValueOfObject = (obj: any, arrExlude?: string[]) => {
   try {
     const values: any[] = []
@@ -84,6 +88,7 @@ export const formatFilter = (filter: any) => {
 
   return result
 }
+
 export const stringToSlug = (str: string) => {
   // remove accents
   const from = 'àáãảạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệđùúủũụưừứửữựòóỏõọôồốổỗộơờớởỡợìíỉĩịäëïîöüûñçýỳỹỵỷ',
@@ -100,6 +105,7 @@ export const stringToSlug = (str: string) => {
 
   return str
 }
+
 export const convertHTMLToDraft = (html: string) => {
   const blocksFromHtml = htmlToDraft(html)
   const { contentBlocks, entityMap } = blocksFromHtml
@@ -108,6 +114,7 @@ export const convertHTMLToDraft = (html: string) => {
 
   return editorState
 }
+
 export const formatNumberToLocal = (value: string | number) => {
   try {
     return Number(value).toLocaleString('vi-VN', {
@@ -117,6 +124,7 @@ export const formatNumberToLocal = (value: string | number) => {
     return value
   }
 }
+
 export const cloneDeep = (data: any) => {
   try {
     return JSON.parse(JSON.stringify(data))
@@ -124,6 +132,7 @@ export const cloneDeep = (data: any) => {
     return data
   }
 }
+
 export const convertUpdateProductToCart = (orderItems: TItemOrderProduct[], addItem: TItemOrderProduct) => {
   try {
     let result = []
@@ -141,9 +150,11 @@ export const convertUpdateProductToCart = (orderItems: TItemOrderProduct[], addI
     return orderItems
   }
 }
+
 export const convertUpdateMultipleProductsCart = (orderItems: TItemOrderProduct[], addItems: TItemOrderProduct[]) => {
   try {
     let result = []
+
     const cloneOrderItems = cloneDeep(orderItems)
     addItems.forEach(addItem => {
       const findItems = cloneOrderItems.find((item: TItemOrderProduct) => item.product === addItem.product)
@@ -160,6 +171,7 @@ export const convertUpdateMultipleProductsCart = (orderItems: TItemOrderProduct[
     return orderItems
   }
 }
+
 export const isExpiry = (startDate: Date | null, endDate: Date | null) => {
   if (startDate && endDate) {
     const currentTime = new Date().getTime()
@@ -171,9 +183,17 @@ export const isExpiry = (startDate: Date | null, endDate: Date | null) => {
 
   return false
 }
+
 export const getTextFromHTML = (data: string) => {
   const container = document.createElement('div')
   container.innerHTML = data
 
   return container.textContent || container.innerText
+}
+
+export const createUrlQuery = (name: string, value: any) => {
+  const params = new URLSearchParams()
+  params.set(name, value)
+
+  return params.toString()
 }

@@ -1,3 +1,5 @@
+"use client"
+
 // ** MUI Theme Provider
 import { deepmerge } from '@mui/utils'
 import { PaletteMode, ThemeOptions } from '@mui/material'

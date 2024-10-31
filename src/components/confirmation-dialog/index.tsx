@@ -1,3 +1,7 @@
+"use client"
+// ** React
+import { memo } from 'react'
+
 // ** Mui
 import {
   Box,
@@ -10,7 +14,6 @@ import {
   styled,
   useTheme
 } from '@mui/material'
-import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import Icon from 'src/components/Icon'
 
@@ -28,17 +31,19 @@ const CustomStyleContent = styled(DialogContentText)(() => ({
 }))
 
 const StyledDialog = styled(Dialog)(() => ({
-  '.MuiPaper-root.MuiPaper-elevation': {
-    width: '400px'
+  ".MuiPaper-root.MuiPaper-elevation": {
+    width: "400px"
   }
 }))
 
 const ConfirmationDialog = (props: TConfirmationDialog) => {
-  // Props
+  // ** Props
   const { open, handleClose, title, description, handleCancel, handleConfirm } = props
-  // Translate
+
+  // ** translate
   const { t } = useTranslation()
-  // Theme
+
+  // ** theme
   const theme = useTheme()
 
   return (
@@ -48,7 +53,7 @@ const ConfirmationDialog = (props: TConfirmationDialog) => {
       aria-labelledby='alert-dialog-title'
       aria-describedby='alert-dialog-description'
     >
-      <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+      <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: "20px" }}>
         <Icon icon='ep:warning' fontSize={80} color={theme.palette.warning.main} />
       </Box>
       <DialogTitle sx={{ textAlign: 'center' }}>
@@ -58,15 +63,16 @@ const ConfirmationDialog = (props: TConfirmationDialog) => {
       </DialogTitle>
 
       <CustomStyleContent>
-        <DialogContentText sx={{ textAlign: 'center', marginBottom: '20px' }}>{description}</DialogContentText>
+        <DialogContentText sx={{ textAlign: 'center', marginBottom: "20px" }}>{description}</DialogContentText>
       </CustomStyleContent>
       <DialogActions>
+        <Button color='error' variant='outlined' onClick={handleCancel} >
+          {t('Cancel')}
+        </Button>
         <Button variant='contained' onClick={handleConfirm}>
           {t('Confirm')}
         </Button>
-        <Button color='error' variant='outlined' onClick={handleCancel}>
-          {t('Cancel')}
-        </Button>
+
       </DialogActions>
     </StyledDialog>
   )

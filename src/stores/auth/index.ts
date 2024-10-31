@@ -1,40 +1,34 @@
-// ** Redux
+// ** Redux Imports
+import { Dispatch } from 'redux'
 import { createSlice } from '@reduxjs/toolkit'
-// ** Axios
-import {
-  changePasswordMeAsync,
-  forgotPasswordAuthAsync,
-  registerAuthAsync,
-  registerAuthFacebookAsync,
-  registerAuthGoogleAsync,
-  resetPasswordAuthAsync,
-  serviceName,
-  updateAuthMeAsync
-} from 'src/stores/auth/actions'
+
+// ** Axios Imports
+import { changePasswordMeAsync, forgotPasswordAuthAsync, registerAuthAsync, registerAuthFacebookAsync, registerAuthGoogleAsync, resetPasswordAuthAsync, serviceName, updateAuthMeAsync } from 'src/stores/auth/actions'
+
 // ** Type
 import { UserDataType } from 'src/contexts/types'
 
 type TInitialData = {
-  isLoading: boolean
-  isSuccess: boolean
-  isError: boolean
-  message: string
-  typeError: string
-  isSuccessUpdateMe: boolean
-  isErrorUpdateMe: boolean
-  messageUpdateMe: string
-  isSuccessChangePassword: boolean
-  isErrorChangePassword: boolean
-  messageChangePassword: string
-  userData: UserDataType | null
-  isSuccessResetPassword: boolean
-  isErrorResetPassword: boolean
-  messageResetPassword: string
-  isSuccessForgotPassword: boolean
-  isErrorForgotPassword: boolean
-  messageForgotPassword: string
+  isLoading: boolean,
+  isSuccess: boolean,
+  isError: boolean,
+  message: string,
+  typeError: string,
+  isSuccessUpdateMe: boolean,
+  isErrorUpdateMe: boolean,
+  messageUpdateMe: string,
+  isSuccessChangePassword: boolean,
+  isErrorChangePassword: boolean,
+  messageChangePassword: string,
+  userData: UserDataType | null,
+  isSuccessResetPassword: boolean,
+  isErrorResetPassword: boolean,
+  messageResetPassword: string,
+  isSuccessForgotPassword: boolean,
+  isErrorForgotPassword: boolean,
+  messageForgotPassword: string,
 }
-const initialState: TInitialData = {
+const initialState:TInitialData = {
   isLoading: false,
   isSuccess: true,
   isError: false,
@@ -52,7 +46,7 @@ const initialState: TInitialData = {
   messageForgotPassword: '',
   isSuccessResetPassword: true,
   isErrorResetPassword: false,
-  messageResetPassword: ''
+  messageResetPassword: '',
 }
 
 export const authSlice = createSlice({
@@ -177,8 +171,8 @@ export const authSlice = createSlice({
       state.messageChangePassword = ''
     })
 
-    // ** reset password
-    builder.addCase(resetPasswordAuthAsync.pending, (state, action) => {
+     // ** reset password
+     builder.addCase(resetPasswordAuthAsync.pending, (state, action) => {
       state.isLoading = true
     })
     builder.addCase(resetPasswordAuthAsync.fulfilled, (state, action) => {
@@ -196,8 +190,8 @@ export const authSlice = createSlice({
       state.typeError = ''
     })
 
-    // ** forgot password
-    builder.addCase(forgotPasswordAuthAsync.pending, (state, action) => {
+     // ** forgot password
+     builder.addCase(forgotPasswordAuthAsync.pending, (state, action) => {
       state.isLoading = true
     })
     builder.addCase(forgotPasswordAuthAsync.fulfilled, (state, action) => {

@@ -1,18 +1,31 @@
+"use client"
+
 // ** Next
 import { NextPage } from 'next'
 import Image from 'next/image'
+import Link from 'next/link'
 
 // ** React
-import { useEffect } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 
 // ** Mui
-import { Box, Button, CssBaseline, InputAdornment, Typography, useTheme } from '@mui/material'
+import {
+  Box,
+  Button,
+  Checkbox,
+  CssBaseline,
+  FormControlLabel,
+  IconButton,
+  InputAdornment,
+  Typography,
+  useTheme
+} from '@mui/material'
 
 // ** Components
 import CustomTextField from 'src/components/text-field'
 import Icon from 'src/components/Icon'
 
-// ** Form
+// ** form
 import { Controller, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -28,7 +41,7 @@ import ForgotPasswordLight from '/public/images/forgot-password-light.png'
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
 import { ROUTE_CONFIG } from 'src/configs/route'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
 import { forgotPasswordAuthAsync } from 'src/stores/auth/actions'
@@ -42,6 +55,7 @@ type TDefaultValue = {
 }
 
 const ForgotPasswordPage: NextPage<TProps> = () => {
+
   // ** Translate
   const { t } = useTranslation()
 
@@ -51,17 +65,16 @@ const ForgotPasswordPage: NextPage<TProps> = () => {
   // ** theme
   const theme = useTheme()
 
-  const dispatch: AppDispatch = useDispatch()
-  const { isLoading, isSuccessForgotPassword, isErrorForgotPassword, messageForgotPassword } = useSelector(
-    (state: RootState) => state.auth
-  )
+  const dispatch:AppDispatch = useDispatch()
+  const { isLoading, isSuccessForgotPassword, isErrorForgotPassword, messageForgotPassword} = useSelector((state:RootState) => state.auth)
+
 
   const schema = yup.object().shape({
-    email: yup.string().required(t('Required_field')).matches(EMAIL_REG, t('Rules_email'))
+    email: yup.string().required(t('Required_field')).matches(EMAIL_REG, t("Rules_email")),
   })
 
   const defaultValues: TDefaultValue = {
-    email: 'khiem.test.service@gmail.com'
+    email: 'admin@gmail.com',
   }
 
   const {
@@ -77,12 +90,12 @@ const ForgotPasswordPage: NextPage<TProps> = () => {
 
   const onSubmit = (data: { email: string }) => {
     if (!Object.keys(errors)?.length) {
-      dispatch(forgotPasswordAuthAsync({ email: data.email }))
+      dispatch(forgotPasswordAuthAsync({email: data.email}))
     }
   }
 
   useEffect(() => {
-    if (messageForgotPassword) {
+    if(messageForgotPassword) {
       if (isSuccessForgotPassword) {
         toast.success(t('Forgot_password_success'))
         dispatch(resetInitialState())
@@ -140,7 +153,7 @@ const ForgotPasswordPage: NextPage<TProps> = () => {
             }}
           >
             <Typography component='h1' variant='h5'>
-              {t('Forgot_password')}
+              {t("Forgot_password")}
             </Typography>
             <form onSubmit={handleSubmit(onSubmit)} autoComplete='off' noValidate>
               <Box sx={{ mt: 2 }}>
@@ -163,7 +176,7 @@ const ForgotPasswordPage: NextPage<TProps> = () => {
                       InputProps={{
                         endAdornment: (
                           <InputAdornment position='end'>
-                            <Icon icon='arcticons:fairemail' />
+                                <Icon icon='arcticons:fairemail' />
                           </InputAdornment>
                         )
                       }}
@@ -172,18 +185,12 @@ const ForgotPasswordPage: NextPage<TProps> = () => {
                   name='email'
                 />
               </Box>
-
+           
               <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
-                {t('Send_request')}
+               {(t("Send_request"))}
               </Button>
-              <Button
-                startIcon={<Icon icon='uiw:left'></Icon>}
-                onClick={() => router.push(ROUTE_CONFIG.LOGIN)}
-                fullWidth
-                variant='outlined'
-                sx={{ mt: 3, mb: 2 }}
-              >
-                {t('Back_login')}
+              <Button startIcon={<Icon icon="uiw:left"></Icon>} onClick={() => router.push(ROUTE_CONFIG.LOGIN)} fullWidth variant='outlined' sx={{ mt: 3, mb: 2 }}>
+               {(t("Back_login"))}
               </Button>
             </form>
           </Box>

@@ -6,8 +6,10 @@ import {
   TParamsDeleteMultipleProduct,
   TParamsGetRelatedProduct
 } from 'src/types/product'
-// Api EndPoint
+
+// api endPoint
 import { API_ENDPOINT } from 'src/configs/api'
+
 // Axios
 import instanceAxios from 'src/helpers/axios'
 import axios from 'axios'
@@ -83,10 +85,11 @@ export const getDetailsProductPublic = async (id: string) => {
   }
 }
 
-export const getDetailsProductPublicBySlug = async (slug: string, isViewed?: boolean) => {
+export const getDetailsProductPublicBySlug = async (slug: string, isViewed?:boolean) => {
   try {
     const data = { params: { isPublic: true, isViewed } }
-    const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/public/slug/${slug}`, data)
+
+    const res = await axios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/public/slug/${slug}`, data)
 
     return res.data
   } catch (error: any) {

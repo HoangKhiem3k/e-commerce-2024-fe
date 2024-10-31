@@ -1,4 +1,4 @@
-// ** Redux
+// ** Redux Imports
 import { createSlice } from '@reduxjs/toolkit'
 
 // ** Actions
@@ -68,6 +68,7 @@ export const userSlice = createSlice({
       state.users.data = []
       state.users.total = 0
     })
+
     // ** create user
     builder.addCase(createUserAsync.pending, (state, action) => {
       state.isLoading = true
@@ -79,6 +80,7 @@ export const userSlice = createSlice({
       state.messageErrorCreateEdit = action.payload?.message
       state.typeError = action.payload?.typeError
     })
+
     // ** update user
     builder.addCase(updateUserAsync.pending, (state, action) => {
       state.isLoading = true
@@ -90,6 +92,7 @@ export const userSlice = createSlice({
       state.messageErrorCreateEdit = action.payload?.message
       state.typeError = action.payload?.typeError
     })
+
     // ** delete user
     builder.addCase(deleteUserAsync.pending, (state, action) => {
       state.isLoading = true
@@ -101,6 +104,7 @@ export const userSlice = createSlice({
       state.messageErrorDelete = action.payload?.message
       state.typeError = action.payload?.typeError
     })
+
     // ** delete multiple user
     builder.addCase(deleteMultipleUserAsync.pending, (state, action) => {
       state.isLoading = true

@@ -1,10 +1,8 @@
-// ** Mui
+"use client"
+
 import { IconButton, Tooltip, useTheme } from '@mui/material'
-// ** React
 import React from 'react'
-// ** Translate
 import { useTranslation } from 'react-i18next'
-// ** Components
 import Icon from 'src/components/Icon'
 
 interface TGridCreate {
@@ -13,10 +11,13 @@ interface TGridCreate {
 }
 
 const GridCreate = (props: TGridCreate) => {
+
   // Props
   const { onClick, disabled } = props
+
   // Theme
   const theme = useTheme()
+
   // Translation
   const { t } = useTranslation()
 

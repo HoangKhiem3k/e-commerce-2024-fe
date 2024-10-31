@@ -1,3 +1,5 @@
+"use client"
+
 // ** Next
 import { NextPage } from 'next'
 
@@ -25,20 +27,21 @@ import Spinner from 'src/components/spinner'
 import ConfirmationDialog from 'src/components/confirmation-dialog'
 import CustomPagination from 'src/components/custom-pagination'
 import TableHeader from 'src/components/table-header'
-import CreateEditCity from 'src/views/pages/settings/city/components/CreateEditCity'
+import CreateEditCity from 'src/views/pages/settings/city/component/CreateEditCity'
 
 // ** Others
 import toast from 'react-hot-toast'
+import { OBJECT_TYPE_ERROR_CITY } from 'src/configs/error'
 
 // ** Hooks
 import { usePermission } from 'src/hooks/usePermission'
 
 // ** Config
-import { OBJECT_TYPE_ERROR_CITY } from 'src/configs/error'
 import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
+
 // ** Utils
-import { hexToRGBA } from 'src/utils/hex-to-rgba'
 import { formatDate } from 'src/utils/date'
+import { hexToRGBA } from 'src/utils/hex-to-rgba'
 
 type TProps = {}
 
@@ -168,7 +171,7 @@ const CityListPage: NextPage<TProps> = () => {
       renderCell: params => {
         const { row } = params
 
-        return <Typography>{formatDate(row?.createdAt, { dateStyle: 'short' })}</Typography>
+        return <Typography>{formatDate(row?.createdAt, {dateStyle: "short"})}</Typography>
       }
     },
     {

@@ -1,31 +1,46 @@
+"use client"
+
 // ** React
 import React, { useEffect, useMemo } from 'react'
+
 // ** Next
-import { useRouter } from 'next/router'
-// ** Mui
+import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+
+// ** Mui Imports
 import Box from '@mui/material/Box'
 import Avatar from '@mui/material/Avatar'
 import Menu from '@mui/material/Menu'
 import MenuItem, { MenuItemProps } from '@mui/material/MenuItem'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import Divider from '@mui/material/Divider'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
 import { Badge, Button, Typography, styled, useTheme } from '@mui/material'
+
 // ** Components
 import Icon from 'src/components/Icon'
+
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
+
 // ** Translate
 import { useTranslation } from 'react-i18next'
-// ** Config
+
+// ** config
 import { ROUTE_CONFIG } from 'src/configs/route'
+
 // ** Storage
 import { getLocalProductCart } from 'src/helpers/storage'
+
 // ** Redux
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
 import { updateProductToCart } from 'src/stores/order-product'
+
 // ** Types
 import { TItemOrderProduct } from 'src/types/order-product'
+
 // ** Utils
 import { formatNumberToLocal, isExpiry } from 'src/utils'
 import NoData from 'src/components/no-data'
@@ -36,7 +51,8 @@ const StyleMenuItem = styled(MenuItem)<MenuItemProps>(({ theme }) => ({}))
 
 const CartProduct = (props: TProps) => {
   // ** Translation
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
 
   // ** Hooks
@@ -50,7 +66,7 @@ const CartProduct = (props: TProps) => {
 
   const open = Boolean(anchorEl)
 
-  // ** Handle
+  // && Handle
   const handleNavigateDetailsProduct = (slug: string) => {
     router.push(`${ROUTE_CONFIG.PRODUCT}/${slug}`)
   }
@@ -144,7 +160,7 @@ const CartProduct = (props: TProps) => {
                 return (
                   <StyleMenuItem key={item.product} onClick={() => handleNavigateDetailsProduct(item.slug)}>
                     <Avatar src={item.image} sx={{ height: '60px !important', width: '60px !important' }} />
-                    <Box style={{ flex: 1 }}>
+                    <Box style={{flex: 1}}>
                       <Typography sx={{ maxWidth: '300px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                         {item.name}
                       </Typography>
@@ -179,9 +195,7 @@ const CartProduct = (props: TProps) => {
                             VND
                           </Typography>
                         </Box>
-                        <Typography>
-                          x <b>{item.amount}</b>
-                        </Typography>
+                        <Typography>x <b>{item.amount}</b></Typography>
                       </Box>
                     </Box>
                   </StyleMenuItem>

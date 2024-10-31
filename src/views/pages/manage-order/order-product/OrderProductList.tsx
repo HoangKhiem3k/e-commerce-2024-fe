@@ -1,3 +1,5 @@
+
+"use client"
 // ** Next
 import { NextPage } from 'next'
 
@@ -6,33 +8,14 @@ import { MouseEvent, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 // ** Mui
-import {
-  Avatar,
-  AvatarGroup,
-  Box,
-  Chip,
-  ChipProps,
-  FormControlLabel,
-  Grid,
-  IconButton,
-  Menu,
-  MenuItem,
-  Switch,
-  Typography,
-  styled,
-  useTheme
-} from '@mui/material'
+import { Avatar, AvatarGroup, Box, Chip, ChipProps, FormControlLabel, Grid, IconButton, Menu, MenuItem, Switch, Typography, styled, useTheme } from '@mui/material'
 import { GridColDef, GridSortModel } from '@mui/x-data-grid'
 
 // ** Redux
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
 import { resetInitialState } from 'src/stores/order-product'
-import {
-  deleteOrderProductAsync,
-  getAllOrderProductsAsync,
-  updateStatusOrderProductAsync
-} from 'src/stores/order-product/actions'
+import { deleteOrderProductAsync, getAllOrderProductsAsync, updateStatusOrderProductAsync } from 'src/stores/order-product/actions'
 
 // ** Components
 import GridDelete from 'src/components/grid-delete'
@@ -66,6 +49,7 @@ import { getAllCities } from 'src/services/city'
 import { TItemProductMe, TParamsStatusOrderUpdate } from 'src/types/order-product'
 import { getCountOrderStatus } from 'src/services/report'
 
+
 type TProps = {}
 
 interface StatusOrderChipT extends ChipProps {
@@ -79,6 +63,8 @@ const OrderStatusStyled = styled(Chip)<StatusOrderChipT>(({ theme, background })
   padding: '8px 4px',
   fontWeight: 400
 }))
+
+
 
 const OrderProductListPage: NextPage<TProps> = () => {
   // ** Translate
@@ -105,7 +91,7 @@ const OrderProductListPage: NextPage<TProps> = () => {
   const [page, setPage] = useState(1)
   const [filterBy, setFilterBy] = useState<Record<string, string | string[]>>({})
   const [countOrderStatus, setCountOrderStatus] = useState<{
-    data: Record<number, number>
+    data: Record<number, number>,
     total: number
   }>({} as any)
 
@@ -126,26 +112,27 @@ const OrderProductListPage: NextPage<TProps> = () => {
     isErrorDelete,
     isSuccessDelete,
     messageErrorDelete,
-    typeError
+    typeError,
   } = useSelector((state: RootState) => state.orderProduct)
+
   // ** theme
   const theme = useTheme()
 
   const STATUS_ORDER_PRODUCT_STYLE = {
     0: {
-      label: 'Wait_payment',
+      label: "Wait_payment",
       background: theme.palette.warning.main
     },
     1: {
-      label: 'Wait_delivery',
+      label: "Wait_delivery",
       background: theme.palette.secondary.main
     },
     2: {
-      label: 'Done_order',
+      label: "Done_order",
       background: theme.palette.success.main
     },
     3: {
-      label: 'Cancel_order',
+      label: "Cancel_order",
       background: theme.palette.error.main
     }
   }
@@ -182,7 +169,7 @@ const OrderProductListPage: NextPage<TProps> = () => {
     })
   }
 
-  const handleUpdateStatusOrder = (data: TParamsStatusOrderUpdate) => {
+  const handleUpdateStatusOrder = (data:TParamsStatusOrderUpdate) => {
     dispatch(updateStatusOrderProductAsync(data))
   }
 
@@ -197,7 +184,7 @@ const OrderProductListPage: NextPage<TProps> = () => {
 
   const columns: GridColDef[] = [
     {
-      field: 'items',
+      field: "items",
       headerName: t('Product_items'),
       hideSortIcons: true,
       flex: 1,
@@ -208,7 +195,9 @@ const OrderProductListPage: NextPage<TProps> = () => {
         return (
           <AvatarGroup max={1}>
             {row.orderItems?.map((item: TItemProductMe) => {
-              return <Avatar key={item?.product?._id} alt={item?.product?.slug} src={item?.image} />
+              return (
+                <Avatar key={item?.product?._id} alt={item?.product?.slug} src={item?.image} />
+              )
             })}
           </AvatarGroup>
         )
@@ -311,12 +300,7 @@ const OrderProductListPage: NextPage<TProps> = () => {
 
         return (
           <>
-            {
-              <OrderStatusStyled
-                background={(STATUS_ORDER_PRODUCT_STYLE as any)[row.status]?.background}
-                label={t((STATUS_ORDER_PRODUCT_STYLE as any)[row.status]?.label)}
-              />
-            }
+            {<OrderStatusStyled background={(STATUS_ORDER_PRODUCT_STYLE as any)[row.status]?.background} label={t((STATUS_ORDER_PRODUCT_STYLE as any)[row.status]?.label)} />}
           </>
         )
       }
@@ -350,7 +334,7 @@ const OrderProductListPage: NextPage<TProps> = () => {
                 })
               }
             />
-            <MoreButton data={row} memoOptionStatus={memoOptionStatus} />
+           <MoreButton data={row} memoOptionStatus={memoOptionStatus} />
           </>
         )
       }
@@ -386,23 +370,21 @@ const OrderProductListPage: NextPage<TProps> = () => {
 
   const fetchAllCountStatusOrder = async () => {
     setLoading(true)
-    await getCountOrderStatus()
-      .then(res => {
-        const data = res?.data
-        setLoading(false)
-        setCountOrderStatus({
-          data: data?.data,
-          total: data?.total
-        })
+    await getCountOrderStatus().then((res) => {
+      const data = res?.data
+      setLoading(false)
+      setCountOrderStatus({
+        data: data?.data,
+        total: data?.total
       })
-      .catch(e => {
-        setLoading(false)
-      })
+    }).catch(e => {
+      setLoading(false)
+    })
   }
 
   useEffect(() => {
-    if (isRendered.current) {
-      setFilterBy({ status: statusSelected, cityId: citySelected })
+    if(isRendered.current) {
+    setFilterBy({ status: statusSelected, cityId: citySelected })
     }
   }, [statusSelected, citySelected])
 
@@ -413,7 +395,7 @@ const OrderProductListPage: NextPage<TProps> = () => {
   }, [])
 
   useEffect(() => {
-    if (isRendered.current) {
+    if(isRendered.current) {
       handleGetListOrderProducts()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -431,6 +413,7 @@ const OrderProductListPage: NextPage<TProps> = () => {
         toast.error(t(errorConfig))
       } else {
         toast.error(t('Update_order_product_error'))
+
       }
       dispatch(resetInitialState())
     }
@@ -450,7 +433,7 @@ const OrderProductListPage: NextPage<TProps> = () => {
   }, [isSuccessDelete, isErrorDelete, messageErrorDelete])
 
   const memoOptionStatus = useMemo(() => {
-    return Object.values(STATUS_ORDER_PRODUCT).map(item => ({
+    return Object.values(STATUS_ORDER_PRODUCT).map((item) => ({
       label: t(item.label),
       value: item.value
     }))
@@ -458,25 +441,25 @@ const OrderProductListPage: NextPage<TProps> = () => {
 
   const dataListOrderStatus = [
     {
-      icon: 'lets-icons:order-light',
+      "icon": "lets-icons:order-light",
       status: 4
     },
     {
-      icon: 'ic:twotone-payment',
-      status: STATUS_ORDER_PRODUCT[0].value
+      "icon": "ic:twotone-payment",
+      status: STATUS_ORDER_PRODUCT[0].value,
     },
     {
       status: STATUS_ORDER_PRODUCT[1].value,
-      icon: 'carbon:delivery'
+      "icon": "carbon:delivery",
     },
     {
-      icon: 'ic:baseline-done-all',
-      iconSize: '18',
-      status: STATUS_ORDER_PRODUCT[2].value
+      "icon": "ic:baseline-done-all",
+      iconSize: "18",
+      status: STATUS_ORDER_PRODUCT[2].value,
     },
     {
-      icon: 'line-md:cancel',
-      status: STATUS_ORDER_PRODUCT[3].value
+      "icon": "line-md:cancel",
+      status: STATUS_ORDER_PRODUCT[3].value,
     }
   ]
 
@@ -494,7 +477,7 @@ const OrderProductListPage: NextPage<TProps> = () => {
 
       <EditOrderProduct open={openEdit.open} onClose={handleCloseEdit} idOrder={openEdit.id} />
       {isLoading && <Spinner />}
-      <Box sx={{ backgroundColor: 'inherit', width: '100%', mb: 4 }}>
+      <Box sx={{ backgroundColor: "inherit", width: '100%', mb: 4 }}>
         <Grid container spacing={6} sx={{ height: '100%' }}>
           {dataListOrderStatus?.map((item: any, index: number) => {
             return (
@@ -517,7 +500,9 @@ const OrderProductListPage: NextPage<TProps> = () => {
         }}
       >
         <Grid container sx={{ height: '100%', width: '100%' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 4, mb: 4, width: '100%' }}>
+          <Box
+            sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 4, mb: 4, width: '100%' }}
+          >
             <Box sx={{ width: '200px' }}>
               <CustomSelect
                 fullWidth

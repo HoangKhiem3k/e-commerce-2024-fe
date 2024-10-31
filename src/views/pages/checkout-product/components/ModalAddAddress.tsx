@@ -1,3 +1,5 @@
+"use client"
+
 // ** React
 import React, { Fragment, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'

@@ -1,3 +1,4 @@
+"use client"
 import * as React from 'react'
 import { NextPage } from 'next'
 import { Box, BoxProps, styled } from '@mui/material'

@@ -1,3 +1,5 @@
+"use client"
+
 // ** Next
 import { NextPage } from 'next'
 
@@ -14,10 +16,10 @@ import GridDelete from 'src/components/grid-delete'
 import GridEdit from 'src/components/grid-edit'
 import GridCreate from 'src/components/grid-create'
 import InputSearch from 'src/components/input-search'
-import CreateEditRole from 'src/views/pages/system/role/components/CreateEditRole'
+import CreateEditRole from 'src/views/pages/system/role/component/CreateEditRole'
 import CustomDataGrid from 'src/components/custom-data-grid'
 import Spinner from 'src/components/spinner'
-import TablePermission from 'src/views/pages/system/role/components/TablePermission'
+import TablePermission from 'src/views/pages/system/role/component/TablePermission'
 import ConfirmationDialog from 'src/components/confirmation-dialog'
 import Icon from 'src/components/Icon'
 
@@ -40,6 +42,7 @@ import { useGetListRoles, useMutationEditRole } from 'src/queries/role'
 type TProps = {}
 
 const RoleListPage: NextPage<TProps> = () => {
+
   // State
 
   const [openCreateEdit, setOpenCreateEdit] = useState({
@@ -83,31 +86,40 @@ const RoleListPage: NextPage<TProps> = () => {
     return res?.data
   }
 
-  const { isPending: isLoadingEdit, mutate: mutateEditRole } = useMutationEditRole({
+  const {
+    isPending: isLoadingEdit,
+    mutate: mutateEditRole,
+  } = useMutationEditRole({
     onSuccess: () => {
       queryClient.refetchQueries({ queryKey: [queryKeys.role_list, sortBy, searchBy, -1, -1] })
       toast.success(t('Update_role_success'))
     },
     onError: () => {
       toast.success(t('Update_role_error'))
-    }
+    },
   })
 
   const handleUpdateRole = () => {
     mutateEditRole({ name: selectedRow.name, id: selectedRow.id, permissions: permissionSelected })
   }
 
-  const { data: rolesList, isPending } = useGetListRoles(
+  const {
+    data: rolesList,
+    isPending
+  } = useGetListRoles(
     { limit: -1, page: -1, search: searchBy, order: sortBy },
     {
-      select: data => data?.roles,
+      select: (data) => data?.roles,
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
       staleTime: 10000
     }
   )
 
-  const { isPending: isLoadingDelete, mutate: mutateDeleteRole } = useMutation({
+  const {
+    isPending: isLoadingDelete,
+    mutate: mutateDeleteRole,
+  } = useMutation({
     mutationFn: fetchDeleteRole,
     mutationKey: [queryKeys.delete_role],
     onSuccess: () => {
@@ -117,7 +129,7 @@ const RoleListPage: NextPage<TProps> = () => {
     },
     onError: () => {
       toast.success(t('Delete_role_error'))
-    }
+    },
   })
 
   // handle
@@ -173,7 +185,8 @@ const RoleListPage: NextPage<TProps> = () => {
                       open: true,
                       id: String(params.id)
                     })
-                  }}
+                  }
+                  }
                 />
                 <GridDelete
                   disabled={!DELETE}
@@ -183,7 +196,9 @@ const RoleListPage: NextPage<TProps> = () => {
                       open: true,
                       id: String(params.id)
                     })
-                  }}
+                  }
+
+                  }
                 />
               </>
             ) : (

@@ -1,6 +1,8 @@
+"use client"
+
 // ** Next
 import { NextPage } from 'next'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 
 // ** React
 import { useEffect, useState, useMemo } from 'react'
@@ -16,7 +18,7 @@ import Icon from 'src/components/Icon'
 import { t } from 'i18next'
 
 // ** Utils
-import { convertUpdateMultipleProductsCart, convertUpdateProductToCart, formatNumberToLocal, isExpiry } from 'src/utils'
+import { convertUpdateMultipleProductsCart, convertUpdateProductToCart, createUrlQuery, formatNumberToLocal, isExpiry } from 'src/utils'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
 
 // ** Redux
@@ -97,26 +99,17 @@ const CardOrder: NextPage<TProps> = props => {
   }
 
   const handleBuyAgain = () => {
-    handleUpdateProductToCart(
-      dataOrder.orderItems.map(item => ({
-        name: item.name,
-        amount: item.amount,
-        image: item.image,
-        price: item.price,
-        discount: item.discount,
-        product: item?.product?._id,
-        slug: item?.product?.slug
-      }))
-    )
-    router.push(
-      {
-        pathname: ROUTE_CONFIG.MY_CART,
-        query: {
-          selected: dataOrder?.orderItems?.map((item: TItemProductMe) => item?.product?._id)
-        }
-      },
-      ROUTE_CONFIG.MY_CART
-    )
+    handleUpdateProductToCart(dataOrder.orderItems.map((item) => ({
+      name: item.name,
+      amount: item.amount,
+      image: item.image,
+      price: item.price,
+      discount: item.discount,
+      product: item?.product?._id,
+      slug: item?.product?.slug,
+    })))
+    router.push(ROUTE_CONFIG.MY_CART + '?' + createUrlQuery('selected', dataOrder?.orderItems?.map((item: TItemProductMe) => item?.product?._id)))
+
   }
 
   const handleNavigateDetailsOrder = () => {
@@ -137,20 +130,21 @@ const CardOrder: NextPage<TProps> = props => {
   const handlePaymentVNPay = async () => {
     setLoading(true)
     await createURLpaymentVNPay({
-      totalPrice: 10000,
-      // dataOrder.totalPrice,
+      totalPrice:
+        dataOrder.totalPrice,
       orderId: dataOrder?._id,
-      language: i18n.language === 'vi' ? 'vn' : i18n.language
-    }).then(res => {
+      language: i18n.language === "vi" ? "vn" : i18n.language
+    }).then((res) => {
       if (res?.data) {
         window.open(res?.data, '_blank')
       }
       setLoading(false)
     })
+
   }
 
   const memeDisabledBuyAgain = useMemo(() => {
-    return dataOrder?.orderItems?.some(item => !item.product.countInStock)
+    return dataOrder?.orderItems?.some((item) => !item.product.countInStock)
   }, [dataOrder.orderItems])
 
   return (
@@ -196,12 +190,7 @@ const CardOrder: NextPage<TProps> = props => {
           </Typography>
         </Box>
         <Divider />
-        <Box
-          mt={2}
-          mb={2}
-          sx={{ display: 'flex', flexDirection: 'column', gap: 4, cursor: 'pointer' }}
-          onClick={handleNavigateDetailsOrder}
-        >
+        <Box mt={2} mb={2} sx={{ display: 'flex', flexDirection: 'column', gap: 4, cursor: "pointer" }} onClick={handleNavigateDetailsOrder}>
           {dataOrder?.orderItems?.map((item: TItemProductMe) => {
             return (
               <Box key={item?.product?._id} sx={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
@@ -301,13 +290,13 @@ const CardOrder: NextPage<TProps> = props => {
           {[0].includes(dataOrder.status) && dataOrder?.paymentMethod?.type !== PAYMENT_DATA.PAYMENT_LATER.value && (
             <Button
               variant='outlined'
-              onClick={() => handlePaymentTypeOrder(dataOrder?.paymentMethod.type)}
+              onClick={() => handlePaymentTypeOrder(dataOrder?.paymentMethod?.type)}
               sx={{
                 height: 40,
                 display: 'flex',
                 alignItems: 'center',
                 gap: '2px',
-                backgroundColor: 'transparent !important'
+                backgroundColor: 'transparent !important',
               }}
             >
               {t('Payment')}

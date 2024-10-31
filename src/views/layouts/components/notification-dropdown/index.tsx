@@ -1,3 +1,5 @@
+"use client"
+
 // ** React Imports
 import { useState, SyntheticEvent, Fragment, useEffect, useRef } from 'react'
 
@@ -40,239 +42,242 @@ import { updateDeviceToken } from 'src/services/auth'
 import { clearLocalDeviceToken, getLocalDeviceToken, setLocalDeviceToken } from 'src/helpers/storage'
 
 export type NotificationsType = {
-  createdAt: string
-  _id: string
-  title: string
-  body: string
-  isRead: boolean
-  referenceId: string
-  context: string
+    createdAt: string
+    _id: string
+    title: string
+    body: string
+    isRead: boolean
+    referenceId: string
+    context: string
 }
 
-interface Props {}
+interface Props {
+}
 
 // ** Styled Menu component
 const Menu = styled(MuiMenu)<MenuProps>(({ theme }) => ({
-  '& .MuiMenu-paper': {
-    width: 380,
-    overflow: 'hidden',
-    marginTop: theme.spacing(4.25),
-    [theme.breakpoints.down('sm')]: {
-      width: '100%'
+    '& .MuiMenu-paper': {
+        width: 380,
+        overflow: 'hidden',
+        marginTop: theme.spacing(4.25),
+        [theme.breakpoints.down('sm')]: {
+            width: '100%'
+        }
+    },
+    '& .MuiMenu-list': {
+        padding: 0,
+        '& .MuiMenuItem-root': {
+            margin: 0,
+            borderRadius: 0,
+            padding: theme.spacing(4, 6),
+            '&:hover': {
+                backgroundColor: theme.palette.action.hover
+            }
+        }
     }
-  },
-  '& .MuiMenu-list': {
-    padding: 0,
-    '& .MuiMenuItem-root': {
-      margin: 0,
-      borderRadius: 0,
-      padding: theme.spacing(4, 6),
-      '&:hover': {
-        backgroundColor: theme.palette.action.hover
-      }
-    }
-  }
 }))
 
 // ** Styled MenuItem component
 const MenuItem = styled(MuiMenuItem)<MenuItemProps>(({ theme }) => ({
-  paddingTop: theme.spacing(3),
-  paddingBottom: theme.spacing(3),
-  '&:not(:last-of-type)': {
-    borderBottom: `1px solid ${theme.palette.divider}`
-  }
+    paddingTop: theme.spacing(3),
+    paddingBottom: theme.spacing(3),
+    '&:not(:last-of-type)': {
+        borderBottom: `1px solid ${theme.palette.divider}`
+    }
 }))
 
+
 const NotificationDropdown = (props: Props) => {
-  // ** Hooks
-  const theme = useTheme()
-  const { t } = useTranslation()
-  const { fcmToken } = useFcmToken()
 
-  // ** Ref
-  const wrapperListRef = useRef<HTMLDivElement>(null)
+    // ** Hooks
+    const theme = useTheme()
+    const { t } = useTranslation()
+    const { fcmToken } = useFcmToken();
 
-  // ** Redux
-  const dispatch: AppDispatch = useDispatch()
-  const {
-    notifications,
-    isSuccessDelete,
-    isSuccessRead,
-    isErrorDelete,
-    isErrorRead,
-    messageErrorDelete,
-    messageErrorRead,
-    isSuccessReadAll,
-    isErrorReadAll,
-    messageErrorReadAll
-  } = useSelector((state: RootState) => state.notification)
+    // ** Ref
+    const wrapperListRef = useRef<HTMLDivElement>(null)
 
-  // ** States
-  const [anchorEl, setAnchorEl] = useState<(EventTarget & Element) | null>(null)
-  const [limit, setLimit] = useState(10)
-  const localDeviceToken = getLocalDeviceToken()
+    // ** Redux
+    const dispatch: AppDispatch = useDispatch()
+    const {
+        notifications, isSuccessDelete, isSuccessRead,
+        isErrorDelete, isErrorRead, messageErrorDelete, messageErrorRead
+        , isSuccessReadAll, isErrorReadAll, messageErrorReadAll
+    } = useSelector((state: RootState) => state.notification)
 
-  // ** handle
-  const handleDropdownOpen = (event: SyntheticEvent) => {
-    setAnchorEl(event.currentTarget)
-  }
 
-  const handleMarkReadAllNotification = () => {
-    dispatch(markReadAllNotificationAsync())
-  }
+    // ** States
+    const [anchorEl, setAnchorEl] = useState<(EventTarget & Element) | null>(null)
+    const [limit, setLimit] = useState(10)
+    const localDeviceToken = getLocalDeviceToken()
 
-  const handleDropdownClose = () => {
-    setAnchorEl(null)
-  }
-
-  const handleGetListNotification = () => {
-    dispatch(getAllNotificationsAsync({ params: { limit: limit, page: 1, order: 'createdAt desc' } }))
-  }
-
-  const handleUpdateDeviceToken = async (token: string) => {
-    clearLocalDeviceToken()
-    setLocalDeviceToken(token)
-    await updateDeviceToken({ deviceToken: token })
-  }
-
-  const handleScrollListNotification = () => {
-    const wrapperContent = wrapperListRef.current
-    if (!wrapperContent) {
-      return
+    // ** handle
+    const handleDropdownOpen = (event: SyntheticEvent) => {
+        setAnchorEl(event.currentTarget)
     }
-    const heightList = wrapperContent.clientHeight
-    const scrollHeight = wrapperContent.scrollHeight
-    const maxScroll = scrollHeight - heightList
-    const currentScroll = wrapperContent.scrollTop
-    if (currentScroll >= maxScroll) {
-      if (notifications.total > limit) {
-        setLimit(prev => prev + 10)
-      }
-    }
-  }
 
-  useEffect(() => {
-    if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
-      const messaging = getMessaging(firebaseApp)
-      const unsubscribe = onMessage(messaging, payload => {
+    const handleMarkReadAllNotification = () => {
+        dispatch(markReadAllNotificationAsync())
+    }
+
+    const handleDropdownClose = () => {
+        setAnchorEl(null)
+    }
+
+    const handleGetListNotification = () => {
+        dispatch(getAllNotificationsAsync({ params: { limit: limit, page: 1, order: "createdAt desc" } }))
+    }
+
+    const handleUpdateDeviceToken = async (token:string) => {
+        clearLocalDeviceToken()
+        setLocalDeviceToken(token)
+        await updateDeviceToken({deviceToken: token})
+    }
+
+    const handleScrollListNotification = () => {
+        const wrapperContent = wrapperListRef.current
+        if (!wrapperContent) {
+            return
+        }
+        const heightList = wrapperContent.clientHeight
+        const scrollHeight = wrapperContent.scrollHeight
+        const maxScroll = scrollHeight - heightList
+        const currentScroll = wrapperContent.scrollTop
+        if (currentScroll >= maxScroll) {
+            if (notifications.total > limit) {
+                setLimit((prev) => prev + 10)
+            }
+        }
+    }
+
+    useEffect(() => {
+        if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+            const messaging = getMessaging(firebaseApp);
+            const unsubscribe = onMessage(messaging, (payload) => {
+                handleGetListNotification()
+            });
+
+            return () => {
+                unsubscribe(); // Unsubscribe from the onMessage event
+            };
+        }
+    }, []);
+
+    useEffect(() => {
+        if(fcmToken !== localDeviceToken) {
+            handleUpdateDeviceToken(fcmToken)
+        }
+    }, [fcmToken])
+
+    useEffect(() => {
         handleGetListNotification()
-      })
+    }, [limit])
 
-      return () => {
-        unsubscribe() // Unsubscribe from the onMessage event
-      }
-    }
-  }, [])
+    useEffect(() => {
+        if (isSuccessRead && !isErrorRead) {
+            toast.success(t("Marked_notification_success"))
+            dispatch(resetInitialState())
+            handleGetListNotification()
+        } else if (isErrorRead && messageErrorRead) {
+            toast.error(t("Marked_notification_failed"))
+            dispatch(resetInitialState())
+        }
+    }, [isSuccessRead, isErrorRead, messageErrorRead])
 
-  useEffect(() => {
-    if (fcmToken !== localDeviceToken) {
-      handleUpdateDeviceToken(fcmToken)
-    }
-  }, [fcmToken])
+    useEffect(() => {
+        if (isSuccessDelete && !isErrorDelete) {
+            toast.success(t("Delete_notification_success"))
+            dispatch(resetInitialState())
+            handleGetListNotification()
+        } else if (isErrorDelete && messageErrorDelete) {
+            toast.error(t("Delete_notification_failed"))
+            dispatch(resetInitialState())
+        }
+    }, [isSuccessDelete, isErrorDelete, messageErrorDelete])
 
-  useEffect(() => {
-    handleGetListNotification()
-  }, [limit])
+    useEffect(() => {
+        if (isSuccessReadAll && !isErrorReadAll) {
+            toast.success(t("Marked_all_notification_success"))
+            dispatch(resetInitialState())
+            handleGetListNotification()
+        } else if (isErrorReadAll && messageErrorReadAll) {
+            toast.error(t("Marked_all_notification_failed"))
+            dispatch(resetInitialState())
+        }
+    }, [isSuccessReadAll, isSuccessReadAll, messageErrorReadAll])
 
-  useEffect(() => {
-    if (isSuccessRead && !isErrorRead) {
-      toast.success(t('Marked_notification_success'))
-      dispatch(resetInitialState())
-      handleGetListNotification()
-    } else if (isErrorRead && messageErrorRead) {
-      toast.error(t('Marked_notification_failed'))
-      dispatch(resetInitialState())
-    }
-  }, [isSuccessRead, isErrorRead, messageErrorRead])
-
-  useEffect(() => {
-    if (isSuccessDelete && !isErrorDelete) {
-      toast.success(t('Delete_notification_success'))
-      dispatch(resetInitialState())
-      handleGetListNotification()
-    } else if (isErrorDelete && messageErrorDelete) {
-      toast.error(t('Delete_notification_failed'))
-      dispatch(resetInitialState())
-    }
-  }, [isSuccessDelete, isErrorDelete, messageErrorDelete])
-
-  useEffect(() => {
-    if (isSuccessReadAll && !isErrorReadAll) {
-      toast.success(t('Marked_all_notification_success'))
-      dispatch(resetInitialState())
-      handleGetListNotification()
-    } else if (isErrorReadAll && messageErrorReadAll) {
-      toast.error(t('Marked_all_notification_failed'))
-      dispatch(resetInitialState())
-    }
-  }, [isSuccessReadAll, isSuccessReadAll, messageErrorReadAll])
-
-  return (
-    <Fragment>
-      <IconButton color='inherit' aria-haspopup='true' onClick={handleDropdownOpen} aria-controls='customized-menu'>
-        <Badge
-          color='error'
-          badgeContent={notifications.totalNew}
-          sx={{
-            '& .MuiBadge-badge': { top: 4, right: 4, boxShadow: theme => `0 0 0 2px ${theme.palette.background.paper}` }
-          }}
-        >
-          <Icon fontSize='1.625rem' icon='tabler:bell' />
-        </Badge>
-      </IconButton>
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleDropdownClose}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      >
-        <MenuItem
-          disableRipple
-          disableTouchRipple
-          sx={{ cursor: 'default', userSelect: 'auto', backgroundColor: 'transparent !important' }}
-        >
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-            <Typography variant='h5' sx={{ cursor: 'text' }}>
-              {t('Notifications')}
-            </Typography>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-              <Chip size='small' color='primary' label={`${notifications.totalNew} New`} />
-              <Icon icon='line-md:email-opened'></Icon>
-            </Box>
-          </Box>
-        </MenuItem>
-        <Box
-          sx={{
-            maxHeight: 349,
-            overflowY: 'auto',
-            overflowX: 'hidden'
-          }}
-          ref={wrapperListRef}
-          onScroll={handleScrollListNotification}
-        >
-          {notifications?.data?.map((notification: NotificationsType, index: number) => (
-            <NotificationItem key={index} notification={notification} handleDropdownClose={handleDropdownClose} />
-          ))}
-        </Box>
-        <MenuItem
-          disableRipple
-          disableTouchRipple
-          sx={{
-            borderBottom: 0,
-            cursor: 'default',
-            userSelect: 'auto',
-            backgroundColor: `${theme.palette.background.paper} !important`,
-            borderTop: theme => `1px solid ${theme.palette.divider}`
-          }}
-        >
-          <Button fullWidth variant='contained' onClick={handleMarkReadAllNotification}>
-            {t('Mark read all notifications')}
-          </Button>
-        </MenuItem>
-      </Menu>
-    </Fragment>
-  )
+    return (
+        <Fragment>
+            <IconButton color='inherit' aria-haspopup='true' onClick={handleDropdownOpen} aria-controls='customized-menu'>
+                <Badge
+                    color='error'
+                    badgeContent={notifications.totalNew}
+                    sx={{
+                        '& .MuiBadge-badge': { top: 4, right: 4, boxShadow: theme => `0 0 0 2px ${theme.palette.background.paper}` }
+                    }}
+                >
+                    <Icon fontSize='1.625rem' icon='tabler:bell' />
+                </Badge>
+            </IconButton>
+            <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleDropdownClose}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+            >
+                <MenuItem
+                    disableRipple
+                    disableTouchRipple
+                    sx={{ cursor: 'default', userSelect: 'auto', backgroundColor: 'transparent !important' }}
+                >
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+                        <Typography variant='h5' sx={{ cursor: 'text' }}>
+                            {t("Notifications")}
+                        </Typography>
+                        <Box sx={{ display: "flex", alignItems: "center", gap: "15px" }}>
+                            <Chip
+                                size='small'
+                                color='primary'
+                                label={`${notifications.totalNew} New`}
+                            />
+                            <Icon icon="line-md:email-opened"></Icon>
+                        </Box>
+                    </Box>
+                </MenuItem>
+                <Box
+                    sx={{
+                        maxHeight: 349, overflowY: 'auto', overflowX: 'hidden'
+                    }}
+                    ref={wrapperListRef}
+                    onScroll={handleScrollListNotification}
+                >
+                    {notifications?.data?.map((notification: NotificationsType, index: number) => (
+                        <NotificationItem
+                            key={index}
+                            notification={notification}
+                            handleDropdownClose={handleDropdownClose}
+                        />
+                    ))}
+                </Box>
+                <MenuItem
+                    disableRipple
+                    disableTouchRipple
+                    sx={{
+                        borderBottom: 0,
+                        cursor: 'default',
+                        userSelect: 'auto',
+                        backgroundColor: `${theme.palette.background.paper} !important`,
+                        borderTop: theme => `1px solid ${theme.palette.divider}`
+                    }}
+                >
+                    <Button fullWidth variant='contained' onClick={handleMarkReadAllNotification}>
+                        {t("Mark read all notifications")}
+                    </Button>
+                </MenuItem>
+            </Menu>
+        </Fragment>
+    )
 }
 
 export default NotificationDropdown

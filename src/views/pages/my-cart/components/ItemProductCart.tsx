@@ -1,23 +1,33 @@
+"use client"
+
 // ** React
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
+
 // ** Next
 import Link from 'next/link'
+
 // ** Mui
 import { Avatar, Box, Checkbox, Divider, IconButton, Typography, useTheme } from '@mui/material'
+
 // ** Components
 import Icon from 'src/components/Icon'
 import CustomTextField from 'src/components/text-field'
+
 // Helpers
 import { getLocalProductCart, setLocalProductToCart } from 'src/helpers/storage'
 import { cloneDeep, convertUpdateProductToCart, formatNumberToLocal, isExpiry } from 'src/utils'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
+
 //  ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
+
 // ** Redux
 import { AppDispatch, RootState } from 'src/stores'
 import { updateProductToCart } from 'src/stores/order-product'
+
 // ** Types
 import { TItemOrderProduct } from 'src/types/order-product'
+
 // ** Redux
 import { useDispatch, useSelector } from 'react-redux'
 import { getDetailsProductPublic } from 'src/services/product'
@@ -69,11 +79,13 @@ const ItemProductCart = ({ item, index, selectedRows, handleChangeCheckbox }: TP
     if (item.product) {
       fetchDetailsProduct(item.product)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [item.product])
 
   useEffect(() => {
     setItemState(prev => ({ ...prev, amount: item.amount }))
   }, [item.amount])
+  // handle
 
   const handleChangeAmountCart = (item: TItemOrderProduct, amount: number) => {
     const productCart = getLocalProductCart()
@@ -134,12 +146,10 @@ const ItemProductCart = ({ item, index, selectedRows, handleChangeCheckbox }: TP
             textOverflow: 'ellipsis',
             overflow: 'hidden',
             display: 'block',
-            mt: 2
+            mt: 2,
           }}
         >
-          <Link style={{ color: 'inherit' }} href={`/product/${itemState.slug}`}>
-            {itemState.name}
-          </Link>
+          <Link style={{color: "inherit"}} href={`/product/${itemState.slug}`}>{itemState.name}</Link>
         </Typography>
         <Box sx={{ flexBasis: '20%' }}>
           <Typography

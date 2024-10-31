@@ -1,3 +1,5 @@
+"use client"
+
 import { useEffect, useState } from 'react'
 
 const useDebounce = (value: any, delay: number) => {
@@ -9,10 +11,10 @@ const useDebounce = (value: any, delay: number) => {
     return () => {
       clearTimeout(timerRef)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value])
 
   return debouncedValue
 }
 
-export { useDebounce }
+export {useDebounce}

@@ -1,3 +1,5 @@
+"use client"
+
 // ** MUI Imports
 import { ThemeOptions } from '@mui/material'
 

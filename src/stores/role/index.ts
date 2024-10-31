@@ -3,13 +3,7 @@ import { Dispatch } from 'redux'
 import { createSlice } from '@reduxjs/toolkit'
 
 // ** Axios Imports
-import {
-  createRoleAsync,
-  deleteRoleAsync,
-  getAllRolesAsync,
-  serviceName,
-  updateRoleAsync
-} from 'src/stores/role/actions'
+import { createRoleAsync, deleteRoleAsync, getAllRolesAsync, serviceName, updateRoleAsync } from 'src/stores/role/actions'
 
 const initialState = {
   isLoading: false,
@@ -19,10 +13,10 @@ const initialState = {
   typeError: '',
   isSuccessCreateEdit: false,
   isErrorCreateEdit: false,
-  messageErrorCreateEdit: '',
+  messageErrorCreateEdit: "",
   isSuccessDelete: false,
   isErrorDelete: false,
-  messageErrorDelete: '',
+  messageErrorDelete: "",
   roles: {
     data: [],
     total: 0

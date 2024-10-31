@@ -1,53 +1,82 @@
+"use client"
+
 // ** React
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
 // ** Form
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Controller, useForm } from 'react-hook-form'
 import * as yup from 'yup'
+
 // ** Mui
-import { Box, Button, Grid, IconButton, Typography, useTheme, Rating } from '@mui/material'
+import {
+  Box,
+  Button,
+  Grid,
+  IconButton,
+
+  Rating,
+
+  Typography,
+  useTheme
+} from '@mui/material'
+
 // ** Component
 import Icon from 'src/components/Icon'
 import CustomModal from 'src/components/custom-modal'
 import Spinner from 'src/components/spinner'
 import CustomTextField from 'src/components/text-field'
 import CustomTextArea from 'src/components/text-area'
+
 // ** Services
-import { getDetailsReview } from 'src/services/review-product'
+import { getDetailsReview } from 'src/services/reviewProduct'
+
 // ** Redux
 import { AppDispatch } from 'src/stores'
 import { useDispatch } from 'react-redux'
 import { updateReviewAsync } from 'src/stores/reviews/actions'
+
+// ** Others
+import { stringToSlug } from 'src/utils'
+
 
 interface TCreateReview {
   open: boolean
   onClose: () => void
   idReview?: string
 }
+
 type TDefaultValue = {
-  star: string
-  content: string
+  star: string,
+  content: string,
 }
+
 const EditReview = (props: TCreateReview) => {
   // State
   const [loading, setLoading] = useState(false)
   const [optionCities, setOptionCities] = useState<{ label: string; value: string }[]>([])
+
   // ** Props
   const { open, onClose, idReview } = props
+
   // Hooks
   const theme = useTheme()
   const { t, i18n } = useTranslation()
+
   // ** Redux
   const dispatch: AppDispatch = useDispatch()
+
   const schema = yup.object().shape({
     content: yup.string().required(t('Required_field')),
-    star: yup.string().required(t('Required_field'))
+    star: yup.string().required(t('Required_field')),
   })
+
   const defaultValues: TDefaultValue = {
-    star: '',
-    content: ''
+    star: "",
+    content: '',
   }
+
   const {
     handleSubmit,
     control,
@@ -61,6 +90,7 @@ const EditReview = (props: TCreateReview) => {
     mode: 'onBlur',
     resolver: yupResolver(schema)
   })
+
   // handle
   const onSubmit = (data: any) => {
     if (!Object.keys(errors).length) {
@@ -70,12 +100,13 @@ const EditReview = (props: TCreateReview) => {
           updateReviewAsync({
             id: idReview,
             content: data.content,
-            star: +data.star
+            star: +data.star,
           })
         )
       }
     }
   }
+
   // fetch api
   const fetchDetailsReview = async (id: string) => {
     setLoading(true)
@@ -85,7 +116,7 @@ const EditReview = (props: TCreateReview) => {
         if (data) {
           reset({
             star: data?.star,
-            content: data?.content
+            content: data?.content,
           })
         }
         setLoading(false)
@@ -94,6 +125,8 @@ const EditReview = (props: TCreateReview) => {
         setLoading(false)
       })
   }
+
+
   useEffect(() => {
     if (!open) {
       reset({
@@ -137,16 +170,10 @@ const EditReview = (props: TCreateReview) => {
                         <Controller
                           control={control}
                           render={({ field: { onChange, onBlur, value } }) => (
-                            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                              <Rating
-                                name='half-rating'
-                                onChange={(e: any) => {
-                                  onChange(+e.target.value)
-                                }}
-                                value={value ? +value : 0}
-                                precision={0.5}
-                                size='large'
-                              />
+                            <Box sx={{ display: "flex", justifyContent: "center" }}>
+                              <Rating name="half-rating" onChange={(e: any) => {
+                                onChange(+e.target.value)
+                              }} value={value ? +value : 0} precision={0.5} size="large" />
                             </Box>
                           )}
                           name='star'
@@ -188,4 +215,5 @@ const EditReview = (props: TCreateReview) => {
     </>
   )
 }
+
 export default EditReview

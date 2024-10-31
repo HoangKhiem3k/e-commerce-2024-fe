@@ -3,6 +3,7 @@ export type TParamsCreateURLPayment = {
   orderId: string
   language: string
 }
+
 export type TParamsGetIpnVNPay = {
   vnp_SecureHash: string
   vnp_TxnRef: string

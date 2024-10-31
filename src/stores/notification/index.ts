@@ -1,13 +1,9 @@
-// ** Redux
+// ** Redux Imports
 import { createSlice } from '@reduxjs/toolkit'
+
 // ** Actions
-import {
-  deleteNotificationAsync,
-  getAllNotificationsAsync,
-  markReadAllNotificationAsync,
-  markReadNotificationAsync,
-  serviceName
-} from 'src/stores/notification/actions'
+
+import { deleteNotificationAsync, getAllNotificationsAsync, markReadAllNotificationAsync, markReadNotificationAsync, serviceName } from 'src/stores/notification/actions'
 
 const initialState = {
   isLoading: false,
@@ -69,21 +65,21 @@ export const deliveryTypeSlice = createSlice({
     })
     builder.addCase(markReadNotificationAsync.fulfilled, (state, action) => {
       state.isLoading = false
-      state.isSuccessRead = !!action.payload?.data?._id
-      state.isErrorRead = !action.payload?.data?._id
-      state.messageErrorRead = action.payload?.message
+      state.isSuccessRead= !!action.payload?.data?._id
+      state.isErrorRead= !action.payload?.data?._id
+      state.messageErrorRead= action.payload?.message
       state.typeError = action.payload?.typeError
     })
 
-    // ** delete notification
-    builder.addCase(deleteNotificationAsync.pending, (state, action) => {
+     // ** delete notification
+     builder.addCase(deleteNotificationAsync.pending, (state, action) => {
       state.isLoading = true
     })
     builder.addCase(deleteNotificationAsync.fulfilled, (state, action) => {
       state.isLoading = false
-      state.isSuccessDelete = !!action.payload?.data?._id
-      state.isErrorDelete = !action.payload?.data?._id
-      state.messageErrorDelete = action.payload?.message
+      state.isSuccessDelete= !!action.payload?.data?._id
+      state.isErrorDelete= !action.payload?.data?._id
+      state.messageErrorDelete= action.payload?.message
       state.typeError = action.payload?.typeError
     })
 

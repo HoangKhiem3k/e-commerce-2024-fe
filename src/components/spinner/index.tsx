@@ -1,8 +1,11 @@
-// ** MUI
-import { styled } from '@mui/material/styles'
+"use client"
+
+// ** MUI Imports
+import { styled, useTheme } from '@mui/material/styles'
 import Box, { BoxProps } from '@mui/material/Box'
 import { Modal, ModalProps } from '@mui/material'
-// ** Component
+
+// component
 import CircularWithValueLabel from 'src/components/custom-circular-process'
 
 const CustomModal = styled(Modal)<ModalProps>(({ theme }) => ({
@@ -17,6 +20,9 @@ const CustomModal = styled(Modal)<ModalProps>(({ theme }) => ({
 }))
 
 const Spinner = ({ sx }: { sx?: BoxProps['sx'] }) => {
+  // ** Hook
+  const theme = useTheme()
+
   return (
     <CustomModal open={true}>
       <Box

@@ -1,3 +1,4 @@
+"use client"
 // ** Type Imports
 import { Skin } from 'src/types/layouts'
 import { OwnerStateThemeType } from '.'

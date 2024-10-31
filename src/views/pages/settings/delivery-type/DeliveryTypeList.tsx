@@ -1,3 +1,5 @@
+"use client"
+
 // ** Next
 import { NextPage } from 'next'
 
@@ -29,7 +31,7 @@ import Spinner from 'src/components/spinner'
 import ConfirmationDialog from 'src/components/confirmation-dialog'
 import CustomPagination from 'src/components/custom-pagination'
 import TableHeader from 'src/components/table-header'
-import CreateEditDeliveryType from 'src/views/pages/settings/delivery-type/components/CreateEditDeliveryType'
+import CreateEditDeliveryType from 'src/views/pages/settings/delivery-type/component/CreateEditDeliveryType'
 
 // ** Others
 import toast from 'react-hot-toast'
@@ -189,7 +191,7 @@ const DeliveryTypeListPage: NextPage<TProps> = () => {
       renderCell: params => {
         const { row } = params
 
-        return <Typography>{formatDate(row?.createdAt, { dateStyle: 'short' })}</Typography>
+        return <Typography>{formatDate(row?.createdAt, {dateStyle: "short"})}</Typography>
       }
     },
     {

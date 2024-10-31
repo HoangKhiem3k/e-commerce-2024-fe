@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useEffect, useMemo, useState } from 'react'
 import { NextPage } from 'next'
 
@@ -20,7 +22,7 @@ import Icon from 'src/components/Icon'
 
 // ** Config
 import { TVertical, VerticalItems } from 'src/configs/layout'
-import { useRouter } from 'next/router'
+import { usePathname, useRouter } from 'next/navigation'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
 import { PERMISSIONS } from 'src/configs/permission'
 
@@ -261,7 +263,7 @@ const ListVerticalLayout: NextPage<TProps> = ({ open }) => {
   }
 
   // ** router
-  const router = useRouter()
+  const pathName = usePathname()
 
   useEffect(() => {
     if (!open) {
@@ -279,16 +281,16 @@ const ListVerticalLayout: NextPage<TProps> = ({ open }) => {
   }, [listVerticalItems, permissionUser])
 
   useEffect(() => {
-    if (router.asPath) {
-      const parentTitle = findParentActivePath(memoFormatMenu, router.asPath)
+    if (pathName) {
+      const parentTitle = findParentActivePath(memoFormatMenu, pathName)
       if (parentTitle) {
         setOpenItems({
           [parentTitle]: true
         })
       }
-      setActivePath(router.asPath)
+      setActivePath(pathName)
     }
-  }, [router.asPath])
+  }, [pathName])
 
   return (
     <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper', padding: 0 }} component='nav'>

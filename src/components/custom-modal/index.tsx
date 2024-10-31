@@ -1,10 +1,13 @@
+"use client"
+
 import { ModalProps, styled, Modal, Box } from '@mui/material'
 import React from 'react'
 
-interface TCustomModal extends ModalProps {}
+interface TCustomModal extends ModalProps {
+}
 
 const StyleModal = styled(Modal)<ModalProps>(({ theme }) => ({
-  zIndex: 1300
+  zIndex: 1300,
 }))
 
 const CustomModal = (props: TCustomModal) => {

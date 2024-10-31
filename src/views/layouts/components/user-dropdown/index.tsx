@@ -1,9 +1,11 @@
+"use client"
+
 // ** React
 import React, { useEffect } from 'react'
 
 // ** Next
 import Image from 'next/image'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 
 // ** Mui Imports
 import Box from '@mui/material/Box'
@@ -104,10 +106,12 @@ const UserDropdown = (props: TProps) => {
     router.push(ROUTE_CONFIG.DASHBOARD)
     handleClose()
   }
+
   const handleNavigateMyProduct = () => {
     router.push(ROUTE_CONFIG.MY_PRODUCT)
     handleClose()
   }
+
   const handleNavigateMyOrder = () => {
     router.push(ROUTE_CONFIG.MY_ORDER)
     handleClose()
@@ -210,8 +214,7 @@ const UserDropdown = (props: TProps) => {
           </StyledBadge>
           <Box sx={{ display: 'flex', flexDirection: 'column' }}>
             <Typography component='span'>
-              {toFullName(user?.lastName || '', user?.middleName || '', user?.firstName || '', i18n.language) ||
-                user?.email}
+              {toFullName(user?.lastName || '', user?.middleName || '', user?.firstName || '', i18n.language) || user?.email}
             </Typography>
             <Typography component='span'>{user?.role?.name}</Typography>
           </Box>

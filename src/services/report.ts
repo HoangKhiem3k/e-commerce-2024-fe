@@ -10,6 +10,8 @@ export const getCountUserType = async () => {
     return error
   }
 }
+
+
 export const getCountProductStatus = async () => {
   try {
     const res = await instanceAxios.get(`${API_ENDPOINT.REPORT.INDEX}/product-status/count`)
@@ -19,6 +21,7 @@ export const getCountProductStatus = async () => {
     return error
   }
 }
+
 export const getCountAllRecords = async () => {
   try {
     const res = await instanceAxios.get(`${API_ENDPOINT.REPORT.INDEX}/all-records/count`)
@@ -28,6 +31,7 @@ export const getCountAllRecords = async () => {
     return error
   }
 }
+
 export const getCountProductTypes = async () => {
   try {
     const res = await instanceAxios.get(`${API_ENDPOINT.REPORT.INDEX}/product-type/count`)
@@ -37,6 +41,7 @@ export const getCountProductTypes = async () => {
     return error
   }
 }
+
 export const getCountRevenueYear = async () => {
   try {
     const res = await instanceAxios.get(`${API_ENDPOINT.REPORT.INDEX}/revenue-total`)
@@ -46,6 +51,7 @@ export const getCountRevenueYear = async () => {
     return error
   }
 }
+
 export const getCountOrderStatus = async () => {
   try {
     const res = await instanceAxios.get(`${API_ENDPOINT.REPORT.INDEX}/order-status/count`)

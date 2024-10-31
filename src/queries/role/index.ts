@@ -1,7 +1,11 @@
 import { UseMutationOptions } from './../../../node_modules/@tanstack/react-query/src/types'
 import { useMutation, useQuery, UseQueryOptions } from '@tanstack/react-query'
 import { queryKeys } from 'src/configs/queryKey'
+
+// ** Services
 import { getAllRoles, updateRole } from 'src/services/role'
+
+// ** Types
 import { TParamsEditRole, TParamsGetRoles } from 'src/types/role'
 
 export const useGetListRoles = (

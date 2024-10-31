@@ -1,3 +1,5 @@
+"use client"
+
 import { useContext } from 'react'
 import { SettingsContext, SettingsContextValue } from 'src/contexts/SettingsContext'
 

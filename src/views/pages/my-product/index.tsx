@@ -1,3 +1,5 @@
+"use client"
+
 // ** Next
 import { NextPage } from 'next'
 
@@ -16,7 +18,7 @@ import { AppDispatch, RootState } from 'src/stores'
 import { getAllProductsLikedAsync, getAllProductsViewedAsync } from 'src/stores/product/actions'
 import { resetInitialState } from 'src/stores/product'
 
-// ** Components
+// ** component
 import InputSearch from 'src/components/input-search'
 import Spinner from 'src/components/spinner'
 import CustomPagination from 'src/components/custom-pagination'
@@ -208,6 +210,7 @@ const MyProductPage: NextPage<TProps> = () => {
                   )}
                 </Grid>
               )}
+
             </Box>
           )}
           {tabActive === TYPE_VALUE.viewed && (
@@ -241,6 +244,7 @@ const MyProductPage: NextPage<TProps> = () => {
                   )}
                 </Grid>
               )}
+
             </Box>
           )}
         </Grid>

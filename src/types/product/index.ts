@@ -60,7 +60,7 @@ export type TProduct = {
   totalReviews: number
   discount: number
   sold: number
-  description: string
+  description:string
   location: {
     name: string
     _id: string
@@ -70,10 +70,11 @@ export type TProduct = {
   uniqueViews: string[]
 }
 
-export type TParamsGetRelatedProduct = {
+export type  TParamsGetRelatedProduct = {
   limit?: number
   page?: number
   search?: string
   slug: string
   order?: string
+
 }

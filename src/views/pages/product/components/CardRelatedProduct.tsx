@@ -1,7 +1,9 @@
+"use client"
+
 // ** React
 import * as React from 'react'
 import { useTranslation } from 'react-i18next'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 
 // ** Mui
 import { styled, useTheme } from '@mui/material/styles'
@@ -17,8 +19,8 @@ import { hexToRGBA } from 'src/utils/hex-to-rgba'
 import Icon from 'src/components/Icon'
 
 // ** Redux
-import { useDispatch } from 'react-redux'
-import { AppDispatch } from 'src/stores'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootState } from 'src/stores'
 
 // ** Others
 import { ROUTE_CONFIG } from 'src/configs/route'
@@ -192,7 +194,7 @@ const CardRelatedProduct = (props: TCardRelatedProduct) => {
         )}
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            {!!item.averageRating ? (
+          {!!item.averageRating ? (
               <Typography sx={{ display: 'flex', alignItems: 'center' }}>
                 <Rating
                   name='read-only'
@@ -203,7 +205,13 @@ const CardRelatedProduct = (props: TCardRelatedProduct) => {
                 />
               </Typography>
             ) : (
-              <Rating name='read-only' sx={{ fontSize: '16px' }} defaultValue={0} precision={0.5} readOnly />
+              <Rating
+                name='read-only'
+                sx={{ fontSize: '16px' }}
+                defaultValue={0}
+                precision={0.5}
+                readOnly
+              />
             )}
             <Typography sx={{ display: 'flex', alignItems: 'center' }}>
               {!!item.totalReviews ? <b>{item.totalReviews}</b> : <span>{t('not_review')}</span>}

@@ -1,3 +1,4 @@
+
 export const PERMISSIONS = {
   ADMIN: 'ADMIN.GRANTED',
   BASIC: 'BASIC.PUBLIC',
@@ -15,9 +16,9 @@ export const PERMISSIONS = {
       DELETE: 'MANAGE_PRODUCT.PRODUCT_TYPE.DELETE'
     },
     COMMENT: {
-      UPDATE: 'MANAGE_PRODUCT.COMMENT.UPDATE',
-      DELETE: 'MANAGE_PRODUCT.COMMENT.DELETE'
-    }
+      UPDATE: "MANAGE_PRODUCT.COMMENT.UPDATE",
+      DELETE: "MANAGE_PRODUCT.COMMENT.DELETE",
+    },
   },
   SYSTEM: {
     USER: {
@@ -80,7 +81,7 @@ export const LIST_DATA_PERMISSIONS: any = [
     name: 'Product',
     isParent: false,
     value: 'PRODUCT',
-    parentValue: 'MANAGE_PRODUCT'
+    parentValue: 'MANAGE_PRODUCT',
   },
   {
     id: 3,
@@ -129,6 +130,7 @@ export const LIST_DATA_PERMISSIONS: any = [
     name: 'Order',
     isParent: false,
     value: 'ORDER',
+    parentValue: 'MANAGE_ORDER',
     isHideCreate: true
   },
   { id: 10, name: 'Settings', isParent: true, value: 'SETTING' },

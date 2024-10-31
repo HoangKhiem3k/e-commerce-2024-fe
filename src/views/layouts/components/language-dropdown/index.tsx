@@ -1,3 +1,5 @@
+"use client"
+
 // ** React
 import React, { useState } from 'react'
 
@@ -15,16 +17,18 @@ import Icon from 'src/components/Icon'
 import { Box, Menu, MenuItem } from '@mui/material'
 
 // ** Third party
-import ReactCountryFlag from 'react-country-flag'
+import ReactCountryFlag from "react-country-flag"
 
 // ** config
 import { LANGUAGE_OPTIONS } from 'src/configs/i18n'
+import i18nConfig from 'src/app/i18nConfig'
+import { usePathname, useRouter } from 'next/navigation'
 
 type TProps = {}
 
 const countryCode = {
   en: 'GB',
-  vi: 'VN'
+  vi: 'VN',
 }
 
 const LanguageDropdown = (props: TProps) => {
@@ -32,7 +36,10 @@ const LanguageDropdown = (props: TProps) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   // ** Hooks
   const { i18n } = useTranslation()
+  const currentLang = i18n.language
   const open = Boolean(anchorEl)
+  const router = useRouter()
+  const currentPathName = usePathname()
 
   const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
@@ -43,7 +50,11 @@ const LanguageDropdown = (props: TProps) => {
   }
 
   const handleOnchangeLang = (lang: string) => {
-    i18n.changeLanguage(lang)
+    if (currentLang === i18nConfig.defaultLocale) {
+      router.push('/' + lang + currentPathName)
+    } else {
+      router.push(currentPathName.replace(`/${currentLang}`, `/${lang}`))
+    }
   }
 
   return (

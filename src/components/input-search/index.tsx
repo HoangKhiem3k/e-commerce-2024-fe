@@ -1,6 +1,9 @@
+"use client"
+
 // ** React
 import React, { KeyboardEvent, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
 // ** Mui
 import { InputBase, styled } from '@mui/material'
 import Icon from 'src/components/Icon'
@@ -54,7 +57,7 @@ const InputSearch = (props: TInputSearch) => {
   const { value, onChange, placeholder = t('Search') } = props
 
   // ** State
-  const [search, setSearch] = useState('')
+  const [search, setSearch] = useState("")
 
   useEffect(() => {
     setSearch(value)
@@ -69,14 +72,14 @@ const InputSearch = (props: TInputSearch) => {
         value={search}
         placeholder={placeholder}
         inputProps={{ 'aria-label': 'search' }}
-        onKeyDown={(e: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-          if (e.key === 'Enter' && (e as any).target.value) {
+        onKeyDown={(e:KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+          if(e.key === "Enter" && (e as any).target.value) {
             onChange((e as any).target.value)
           }
         }}
         onChange={e => {
           setSearch(e.target.value)
-          if (!e.target.value) {
+          if(!e.target.value) {
             onChange(e.target.value)
           }
         }}

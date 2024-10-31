@@ -1,12 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 
-// ** Services
-import {
-  deleteNotification,
-  getAllNotification,
-  markAllReadNotification,
-  markReadNotification
-} from 'src/services/notification'
+// ** services
+import { deleteNotification, getAllNotification, markAllReadNotification, markReadNotification } from 'src/services/notification'
 
 // ** Types
 import { TParamsGetNotification } from 'src/types/notification'
@@ -22,26 +17,35 @@ export const getAllNotificationsAsync = createAsyncThunk(
   }
 )
 
-export const deleteNotificationAsync = createAsyncThunk(`${serviceName}/delete`, async (id: string) => {
-  const response = await deleteNotification(id)
+export const deleteNotificationAsync = createAsyncThunk(
+  `${serviceName}/delete`,
+  async (id: string) => {
+    const response = await deleteNotification(id)
 
-  return response
-})
-
-export const markReadNotificationAsync = createAsyncThunk(`${serviceName}/read`, async (id: string) => {
-  const response = await markReadNotification(id)
-
-  return response
-})
-
-export const markReadAllNotificationAsync = createAsyncThunk(`${serviceName}/read-all`, async () => {
-  const response = await markAllReadNotification()
-  if (response.status === 'Success') {
-    return {
-      ...response,
-      data: [1]
-    }
+    return response
   }
+)
 
-  return response
-})
+export const markReadNotificationAsync = createAsyncThunk(
+  `${serviceName}/read`,
+  async (id:string) => {
+    const response = await markReadNotification(id)
+
+    return response
+  }
+)
+
+export const markReadAllNotificationAsync = createAsyncThunk(
+  `${serviceName}/read-all`,
+  async () => {
+    const response = await markAllReadNotification()
+    if(response.status === "Success") {
+      return {
+        ...response,
+        data: [1]
+      }
+    }
+
+    return response
+  }
+)

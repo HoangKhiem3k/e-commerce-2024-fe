@@ -1,5 +1,5 @@
 declare namespace JSX {
-  interface IntrinsicElements {
-    'df-messenger': any
-  }
+    interface IntrinsicElements { 
+        "df-messenger": any
+    }
 }

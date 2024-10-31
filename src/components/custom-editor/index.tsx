@@ -1,3 +1,5 @@
+"use client"
+
 import { FormHelperText, useTheme } from '@mui/material'
 import { Box, BoxProps, InputLabel, styled } from '@mui/material'
 import { EditorProps } from 'react-draft-wysiwyg'
@@ -25,9 +27,9 @@ const StyleWrapperEditor = styled(Box)<TStyleWrapperEditor>(({ theme, error }) =
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
     backgroundColor: theme.palette.background.paper,
-    '.rdw-option-wrapper': {
-      // backgroundColor: theme.palette.background.default,
-      border: `1px solid rgba(${theme.palette.customColors.main}, 0.2)`
+    ".rdw-option-wrapper": {
+    // backgroundColor: theme.palette.background.default,
+    border: `1px solid rgba(${theme.palette.customColors.main}, 0.2)`
     }
   },
   '.rdw-editor-main': {

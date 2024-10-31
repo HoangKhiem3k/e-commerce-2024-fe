@@ -11,6 +11,7 @@ export const getAllNotification = async (data: { params: TParamsGetNotification 
     return error
   }
 }
+
 export const markReadNotification = async (id: string) => {
   try {
     const res = await instanceAxios.post(`${API_ENDPOINT.NOTIFICATION.INDEX}/${id}/read`)
@@ -20,6 +21,7 @@ export const markReadNotification = async (id: string) => {
     return error?.response?.data
   }
 }
+
 export const deleteNotification = async (id: string) => {
   try {
     const res = await instanceAxios.delete(`${API_ENDPOINT.NOTIFICATION.INDEX}/${id}`)
@@ -29,6 +31,7 @@ export const deleteNotification = async (id: string) => {
     return error?.response?.data
   }
 }
+
 export const markAllReadNotification = async () => {
   try {
     const res = await instanceAxios.post(`${API_ENDPOINT.NOTIFICATION.INDEX}/all/read`)
@@ -38,3 +41,4 @@ export const markAllReadNotification = async () => {
     return error?.response?.data
   }
 }
+

@@ -1,25 +1,11 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 
+
 // ** Services
-import {
-  addComment,
-  deleteComment,
-  deleteMultipleComment,
-  deleteMyComment,
-  getAllComments,
-  replyComment,
-  updateComment,
-  updateMyComment
-} from 'src/services/comment-product'
+import { addComment, deleteComment, deleteMultipleComment, deleteMyComment, getAllComments, replyComment, updateComment, updateMyComment } from 'src/services/commentProduct'
 
 // ** Types
-import {
-  TParamsAddComment,
-  TParamsDeleteMultipleComment,
-  TParamsGetComments,
-  TParamsReplyComment,
-  TParamsUpdateComment
-} from 'src/types/comment'
+import { TParamsAddComment, TParamsDeleteMultipleComment, TParamsGetComments, TParamsReplyComment, TParamsUpdateComment } from 'src/types/comment'
 
 export const serviceName = 'comment'
 
@@ -79,3 +65,5 @@ export const updateMyCommentAsync = createAsyncThunk(
     return response
   }
 )
+
+

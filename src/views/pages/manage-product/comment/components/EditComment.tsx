@@ -1,3 +1,5 @@
+"use client"
+
 // ** React
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -8,7 +10,14 @@ import { Controller, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 
 // ** Mui
-import { Box, Button, Grid, IconButton, Typography, useTheme } from '@mui/material'
+import {
+  Box,
+  Button,
+  Grid,
+  IconButton,
+  Typography,
+  useTheme
+} from '@mui/material'
 
 // ** Component
 import Icon from 'src/components/Icon'
@@ -17,7 +26,7 @@ import Spinner from 'src/components/spinner'
 import CustomTextField from 'src/components/text-field'
 
 // ** Services
-import { getDetailsComment } from 'src/services/comment-product'
+import { getDetailsComment } from 'src/services/commentProduct'
 
 // ** Redux
 import { AppDispatch } from 'src/stores'
@@ -31,7 +40,7 @@ interface TEditComment {
 }
 
 type TDefaultValue = {
-  content: string
+  content: string,
 }
 
 const EditComment = (props: TEditComment) => {
@@ -49,11 +58,11 @@ const EditComment = (props: TEditComment) => {
   const dispatch: AppDispatch = useDispatch()
 
   const schema = yup.object().shape({
-    content: yup.string().required(t('Required_field'))
+    content: yup.string().required(t('Required_field')),
   })
 
   const defaultValues: TDefaultValue = {
-    content: ''
+    content: '',
   }
 
   const {
@@ -78,7 +87,7 @@ const EditComment = (props: TEditComment) => {
         dispatch(
           updateCommentAsync({
             id: idComment,
-            content: data.content
+            content: data.content,
           })
         )
       }
@@ -93,7 +102,7 @@ const EditComment = (props: TEditComment) => {
         const data = res.data
         if (data) {
           reset({
-            content: data?.content
+            content: data?.content,
           })
         }
         setLoading(false)
@@ -102,6 +111,7 @@ const EditComment = (props: TEditComment) => {
         setLoading(false)
       })
   }
+
 
   useEffect(() => {
     if (!open) {
@@ -147,7 +157,7 @@ const EditComment = (props: TEditComment) => {
                           control={control}
                           render={({ field: { onChange, onBlur, value } }) => (
                             <CustomTextField
-                              fullWidth
+                            fullWidth
                               required
                               label={t('Content')}
                               onChange={onChange}

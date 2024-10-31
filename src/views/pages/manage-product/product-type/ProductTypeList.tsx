@@ -1,3 +1,5 @@
+"use client"
+
 // ** Next
 import { NextPage } from 'next'
 
@@ -29,7 +31,7 @@ import Spinner from 'src/components/spinner'
 import ConfirmationDialog from 'src/components/confirmation-dialog'
 import CustomPagination from 'src/components/custom-pagination'
 import TableHeader from 'src/components/table-header'
-import CreateEditProductType from 'src/views/pages/manage-product/product-type/components/CreateEditProductType'
+import CreateEditProductType from 'src/views/pages/manage-product/product-type/component/CreateEditProductType'
 
 // ** Others
 import toast from 'react-hot-toast'

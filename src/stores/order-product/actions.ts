@@ -12,12 +12,7 @@ import {
 } from 'src/services/order-product'
 
 // ** Types
-import {
-  TParamsStatusOrderUpdate,
-  TParamsCreateOrderProduct,
-  TParamsGetOrderProducts,
-  TParamsEditOrderProduct
-} from 'src/types/order-product'
+import { TParamsCreateOrderProduct, TParamsEditOrderProduct, TParamsGetOrderProducts, TParamsStatusOrderUpdate } from 'src/types/order-product'
 
 export const serviceName = 'orderProduct'
 
@@ -29,6 +24,7 @@ export const createOrderProductAsync = createAsyncThunk(
     return response
   }
 )
+
 export const getAllOrderProductsByMeAsync = createAsyncThunk(
   `${serviceName}/get-all-by-me`,
   async (data: { params: TParamsGetOrderProducts }) => {
@@ -37,6 +33,7 @@ export const getAllOrderProductsByMeAsync = createAsyncThunk(
     return response
   }
 )
+
 export const cancelOrderProductOfMeAsync = createAsyncThunk(`${serviceName}/cancel-order-of-my`, async (id: string) => {
   const response = await cancelOrderProductOfMe(id)
 
@@ -52,24 +49,22 @@ export const getAllOrderProductsAsync = createAsyncThunk(
     return response
   }
 )
-export const updateOrderProductAsync = createAsyncThunk(
-  `${serviceName}/update`,
-  async (data: TParamsEditOrderProduct) => {
-    const response = await updateOrderProduct(data)
 
-    return response
-  }
-)
+export const updateOrderProductAsync = createAsyncThunk(`${serviceName}/update`, async (data: TParamsEditOrderProduct) => {
+  const response = await updateOrderProduct(data)
+
+  return response
+})
+
 export const deleteOrderProductAsync = createAsyncThunk(`${serviceName}/delete`, async (id: string) => {
   const response = await deleteOrderProduct(id)
 
   return response
 })
-export const updateStatusOrderProductAsync = createAsyncThunk(
-  `${serviceName}/update-status`,
-  async (data: TParamsStatusOrderUpdate) => {
-    const response = await updateStatusOrderProduct(data)
 
-    return response
-  }
-)
+export const updateStatusOrderProductAsync = createAsyncThunk(`${serviceName}/update-status`, async (data: TParamsStatusOrderUpdate) => {
+  const response = await updateStatusOrderProduct(data)
+
+  return response
+})
+

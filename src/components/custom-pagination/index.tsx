@@ -1,3 +1,5 @@
+"use client"
+
 import React, { Ref } from 'react'
 import Box from '@mui/material/Box'
 import { MenuItem, Pagination, PaginationProps, Select, styled } from '@mui/material'
@@ -29,11 +31,9 @@ const CustomPagination = React.forwardRef((props: TProps, ref: Ref<any>) => {
   return (
     <Box
       sx={{
-        display: 'flex',
-        alignItems: 'center',
+        display: 'flex', alignItems: 'center',
         justifyContent: isHideShowed ? 'center' : 'space-between',
-        width: '100%',
-        paddingLeft: '8px'
+        width: '100%', paddingLeft: '8px'
       }}
     >
       {!isHideShowed ? (
@@ -53,9 +53,7 @@ const CustomPagination = React.forwardRef((props: TProps, ref: Ref<any>) => {
             <Box></Box>
           )}
         </>
-      ) : (
-        <Box></Box>
-      )}
+      ) : (<Box></Box>)}
       <Box sx={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
         {!isHideShowed && (
           <Box sx={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
@@ -85,12 +83,9 @@ const CustomPagination = React.forwardRef((props: TProps, ref: Ref<any>) => {
         <StylePagination
           onChange={(e, page: number) => {
             onChangePagination(page, pageSize)
+
           }}
-          color='primary'
-          page={page}
-          count={Math.ceil(rowLength / pageSize)}
-          {...rests}
-        />
+          color='primary' page={page} count={Math.ceil(rowLength / pageSize)} {...rests} />
       </Box>
     </Box>
   )

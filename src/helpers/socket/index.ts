@@ -1,3 +1,4 @@
+"use client"
 import { io } from 'socket.io-client'
 
 const connectSocketIO = () => {
@@ -5,4 +6,5 @@ const connectSocketIO = () => {
 
   return socket
 }
+
 export default connectSocketIO

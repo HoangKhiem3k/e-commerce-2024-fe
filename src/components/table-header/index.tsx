@@ -1,9 +1,13 @@
-// ** MUI
+"use client"
+
+// ** MUI Imports
 import { Box, Button, IconButton, Typography } from '@mui/material'
 import { styled, useTheme } from '@mui/material/styles'
 import { memo } from 'react'
-// ** React
+
+// ** React 
 import { useTranslation } from 'react-i18next'
+
 // ** Components
 import Icon from 'src/components/Icon'
 
@@ -13,21 +17,22 @@ const StyledTableHeader = styled(Box)(({ theme }) => ({
   padding: '4px 10px',
   width: '100%',
   marginBottom: '10px',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between'
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between"
 }))
 
 type TProps = {
   numRow: number
   onClear: () => void
-  actions: { label: string; value: string; disabled?: boolean }[]
+  actions: { label: string; value: string,disabled?: boolean }[]
   handleAction: (type: string) => void
 }
 
 const TableHeader = (props: TProps) => {
   // ** Props
   const { numRow, onClear, actions, handleAction } = props
+
   // ** Hook
   const theme = useTheme()
   const { t } = useTranslation()
@@ -53,15 +58,10 @@ const TableHeader = (props: TProps) => {
           <span>{numRow}</span>
         </Typography>
       </Box>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+      <Box sx={{display: 'flex', alignItems: 'center', gap: '10px'}}>
         {actions?.map(action => {
           return (
-            <Button
-              disabled={action?.disabled}
-              key={action.value}
-              variant='contained'
-              onClick={() => handleAction(action.value)}
-            >
+            <Button disabled={action?.disabled} key={action.value} variant='contained' onClick={() => handleAction(action.value)}>
               {action.label}
             </Button>
           )

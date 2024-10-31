@@ -22,6 +22,7 @@ export type TParamsGetReviews = {
   order?: string
   isPublic?: boolean
 }
+
 export type TReviewItem = {
   _id: string
   user: {

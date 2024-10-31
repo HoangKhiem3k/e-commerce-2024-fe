@@ -1,24 +1,33 @@
-// ** Libraries
+"use client"
+// ** libraries
 import axios, { AxiosRequestConfig } from 'axios'
 import { jwtDecode } from 'jwt-decode'
-// ** Config
+
+// ** config
 import { BASE_URL, API_ENDPOINT } from 'src/configs/api'
-// ** Helper
+
+// ** helper
 import {
   clearLocalUserData,
   clearTemporaryToken,
   getLocalUserData,
   getTemporaryToken,
-  setLocalUserData
+  setLocalUserData,
+  setTemporaryToken
 } from 'src/helpers/storage'
+
 // ** Next
-import { NextRouter, useRouter } from 'next/router'
+import { usePathname, useRouter } from 'next/navigation'
+
 // ** React
 import { FC, useEffect } from 'react'
-// ** Types
+
+// types
 import { UserDataType } from 'src/contexts/types'
-// ** Hooks
+
+// ** hooks
 import { useAuth } from 'src/hooks/useAuth'
+import { createUrlQuery } from 'src/utils'
 
 type TAxiosInterceptor = {
   children: React.ReactNode
@@ -26,12 +35,10 @@ type TAxiosInterceptor = {
 
 const instanceAxios = axios.create({ baseURL: BASE_URL })
 
-const handleRedirectLogin = (router: NextRouter, setUser: (data: UserDataType | null) => void) => {
-  if (router.asPath !== '/') {
-    router.replace({
-      pathname: '/login',
-      query: { returnUrl: router.asPath }
-    })
+const handleRedirectLogin = (router: any,pathName:string, setUser: (data: UserDataType | null) => void) => {
+  if (pathName !== '/') {
+    router.replace('/login' + '?' + createUrlQuery('returnUrl', pathName))
+
   } else {
     router.replace('/login')
   }
@@ -41,29 +48,29 @@ const handleRedirectLogin = (router: NextRouter, setUser: (data: UserDataType | 
 }
 
 let isRefreshing = false
-let failedQueue: any[] = []
+let failedQueue:any[] = []
 
-const processQueue = (error: any, token: string | null = null) => {
-  failedQueue.forEach(prom => {
-    if (token) {
+const processQueue = (error:any, token: string | null = null) => {
+  failedQueue.forEach((prom) => {
+    if(token) {
       prom.resolve(token)
-    } else {
+    }else {
       prom.reject(error)
     }
   })
   failedQueue = []
 }
 
-const addRequestQueue = (config: AxiosRequestConfig): Promise<any> => {
+const addRequestQueue = (config:AxiosRequestConfig):Promise<any> => {
   return new Promise((resolve, reject) => {
     failedQueue.push({
-      resolve: (token: string) => {
-        if (config.headers) {
+      resolve: (token:string) => {
+        if(config.headers) {
           config.headers['Authorization'] = `Bearer ${token}`
         }
         resolve(config)
       },
-      reject: (err: any) => {
+      reject: (err:any) => {
         reject(err)
       }
     })
@@ -72,6 +79,7 @@ const addRequestQueue = (config: AxiosRequestConfig): Promise<any> => {
 
 const AxiosInterceptor: FC<TAxiosInterceptor> = ({ children }) => {
   const router = useRouter()
+  const pathName = usePathname()
   const { setUser, user } = useAuth()
 
   useEffect(() => {
@@ -110,33 +118,33 @@ const AxiosInterceptor: FC<TAxiosInterceptor> = ({ children }) => {
                     const newAccessToken = res?.data?.data?.access_token
                     if (newAccessToken) {
                       config.headers['Authorization'] = `Bearer ${newAccessToken}`
-                      processQueue(null, newAccessToken)
+                      processQueue(null ,newAccessToken)
                       if (accessToken) {
                         setLocalUserData(JSON.stringify(user), newAccessToken, refreshToken)
                       }
                     } else {
-                      handleRedirectLogin(router, setUser)
+                      handleRedirectLogin(router,pathName, setUser)
                     }
                   })
                   .catch(e => {
-                    processQueue(e, null)
-                    handleRedirectLogin(router, setUser)
-                  })
-                  .finally(() => {
+                    processQueue(e ,null)
+                    handleRedirectLogin(router,pathName, setUser)
+                  }).finally(() => {
                     isRefreshing = false
                   })
-              } else {
+              }else {
                 return await addRequestQueue(config)
               }
+
             } else {
-              handleRedirectLogin(router, setUser)
+              handleRedirectLogin(router,pathName, setUser)
             }
           } else {
-            handleRedirectLogin(router, setUser)
+            handleRedirectLogin(router,pathName, setUser)
           }
         }
       } else if (!isPublicApi) {
-        handleRedirectLogin(router, setUser)
+        handleRedirectLogin(router,pathName, setUser)
       }
 
       if (config?.params?.isPublic) {
@@ -155,6 +163,7 @@ const AxiosInterceptor: FC<TAxiosInterceptor> = ({ children }) => {
       instanceAxios.interceptors.response.eject(resInterceptor)
     }
   }, [])
+
 
   return <>{children}</>
 }

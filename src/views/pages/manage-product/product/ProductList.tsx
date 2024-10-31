@@ -1,3 +1,5 @@
+"use client"
+
 // ** Next
 import { NextPage } from 'next'
 
@@ -25,7 +27,7 @@ import Spinner from 'src/components/spinner'
 import ConfirmationDialog from 'src/components/confirmation-dialog'
 import CustomPagination from 'src/components/custom-pagination'
 import TableHeader from 'src/components/table-header'
-import CreateEditProduct from 'src/views/pages/manage-product/product/components/CreateEditProduct'
+import CreateEditProduct from 'src/views/pages/manage-product/product/component/CreateEditProduct'
 import CustomSelect from 'src/components/custom-select'
 
 // ** Others
@@ -45,9 +47,9 @@ import { getAllProductTypes } from 'src/services/product-type'
 
 // ** Utils
 import { formatNumberToLocal, formatFilter } from 'src/utils'
-import { formatDate } from 'src/utils/date'
+import { formatDate } from "src/utils/date"
 import { getCountProductStatus } from 'src/services/report'
-import CardCountProduct from 'src/views/pages/manage-product/product/components/CardCountProduct'
+import CardCountProduct from 'src/views/pages/manage-product/product/component/CardCountProduct'
 
 type TProps = {}
 
@@ -68,8 +70,6 @@ const DeactivateUserStyled = styled(Chip)<ChipProps>(({ theme }) => ({
 }))
 
 const ProductListPage: NextPage<TProps> = () => {
-  const isRendered = useRef<boolean>(false)
-
   // ** Translate
   const { t } = useTranslation()
 
@@ -96,11 +96,13 @@ const ProductListPage: NextPage<TProps> = () => {
   const [filterBy, setFilterBy] = useState<Record<string, string | string[]>>({})
   const [loading, setLoading] = useState(false)
   const [countProductStatus, setCountProductStatus] = useState<{
-    data: Record<number, number>
+    data: Record<number, number>,
     total: number
   }>({} as any)
 
   const CONSTANT_STATUS_PRODUCT = OBJECT_STATUS_PRODUCT()
+
+  const isRendered = useRef<boolean>(false)
 
   // ** Hooks
   const { VIEW, UPDATE, DELETE, CREATE } = usePermission('MANAGE_PRODUCT.PRODUCT', [
@@ -210,18 +212,16 @@ const ProductListPage: NextPage<TProps> = () => {
 
   const fetchAllCountProductStatus = async () => {
     setLoading(true)
-    await getCountProductStatus()
-      .then(res => {
-        const data = res?.data
-        setLoading(false)
-        setCountProductStatus({
-          data: data?.data,
-          total: data?.total
-        })
+    await getCountProductStatus().then((res) => {
+      const data = res?.data
+      setLoading(false)
+      setCountProductStatus({
+        data: data?.data,
+        total: data?.total
       })
-      .catch(e => {
-        setLoading(false)
-      })
+    }).catch(e => {
+      setLoading(false)
+    })
   }
 
   const columns: GridColDef[] = [
@@ -233,11 +233,7 @@ const ProductListPage: NextPage<TProps> = () => {
       renderCell: params => {
         const { row } = params
 
-        return (
-          <Typography sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', width: '100%' }}>
-            {row?.name}
-          </Typography>
-        )
+        return <Typography sx={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", width: "100%" }}>{row?.name}</Typography>
       }
     },
     {
@@ -348,11 +344,13 @@ const ProductListPage: NextPage<TProps> = () => {
       setFilterBy({ productType: typeSelected, status: statusSelected })
     }
   }, [typeSelected, statusSelected])
+
   useEffect(() => {
     fetchAllTypes()
     fetchAllCountProductStatus()
     isRendered.current = true
   }, [])
+
   useEffect(() => {
     if (isRendered.current) {
       handleGetListProducts()
@@ -413,17 +411,17 @@ const ProductListPage: NextPage<TProps> = () => {
 
   const dataListProductStatus = [
     {
-      icon: 'la:product-hunt',
-      status: '2'
+      "icon": "la:product-hunt",
+      status: "2"
     },
     {
-      icon: 'material-symbols-light:public-off',
-      status: '0'
+      "icon": "material-symbols-light:public-off",
+      status: "0",
     },
     {
-      status: '1',
-      icon: 'material-symbols-light:public'
-    }
+      status: "1",
+      "icon": "material-symbols-light:public",
+    },
   ]
 
   return (
@@ -452,7 +450,7 @@ const ProductListPage: NextPage<TProps> = () => {
         optionTypes={optionTypes}
       />
       {isLoading && <Spinner />}
-      <Box sx={{ backgroundColor: 'inherit', width: '100%', mb: 4 }}>
+      <Box sx={{ backgroundColor: "inherit", width: '100%', mb: 4 }}>
         <Grid container spacing={6} sx={{ height: '100%' }}>
           {dataListProductStatus?.map((item: any, index: number) => {
             return (

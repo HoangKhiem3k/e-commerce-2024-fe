@@ -1,3 +1,5 @@
+"use client"
+
 // ** Next
 import { NextPage } from 'next'
 
@@ -29,7 +31,7 @@ import Spinner from 'src/components/spinner'
 import ConfirmationDialog from 'src/components/confirmation-dialog'
 import CustomPagination from 'src/components/custom-pagination'
 import TableHeader from 'src/components/table-header'
-import CreateEditPaymentType from 'src/views/pages/settings/payment-type/components/CreateEditPaymentType'
+import CreateEditPaymentType from 'src/views/pages/settings/payment-type/component/CreateEditPaymentType'
 
 // ** Others
 import toast from 'react-hot-toast'
@@ -53,7 +55,7 @@ const PaymentTypeListPage: NextPage<TProps> = () => {
   const { t } = useTranslation()
 
   // State
-  const ObjectPaymentType: any = PAYMENT_TYPES()
+  const ObjectPaymentType:any = PAYMENT_TYPES()
 
   const [openCreateEdit, setOpenCreateEdit] = useState({
     open: false,
@@ -73,7 +75,12 @@ const PaymentTypeListPage: NextPage<TProps> = () => {
   const [selectedRow, setSelectedRow] = useState<string[]>([])
 
   // ** Hooks
-  const { VIEW, UPDATE, DELETE, CREATE } = usePermission('SETTING.payment_TYPE', ['CREATE', 'VIEW', 'UPDATE', 'DELETE'])
+  const { VIEW, UPDATE, DELETE, CREATE } = usePermission('SETTING.payment_TYPE', [
+    'CREATE',
+    'VIEW',
+    'UPDATE',
+    'DELETE'
+  ])
 
   /// ** redux
   const dispatch: AppDispatch = useDispatch()
@@ -186,7 +193,7 @@ const PaymentTypeListPage: NextPage<TProps> = () => {
       renderCell: params => {
         const { row } = params
 
-        return <Typography>{formatDate(row?.createdAt, { dateStyle: 'short' })}</Typography>
+        return <Typography>{formatDate(row?.createdAt, {dateStyle: "short"})}</Typography>
       }
     },
     {

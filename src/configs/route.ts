@@ -6,18 +6,18 @@ export const ROUTE_CONFIG = {
   CHANGE_PASSWORD: '/change-password',
   FORGOT_PASSWORD: '/forgot-password',
   RESET_PASSWORD: '/reset-password',
-  REGISTER: '/register',
+  REGISTER: "/register",
   MY_CART: '/my-cart',
   MY_PRODUCT: '/my-product',
+  MY_ORDER: "/my-order",
   CHECKOUT_PRODUCT: '/checkout-product',
-  MY_ORDER: '/my-order',
   SYSTEM: {
-    ROLE: '/system/roles',
-    USER: '/system/users'
+    ROLE: '/system/role',
+    USER: '/system/user'
   },
   MANAGE_PRODUCT: {
-    PRODUCT: '/manage-product/products',
-    MANAGE_TYPE_PRODUCT: '/manage-product/product-types',
+    PRODUCT: '/manage-product/product',
+    MANAGE_TYPE_PRODUCT: '/manage-product/product-type',
     COMMENT: '/manage-product/comment'
   },
   MANAGE_ORDER: {
@@ -25,9 +25,9 @@ export const ROUTE_CONFIG = {
     MANAGE_REVIEW: '/manage-order/review'
   },
   SETTINGS: {
-    CITY: '/settings/cities',
-    PAYMENT_TYPE: '/settings/payment-types',
-    DELIVERY_TYPE: '/settings/delivery-types'
+    CITY: '/settings/city',
+    PAYMENT_TYPE: '/settings/payment-type',
+    DELIVERY_TYPE: '/settings/delivery-type'
   },
   DASHBOARD: '/dashboard'
 }

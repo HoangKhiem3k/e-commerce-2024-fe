@@ -1,3 +1,5 @@
+"use client"
+
 // ** Type Import
 import { useSettings } from 'src/hooks/useSettings'
 import { OwnerStateThemeType } from '.'

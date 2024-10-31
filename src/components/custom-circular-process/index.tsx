@@ -1,11 +1,15 @@
+"use client"
+
 // ** React
-import React, { useEffect, useState } from 'react'
+import * as React from 'react'
+
+
 // ** Mui
 import CircularProgress, { CircularProgressProps } from '@mui/material/CircularProgress'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 
-const CircularProgressWithLabel = (props: CircularProgressProps & { value: number }) => {
+function CircularProgressWithLabel(props: CircularProgressProps & { value: number }) {
   return (
     <Box sx={{ position: 'relative', display: 'inline-flex' }}>
       <CircularProgress variant='determinate' {...props} />
@@ -21,16 +25,18 @@ const CircularProgressWithLabel = (props: CircularProgressProps & { value: numbe
           justifyContent: 'center'
         }}
       >
-        <Typography variant='caption' component='div' color='primary'>{`${Math.round(props.value)}%`}</Typography>
+        <Typography variant='caption' component='div' color='primary'>{`${Math.round(
+          props.value
+        )}%`}</Typography>
       </Box>
     </Box>
   )
 }
 
 export default function CircularWithValueLabel() {
-  const [progress, setProgress] = useState(10)
+  const [progress, setProgress] = React.useState(10)
 
-  useEffect(() => {
+  React.useEffect(() => {
     const timer = setInterval(() => {
       setProgress(prevProgress => (prevProgress >= 100 ? 0 : prevProgress + 10))
     }, 200)

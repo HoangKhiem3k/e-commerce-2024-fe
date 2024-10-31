@@ -1,3 +1,5 @@
+"use client"
+
 // ** Type Imports
 import { PaletteMode, ThemeOptions } from '@mui/material'
 

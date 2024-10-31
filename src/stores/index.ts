@@ -2,9 +2,9 @@
 import { configureStore } from '@reduxjs/toolkit'
 
 // ** Reducers
-import user from 'src/stores/user'
 import auth from 'src/stores/auth'
 import role from 'src/stores/role'
+import user from 'src/stores/user'
 import city from 'src/stores/city'
 import deliveryType from 'src/stores/delivery-type'
 import paymentType from 'src/stores/payment-type'
@@ -25,10 +25,10 @@ export const store = configureStore({
     paymentType,
     productType,
     product,
-    orderProduct,
     reviews,
     comments,
-    notification
+    notification,
+    orderProduct,
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

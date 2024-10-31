@@ -1,3 +1,5 @@
+"use client"
+
 // ** Next
 import { NextPage } from 'next'
 
@@ -6,7 +8,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 // ** Mui
-import { Box, Chip, ChipProps, Grid, Typography, styled, useTheme } from '@mui/material'
+import { Box, Card, CardContent, Chip, ChipProps, Grid, Typography, styled, useTheme } from '@mui/material'
 import { GridColDef, GridRowSelectionModel, GridSortModel } from '@mui/x-data-grid'
 
 // ** Redux
@@ -24,7 +26,7 @@ import CustomDataGrid from 'src/components/custom-data-grid'
 import Spinner from 'src/components/spinner'
 import ConfirmationDialog from 'src/components/confirmation-dialog'
 import CustomPagination from 'src/components/custom-pagination'
-import CreateEditUser from 'src/views/pages/system/user/components/CreateEditUser'
+import CreateEditUser from 'src/views/pages/system/user/component/CreateEditUser'
 import TableHeader from 'src/components/table-header'
 import CustomSelect from 'src/components/custom-select'
 
@@ -43,7 +45,7 @@ import { PERMISSIONS } from 'src/configs/permission'
 import { getAllRoles } from 'src/services/role'
 import { CONFIG_USER_TYPE, OBJECT_STATUS_USER, OBJECT_TYPE_USER } from 'src/configs/user'
 import { getAllCities } from 'src/services/city'
-import CardCountUser from 'src/views/pages/system/user/components/CardCountUser'
+import CardCountUser from 'src/views/pages/system/user/component/CardCountUser'
 import { getCountUserType } from 'src/services/report'
 import Icon from 'src/components/Icon'
 
@@ -71,20 +73,23 @@ const UserListPage: NextPage<TProps> = () => {
   // ** Translate
   const { t } = useTranslation()
 
+
   const mapUserType = {
     1: {
-      title: t('Facebook'),
-      icon: 'logos:facebook'
+      title: t("Facebook"),
+      icon: "logos:facebook",
+
     },
     2: {
-      title: t('Google'),
-      icon: 'flat-color-icons:google'
+      title: t("Google"),
+      icon: "flat-color-icons:google",
+
     },
     3: {
-      title: t('User_system'),
-      icon: 'tabler:accessible',
-      iconSize: 28
-    }
+      title: t("Email"),
+      icon: "logos:google-gmail",
+      iconSize: 18
+    },
   }
 
   // State
@@ -113,15 +118,15 @@ const UserListPage: NextPage<TProps> = () => {
   const [selectedRow, setSelectedRow] = useState<TSelectedRow[]>([])
   const [filterBy, setFilterBy] = useState<Record<string, string | string[]>>({})
   const [countUserType, setCountUserType] = useState<{
-    data: Record<number, number>
+    data: Record<number, number>,
     totalUser: number
   }>({} as any)
 
-  const CONSTANT_STATUS_USER = OBJECT_STATUS_USER()
-  const CONSTANT_USER_TYPE = OBJECT_TYPE_USER()
-
   // ** Ref
   const isFirstRender = useRef<boolean>(false)
+
+  const CONSTANT_STATUS_USER = OBJECT_STATUS_USER()
+  const CONSTANT_USER_TYPE = OBJECT_TYPE_USER()
 
   // ** Hooks
   const { VIEW, UPDATE, DELETE, CREATE } = usePermission('SYSTEM.USER', ['CREATE', 'VIEW', 'UPDATE', 'DELETE'])
@@ -175,6 +180,7 @@ const UserListPage: NextPage<TProps> = () => {
       setSortBy('createdAt desc')
     }
   }
+
 
   const handleCloseCreateEdit = useCallback(() => {
     setOpenCreateEdit({
@@ -288,16 +294,11 @@ const UserListPage: NextPage<TProps> = () => {
         const { row } = params
 
         return (
-          <>
-            {row.userType && (
-              <Box>
-                <Icon
-                  icon={(mapUserType as any)[row.userType]?.icon}
-                  fontSize={(mapUserType as any)[row.userType]?.iconSize || 24}
-                />
-              </Box>
-            )}
-          </>
+          <>{row.userType && (
+            <Box>
+              <Icon icon={(mapUserType as any)[row.userType]?.icon} fontSize={(mapUserType as any)[row.userType]?.iconSize || 24} />
+            </Box>
+          )}</>
         )
       }
     },
@@ -366,18 +367,16 @@ const UserListPage: NextPage<TProps> = () => {
 
   const fetchAllCountUserType = async () => {
     setLoading(true)
-    await getCountUserType()
-      .then(res => {
-        const data = res?.data
-        setLoading(false)
-        setCountUserType({
-          data: data?.data,
-          totalUser: data?.total
-        })
+    await getCountUserType().then((res) => {
+      const data = res?.data
+      setLoading(false)
+      setCountUserType({
+        data: data?.data,
+        totalUser: data?.total
       })
-      .catch(e => {
-        setLoading(false)
-      })
+    }).catch(e => {
+      setLoading(false)
+    })
   }
 
   const fetchAllCities = async () => {
@@ -472,21 +471,21 @@ const UserListPage: NextPage<TProps> = () => {
 
   const dataListUser = [
     {
-      icon: 'tabler:user',
+      "icon": "tabler:user",
       userType: 4
     },
     {
-      icon: 'logos:facebook',
-      userType: CONFIG_USER_TYPE.FACEBOOK
+      "icon": "logos:facebook",
+      userType: CONFIG_USER_TYPE.FACEBOOK,
     },
     {
       userType: CONFIG_USER_TYPE.GOOGLE,
-      icon: 'flat-color-icons:google'
+      "icon": "flat-color-icons:google",
     },
     {
-      icon: 'tabler:accessible',
-      iconSize: '28',
-      userType: CONFIG_USER_TYPE.DEFAULT
+      "icon": "logos:google-gmail",
+      iconSize: "18",
+      userType: CONFIG_USER_TYPE.DEFAULT,
     }
   ]
 
@@ -509,9 +508,13 @@ const UserListPage: NextPage<TProps> = () => {
         title={t('Title_delete_multiple_user')}
         description={t('Confirm_delete_multiple_user')}
       />
-      <CreateEditUser open={openCreateEdit.open} onClose={handleCloseCreateEdit} idUser={openCreateEdit.id} />
+      <CreateEditUser
+        open={openCreateEdit.open}
+        onClose={handleCloseCreateEdit}
+        idUser={openCreateEdit.id}
+      />
       {isLoading && <Spinner />}
-      <Box sx={{ backgroundColor: 'inherit', width: '100%', mb: 4 }}>
+      <Box sx={{ backgroundColor: "inherit", width: '100%', mb: 4 }}>
         <Grid container spacing={6} sx={{ height: '100%' }}>
           {dataListUser?.map((item: any, index: number) => {
             return (
@@ -533,6 +536,7 @@ const UserListPage: NextPage<TProps> = () => {
           borderRadius: '15px'
         }}
       >
+
         <Grid container sx={{ height: '100%', width: '100%' }}>
           {!selectedRow?.length && (
             <Box

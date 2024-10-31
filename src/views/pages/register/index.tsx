@@ -1,16 +1,26 @@
+"use client"
+
 // ** Next
 import { NextPage } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
-import { useSession, signIn } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
+import { useSession, signIn, signOut } from "next-auth/react"
 
 // ** React
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 // ** Mui
-import { Box, Button, CssBaseline, IconButton, InputAdornment, Typography, useTheme } from '@mui/material'
+import {
+  Box,
+  Button,
+  CssBaseline,
+  IconButton,
+  InputAdornment,
+  Typography,
+  useTheme
+} from '@mui/material'
 
 // ** Components
 import CustomTextField from 'src/components/text-field'
@@ -31,18 +41,15 @@ import RegisterLight from '/public/images/register-light.png'
 
 // ** Redux
 import { useDispatch, useSelector } from 'react-redux'
-import { registerAuthAsync, registerAuthGoogleAsync, registerAuthFacebookAsync } from 'src/stores/auth/actions'
+import { registerAuthAsync, registerAuthFacebookAsync, registerAuthGoogleAsync } from 'src/stores/auth/actions'
 import { AppDispatch, RootState } from 'src/stores'
 import { resetInitialState } from 'src/stores/auth'
 
 // ** Other
 import { ROUTE_CONFIG } from 'src/configs/route'
 import toast from 'react-hot-toast'
-import {
-  clearLocalPreTokenAuthSocial,
-  getLocalPreTokenAuthSocial,
-  setLocalPreTokenAuthSocial
-} from 'src/helpers/storage'
+import { clearLocalPreTokenAuthSocial, getLocalPreTokenAuthSocial, setLocalPreTokenAuthSocial } from 'src/helpers/storage'
+
 
 type TProps = {}
 
@@ -53,11 +60,10 @@ type TDefaultValue = {
 }
 
 const RegisterPage: NextPage<TProps> = () => {
-  const prevTokenLocal = getLocalPreTokenAuthSocial()
-
   // State
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const prevTokenLocal = getLocalPreTokenAuthSocial()
 
   // ** router
   const router = useRouter()
@@ -72,17 +78,19 @@ const RegisterPage: NextPage<TProps> = () => {
   // ** Translate
   const { t } = useTranslation()
 
-  // Hooks
-  const { data: session } = useSession()
-
+  // ** Hooks
+  const { data: session, ...restsss } = useSession()
   const schema = yup.object().shape({
-    email: yup.string().required(t('Required_field')).matches(EMAIL_REG, t('Rules_email')),
-    password: yup.string().required(t('Required_field')).matches(PASSWORD_REG, t('Rules_password')),
+    email: yup.string().required(t('Required_field')).matches(EMAIL_REG, t("Rules_email")),
+    password: yup
+      .string()
+      .required(t('Required_field'))
+      .matches(PASSWORD_REG, t("Rules_password")),
     confirmPassword: yup
       .string()
       .required(t('Required_field'))
-      .matches(PASSWORD_REG, t('Rules_password'))
-      .oneOf([yup.ref('password'), ''], t('Rules_confirm_password'))
+      .matches(PASSWORD_REG, t("Rules_password"))
+      .oneOf([yup.ref('password'), ''], t("Rules_confirm_password"))
   })
 
   const defaultValues: TDefaultValue = {
@@ -107,19 +115,21 @@ const RegisterPage: NextPage<TProps> = () => {
     }
   }
 
-  const handleRegisterGoogle = async () => {
-    signIn('google')
+  const handleRegisterGoogle = () => {
+    signIn("google")
     clearLocalPreTokenAuthSocial()
   }
+
   const handleRegisterFacebook = () => {
-    signIn('facebook')
+    signIn("facebook")
     clearLocalPreTokenAuthSocial()
   }
+
   useEffect(() => {
     if ((session as any)?.accessToken && (session as any)?.accessToken !== prevTokenLocal) {
-      if ((session as any)?.provider === 'facebook') {
+      if((session as any)?.provider === "facebook") {
         dispatch(registerAuthFacebookAsync((session as any)?.accessToken))
-      } else {
+      }else {
         dispatch(registerAuthGoogleAsync((session as any)?.accessToken))
       }
       setLocalPreTokenAuthSocial((session as any)?.accessToken)
@@ -132,7 +142,7 @@ const RegisterPage: NextPage<TProps> = () => {
         toast.error(message)
         dispatch(resetInitialState())
       } else if (isSuccess) {
-        toast.success(t('Sign_up_success'))
+        toast.success(t("Sign_up_success"))
         router.push(ROUTE_CONFIG.LOGIN)
         dispatch(resetInitialState())
       }
@@ -186,7 +196,7 @@ const RegisterPage: NextPage<TProps> = () => {
             }}
           >
             <Typography component='h1' variant='h5'>
-              {t('Register')}
+              {t("Register")}
             </Typography>
             <form onSubmit={handleSubmit(onSubmit)} autoComplete='off' noValidate>
               <Box sx={{ mt: 2, width: '300px' }}>
@@ -198,12 +208,13 @@ const RegisterPage: NextPage<TProps> = () => {
                   render={({ field: { onChange, onBlur, value } }) => (
                     <CustomTextField
                       required
+
                       fullWidth
-                      label={t('Email')}
+                      label={t("Email")}
                       onChange={onChange}
                       onBlur={onBlur}
                       value={value}
-                      placeholder={t('Enter_email')}
+                      placeholder={t("Enter_email")}
                       error={Boolean(errors?.email)}
                       helperText={errors?.email?.message}
                     />
@@ -222,11 +233,12 @@ const RegisterPage: NextPage<TProps> = () => {
                     <CustomTextField
                       required
                       fullWidth
-                      label={t('Password')}
+
+                      label={t("Password")}
                       onChange={onChange}
                       onBlur={onBlur}
                       value={value}
-                      placeholder={t('Enter_password')}
+                      placeholder={t("Enter_password")}
                       error={Boolean(errors?.password)}
                       helperText={errors?.password?.message}
                       type={showPassword ? 'text' : 'password'}
@@ -259,7 +271,8 @@ const RegisterPage: NextPage<TProps> = () => {
                     <CustomTextField
                       required
                       fullWidth
-                      label={t('Confirm_password')}
+
+                      label={t("Confirm_password")}
                       onChange={onChange}
                       onBlur={onBlur}
                       value={value}
@@ -287,20 +300,20 @@ const RegisterPage: NextPage<TProps> = () => {
               </Box>
 
               <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
-                {t('Register')}
+                {t("Register")}
               </Button>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
-                <Typography>{t('You_have_account')}</Typography>
+                <Typography>{t("You_have_account")}</Typography>
                 <Link
                   href='/login'
                   style={{
                     color: theme.palette.primary.main
                   }}
                 >
-                  {t('Login')}
+                  {t("Login")}
                 </Link>
               </Box>
-              <Typography sx={{ textAlign: 'center', mt: 2, mb: 2 }}>{t('Or')}</Typography>
+              <Typography sx={{ textAlign: 'center', mt: 2, mb: 2 }}>{t("Or")}</Typography>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
                 <IconButton sx={{ color: '#497ce2' }} onClick={handleRegisterFacebook}>
                   <svg

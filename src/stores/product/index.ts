@@ -165,8 +165,8 @@ export const productSlice = createSlice({
       state.typeError = action.payload?.typeError
     })
 
-    // ** get all viewed products
-    builder.addCase(getAllProductsViewedAsync.pending, (state, action) => {
+     // ** get all viewed products
+     builder.addCase(getAllProductsViewedAsync.pending, (state, action) => {
       state.isLoading = true
     })
     builder.addCase(getAllProductsViewedAsync.fulfilled, (state, action) => {

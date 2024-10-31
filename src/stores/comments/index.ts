@@ -1,4 +1,4 @@
-// ** Redux
+// ** Redux Imports
 import { createSlice } from '@reduxjs/toolkit'
 
 // ** Actions

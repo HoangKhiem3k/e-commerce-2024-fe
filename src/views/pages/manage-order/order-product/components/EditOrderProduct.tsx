@@ -1,3 +1,5 @@
+"use client"
+
 // ** React
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -40,6 +42,7 @@ import { updateOrderProductAsync } from 'src/stores/order-product/actions'
 // ** Others
 import { stringToSlug } from 'src/utils'
 
+
 interface TCreateEditProduct {
   open: boolean
   onClose: () => void
@@ -47,10 +50,10 @@ interface TCreateEditProduct {
 }
 
 type TDefaultValue = {
-  fullName: string
-  address: string
-  city: string
-  phone: ''
+  fullName: string,
+  address: string,
+  city: string,
+  phone: ""
 }
 
 const EditOrderProduct = (props: TCreateEditProduct) => {
@@ -72,14 +75,14 @@ const EditOrderProduct = (props: TCreateEditProduct) => {
     fullName: yup.string().required(t('Required_field')),
     phone: yup.string().required(t('Required_field')),
     address: yup.string().required(t('Required_field')),
-    city: yup.string().required(t('Required_field'))
+    city: yup.string().required(t('Required_field')),
   })
 
   const defaultValues: TDefaultValue = {
     fullName: '',
     address: '',
     city: '',
-    phone: ''
+    phone: ""
   }
 
   const {
@@ -100,7 +103,7 @@ const EditOrderProduct = (props: TCreateEditProduct) => {
   const onSubmit = (data: any) => {
     if (!Object.keys(errors).length) {
       // update
-      if (idOrder) {
+      if(idOrder) {
         dispatch(
           updateOrderProductAsync({
             id: idOrder,
@@ -108,8 +111,8 @@ const EditOrderProduct = (props: TCreateEditProduct) => {
               fullName: data.fullName,
               phone: data.phone,
               address: data.address,
-              city: data.city
-            }
+              city: data.city,
+            },
           })
         )
       }
@@ -127,7 +130,7 @@ const EditOrderProduct = (props: TCreateEditProduct) => {
             fullName: data?.shippingAddress?.fullName,
             phone: data?.shippingAddress?.phone,
             city: data?.shippingAddress?.city,
-            address: data?.shippingAddress?.address
+            address: data?.shippingAddress?.address,
           })
         }
         setLoading(false)
@@ -164,7 +167,7 @@ const EditOrderProduct = (props: TCreateEditProduct) => {
   }, [open, idOrder])
 
   useEffect(() => {
-    if (open) {
+    if(open) {
       fetchAllCities()
     }
   }, [open])
@@ -226,6 +229,7 @@ const EditOrderProduct = (props: TCreateEditProduct) => {
                           render={({ field: { onChange, onBlur, value } }) => (
                             <CustomTextField
                               required
+                            
                               fullWidth
                               label={t('Address')}
                               onChange={onChange}
@@ -255,7 +259,7 @@ const EditOrderProduct = (props: TCreateEditProduct) => {
                                 inputMode: 'numeric',
                                 pattern: '[0-9]*',
                                 minLength: 8
-                              }}
+                              }}                       
                               onBlur={onBlur}
                               value={value}
                               placeholder={t('Enter_phone')}

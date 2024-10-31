@@ -1,13 +1,15 @@
+"use client"
+
 // ** React
 import React from 'react'
-// ** Translate
 import { useTranslation } from 'react-i18next'
+
 // ** Mui
 import Icon from 'src/components/Icon'
 import { IconButton, Tooltip } from '@mui/material'
 
 interface TGridEdit {
-  onClick: () => void
+    onClick: () => void
   disabled?: boolean
 }
 

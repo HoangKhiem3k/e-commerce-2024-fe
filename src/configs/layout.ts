@@ -89,7 +89,7 @@ export const VerticalItems = () => {
         {
           title: t('City'),
           icon: 'solar:city-outline',
-          path: ROUTE_CONFIG.SETTINGS.CITY
+          path: ROUTE_CONFIG.SETTINGS.CITY,
         },
         {
           title: t('Delivery_method'),

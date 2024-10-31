@@ -1,43 +1,51 @@
-import i18n from 'i18next'
-import { initReactI18next } from 'react-i18next'
-import LanguageDetector from 'i18next-browser-languagedetector'
-import Backend from 'i18next-http-backend'
+import { createInstance, i18n } from 'i18next';
+import { initReactI18next } from 'react-i18next/initReactI18next';
+import resourcesToBackend from 'i18next-resources-to-backend';
+import i18nConfig from 'src/app/i18nConfig';
 
-i18n
+export default async function initTranslations(
+    locale: string,
+    namespaces: string[],
+    i18nInstance?: i18n,
+    resources?: any,
+) {
+    i18nInstance = i18nInstance || createInstance();
 
-  .use(Backend)
+    i18nInstance.use(initReactI18next);
 
-  // Enable automatic language detection
-  .use(LanguageDetector)
-
-  // Enables the hook initialization module
-  .use(initReactI18next)
-  .init({
-    lng: 'vi',
-    backend: {
-      /* translation file path */
-      loadPath: '/locales/{{lng}}.json'
-    },
-    fallbackLng: 'vi',
-    debug: false,
-    keySeparator: false,
-    react: {
-      useSuspense: false
-    },
-    interpolation: {
-      escapeValue: false,
-      formatSeparator: ','
+    if (!resources) {
+        i18nInstance.use(
+            resourcesToBackend(
+                (language: string, namespace: string) => import(`../../public/locales/${language}/${namespace}.json`),
+            ),
+        );
     }
-  })
 
-export default i18n
+    await i18nInstance.init({
+        lng: locale,
+        resources,
+        fallbackLng: i18nConfig.defaultLocale,
+        supportedLngs: i18nConfig.locales,
+        defaultNS: namespaces[1],
+        fallbackNS: namespaces[1],
+        ns: namespaces,
+        preload: resources ? [] : i18nConfig.locales,
+    });
+
+    return {
+        i18n: i18nInstance,
+        resources: i18nInstance.services.resourceStore.data,
+        t: i18nInstance.t,
+    };
+}
+
 export const LANGUAGE_OPTIONS = [
-  {
-    lang: 'Tiếng Việt',
-    value: 'vi'
-  },
-  {
-    lang: 'English',
-    value: 'en'
-  }
-]
+    {
+      lang: 'Tiếng Việt',
+      value: 'vi'
+    },
+    {
+      lang: 'English',
+      value: 'en'
+    }
+  ]

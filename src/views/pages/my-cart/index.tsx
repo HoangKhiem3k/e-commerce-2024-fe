@@ -1,14 +1,17 @@
+"use client"
+
 // ** Next
 import { NextPage } from 'next'
-import { useRouter } from 'next/router'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 // ** React
 import { Fragment, useEffect, useMemo, useState } from 'react'
 
 // ** Mui
-import { Box, Button, Checkbox, Divider, IconButton, Tooltip, Typography, useTheme } from '@mui/material'
+import { Avatar, Box, Button, Checkbox, Divider, IconButton, Tooltip, Typography, useTheme } from '@mui/material'
 
 // ** Components
+import CustomTextField from 'src/components/text-field'
 import Icon from 'src/components/Icon'
 import NoData from 'src/components/no-data'
 
@@ -17,7 +20,8 @@ import { t } from 'i18next'
 import { useTranslation } from 'react-i18next'
 
 // ** Utils
-import { cloneDeep, formatNumberToLocal } from 'src/utils'
+import { cloneDeep, convertUpdateProductToCart, createUrlQuery, formatNumberToLocal } from 'src/utils'
+import { hexToRGBA } from 'src/utils/hex-to-rgba'
 
 // ** Redux
 import { updateProductToCart } from 'src/stores/order-product'
@@ -44,6 +48,7 @@ const MyCartPage: NextPage<TProps> = () => {
   const { i18n } = useTranslation()
   const { user } = useAuth()
   const router = useRouter()
+  const searchParams = useSearchParams()
 
   // ** theme
   const theme = useTheme()
@@ -79,7 +84,8 @@ const MyCartPage: NextPage<TProps> = () => {
   }, [memoItemsSelectedProduct])
 
   useEffect(() => {
-    const productSelected = router.query.selected as string
+    const productSelected = searchParams.get('selected')
+
     if (productSelected) {
       if (typeof productSelected === 'string') {
         setSelectedRows([productSelected])
@@ -87,7 +93,7 @@ const MyCartPage: NextPage<TProps> = () => {
         setSelectedRows([...productSelected])
       }
     }
-  }, [router.query])
+  }, [searchParams])
 
   // ** Handle
 
@@ -129,13 +135,7 @@ const MyCartPage: NextPage<TProps> = () => {
     const formatData = JSON.stringify(
       memoItemsSelectedProduct.map(item => ({ product: item.product, amount: item.amount }))
     )
-    router.push({
-      pathname: ROUTE_CONFIG.CHECKOUT_PRODUCT,
-      query: {
-        totalPrice: memoTotalSelectedProduct,
-        productsSelected: formatData
-      }
-    })
+    router.push(ROUTE_CONFIG.CHECKOUT_PRODUCT + '?' + createUrlQuery('totalPrice', String(memoTotalSelectedProduct)) + '&' + createUrlQuery('productsSelected', formatData))
   }
 
   return (

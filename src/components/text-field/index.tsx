@@ -1,3 +1,5 @@
+"use client"
+
 // ** Mui Imports
 import { TextFieldProps, TextField, styled } from '@mui/material'
 
@@ -17,8 +19,8 @@ const TextFieldStyled = styled(TextField)<TextFieldProps>(({ theme }) => {
       transition: theme.transitions.create(['border-color', 'box-shadow'], {
         duration: theme.transitions.duration.shorter
       }),
-      '& .MuiInputBase-inputAdornedEnd': {
-        borderRadius: 8
+      "& .MuiInputBase-inputAdornedEnd": {
+        borderRadius: 8,
       },
       '&:before, &:after': {
         display: 'none'

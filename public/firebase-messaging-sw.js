@@ -2,18 +2,19 @@ importScripts('https://www.gstatic.com/firebasejs/8.8.0/firebase-app.js')
 importScripts('https://www.gstatic.com/firebasejs/8.8.0/firebase-messaging.js')
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyCZunS5zvZCK8CBqSg53dm7yZaMIont-o4',
-  authDomain: 'shop-fe-nextjs.firebaseapp.com',
-  projectId: 'shop-fe-nextjs',
-  storageBucket: 'shop-fe-nextjs.appspot.com',
-  messagingSenderId: '71498404290',
-  appId: '1:71498404290:web:103e145f16ffcdf7a3c65b',
-  measurementId: 'G-Z6FS2VH6M3'
+  apiKey: 'AIzaSyA1EYibGd3to70_B6iCmAA0ZJvFGxBp8Y8',
+  authDomain: 'shop-ecomerce.firebaseapp.com',
+  projectId: 'shop-ecomerce',
+  storageBucket: 'shop-ecomerce.appspot.com',
+  messagingSenderId: '473863276840',
+  appId: '1:473863276840:web:dc32e31c4174c0be72a81d',
+  measurementId: 'G-1YLCLBHYZC'
 }
 // eslint-disable-next-line no-undef
 firebase.initializeApp(firebaseConfig)
 // eslint-disable-next-line no-undef
 const messaging = firebase.messaging()
+
 messaging.onBackgroundMessage(payload => {
   const notificationTitle = payload.notification.title
   const notificationOptions = {

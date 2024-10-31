@@ -1,3 +1,5 @@
+"use client"
+
 // ** Next
 import { NextPage } from 'next'
 
@@ -21,7 +23,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { EMAIL_REG } from 'src/configs/regex'
 
 // ** Translate
-import { t } from 'i18next'
+
 import { useTranslation } from 'react-i18next'
 
 // ** services
@@ -38,10 +40,14 @@ import { resetInitialState } from 'src/stores/auth'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
 
+// ** component
+import FallbackSpinner from 'src/components/fall-back'
+
 // ** Other
 import toast from 'react-hot-toast'
 import Spinner from 'src/components/spinner'
 import CustomSelect from 'src/components/custom-select'
+
 
 type TProps = {}
 
@@ -63,7 +69,7 @@ const MyProfilePage: NextPage<TProps> = () => {
   const [optionCities, setOptionCities] = useState<{ label: string; value: string }[]>([])
 
   // ** Hooks
-  const { i18n } = useTranslation()
+  const { i18n,t } = useTranslation()
 
   // ** theme
   const theme = useTheme()
@@ -278,6 +284,7 @@ const MyProfilePage: NextPage<TProps> = () => {
                     render={({ field: { onChange, onBlur, value } }) => (
                       <CustomTextField
                         required
+                        
                         fullWidth
                         disabled
                         label={t('Email')}
@@ -361,6 +368,7 @@ const MyProfilePage: NextPage<TProps> = () => {
                     control={control}
                     render={({ field: { onChange, onBlur, value } }) => (
                       <CustomTextField
+                        
                         fullWidth
                         label={t('Full_name')}
                         onChange={onChange}
@@ -380,6 +388,7 @@ const MyProfilePage: NextPage<TProps> = () => {
                     name='address'
                     render={({ field: { onChange, onBlur, value } }) => (
                       <CustomTextField
+                        
                         fullWidth
                         label={t('Address')}
                         onChange={onChange}
@@ -438,6 +447,7 @@ const MyProfilePage: NextPage<TProps> = () => {
                     render={({ field: { onChange, onBlur, value } }) => (
                       <CustomTextField
                         required
+                        
                         fullWidth
                         label={t('Phone_number')}
                         onChange={e => {

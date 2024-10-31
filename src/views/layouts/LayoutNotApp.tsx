@@ -1,3 +1,5 @@
+"use client"
+
 // ** React
 import * as React from 'react'
 
@@ -12,7 +14,7 @@ import Container from '@mui/material/Container'
 
 // ** views
 import HorizontalLayout from 'src/views/layouts/HorizontalLayout'
-
+import VerticalLayout from 'src/views/layouts/VerticalLayout'
 import { useTheme } from '@mui/material'
 
 type TProps = {
@@ -44,8 +46,8 @@ const LayoutNotApp: NextPage<TProps> = ({ children }) => {
             maxWidth: 'unset !important',
             overflow: 'auto',
             maxHeight: `calc(100vh - ${theme.mixins.toolbar.minHeight} - 32px)`,
-            padding: '0 !important',
-            borderRadius: '15px'
+            padding: "0 !important",
+            borderRadius: "15px"
           }}
         >
           {children}
