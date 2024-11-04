@@ -183,7 +183,7 @@ const HomePage: NextPage<TProps> = props => {
   }, [])
 
   useEffect(() => {
-    if (!isServerRendered.current && paramsServer && totalCount && !!products.length && !!productTypesServer.length) {
+    if (!isServerRendered.current && paramsServer && !!productTypesServer.length) {
       setPage(paramsServer.page)
       setPageSize(paramsServer.limit)
       setSortBy(paramsServer.order)
@@ -375,16 +375,18 @@ const HomePage: NextPage<TProps> = props => {
                   )}
                 </Grid>
               )}
-              <Box mt={6}>
-                <CustomPagination
-                  onChangePagination={handleOnchangePagination}
-                  pageSizeOptions={PAGE_SIZE_OPTION}
-                  pageSize={pageSize}
-                  page={page}
-                  rowLength={productsPublic.total}
-                  isHideShowed
-                />
-              </Box>
+              {totalCount && (
+                <Box mt={6}>
+                  <CustomPagination
+                    onChangePagination={handleOnchangePagination}
+                    pageSizeOptions={PAGE_SIZE_OPTION}
+                    pageSize={pageSize}
+                    page={page}
+                    rowLength={productsPublic.total}
+                    isHideShowed
+                  />
+                </Box>
+              )}
             </Grid>
           </Grid>
         </Box>
