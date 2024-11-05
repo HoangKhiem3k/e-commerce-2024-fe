@@ -9,7 +9,7 @@ const config: Config = {
   collectCoverage: false,
   coverageProvider: 'v8',
   preset: 'ts-jest',
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+  setupFilesAfterEnv: ['<rootDir>/‎jest.setup.ts'],
   testPathIgnorePatterns: ['<rootDir>/node_modules/', '<rootDir>/.next/'],
   testEnvironment: 'jsdom',
   verbose: true,
