@@ -101,4 +101,4 @@ const Index = async ({ params: { productId } }: { params: { productId: string } 
 export default Index
 
 export const dynamic = 'force-dynamic'
-export const maxDuration = 300
+export const maxDuration = 60

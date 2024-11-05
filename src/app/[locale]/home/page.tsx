@@ -95,4 +95,4 @@ export default async function Home() {
 // Home.title = "Danh sách sản phẩm của cửa hàng The Wander Shop"
 export const dynamic = 'force-static'
 export const revalidate = 10
-export const maxDuration = 300
+export const maxDuration = 60

@@ -5,19 +5,19 @@ export const getTimePast = (date: Date, t: any): string => {
   const pastTimeSecond: number = currentDate.getTime() - date.getTime()
   const pastTimeDate: number = pastTimeSecond / millisecondsInDay
   if (pastTimeDate < 30) {
-    if(pastTimeDate < 1) {
-        return `${"recently"}`
+    if (pastTimeDate < 1) {
+      return `${'recently'}`
     }
 
-    return `${Math.floor(pastTimeDate)} ${t("day")}`
+    return `${Math.floor(pastTimeDate)} ${t('day')}`
   } else if (pastTimeDate < 365) {
     const month: number = Math.floor(pastTimeDate / 30)
 
-    return `${month} ${t("month")}`
+    return `${month} ${t('month')}`
   } else {
     const year: number = Math.floor(pastTimeDate / 365)
 
-    return `${year} ${t("year")}`
+    return `${year} ${t('year')}`
   }
 }
 
