@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { ModalProps, styled, Modal, Box, BoxProps, FormHelperText, useTheme, InputLabel } from '@mui/material'
 import React, { useRef, useState } from 'react'
@@ -26,11 +26,11 @@ const StyleDatePicker = styled(Box)<StyleDatePickerProps>(({ theme, error }) => 
   height: '38px',
   padding: '8px',
   position: 'relative',
-  ".react-datepicker__input-container": {
-    "input::placeholder": {
+  '.react-datepicker__input-container': {
+    'input::placeholder': {
       color: theme.palette.text.secondary,
-      opacity: 0.42,
-    },
+      opacity: 0.42
+    }
   },
   '.react-datepicker__header ': {
     backgroundColor: theme.palette.customColors.bodyBg,
@@ -51,9 +51,9 @@ const StyleDatePicker = styled(Box)<StyleDatePickerProps>(({ theme, error }) => 
       width: '100%'
     }
   },
-  ".react-datepicker__day--disabled": {
+  '.react-datepicker__day--disabled': {
     backgroundColor: `${theme.palette.action.selected} !important`,
-    borderRadius: "0.3rem"
+    borderRadius: '0.3rem'
   },
   '.react-datepicker-popper': {
     zIndex: '2 !important'

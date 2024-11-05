@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 // ** Mui Imports
 import { TextFieldProps, TextField, styled } from '@mui/material'
@@ -15,12 +15,14 @@ const TextFieldStyled = styled(TextField)<TextFieldProps>(({ theme }) => {
     '& .MuiInputBase-root': {
       borderRadius: 8,
       backgroundColor: 'transparent !important',
-      border: `1px solid rgba(${theme.palette.customColors.main}, 0.2)`,
+      borderColor: `rgba(${theme.palette.customColors?.main}, 0.2)`,
+      borderStyle: 'solid',
+      borderWidth: '1px',
       transition: theme.transitions.create(['border-color', 'box-shadow'], {
         duration: theme.transitions.duration.shorter
       }),
-      "& .MuiInputBase-inputAdornedEnd": {
-        borderRadius: 8,
+      '& .MuiInputBase-inputAdornedEnd': {
+        borderRadius: 8
       },
       '&:before, &:after': {
         display: 'none'
@@ -29,7 +31,10 @@ const TextFieldStyled = styled(TextField)<TextFieldProps>(({ theme }) => {
         padding: '8px 10px'
       },
       '&.Mui-error': {
-        borderColor: theme.palette.error.main
+        borderColor: theme.palette.error?.main
+      },
+      '&.MuiInputBase-colorError': {
+        borderColor: 'red'
       },
       '&.Mui-focused': {
         boxShadow: theme.shadows[2],
@@ -49,10 +54,10 @@ const TextFieldStyled = styled(TextField)<TextFieldProps>(({ theme }) => {
           borderColor: theme.palette.success.main
         },
         '&.MuiInputBase-colorWarning': {
-          borderColor: theme.palette.warning.main
+          borderColor: theme.palette.warning?.main
         },
         '&.MuiInputBase-colorError': {
-          borderColor: theme.palette.error.main
+          borderColor: 'red'
         },
         '&.Mui-error': {
           borderColor: theme.palette.error.main
@@ -70,7 +75,7 @@ const TextFieldStyled = styled(TextField)<TextFieldProps>(({ theme }) => {
       margin: theme.spacing(1, 0, 0),
       color: theme.palette.text.secondary,
       fontSize: theme.typography.body2.fontSize,
-      '&.Mui-error': {
+      '&.Mui-error,.MuiInputBase-colorError': {
         color: theme.palette.error.main
       }
     }
